@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}Plot{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script type=text/javascript>
+			$(function() {
+			  $('a#process_input').on('click', function() {
+				$.getJSON('/_plotdata', {
+				  plotdata: $('select[name="select"]').val(),
+				}, function(data) {
+				    var $plotarea = $('#plotarea');
+				    $plotarea.empty();
+				    $plotarea.append('<hr><br>');
+				    $plotarea.append(data.plot);
+				});
+				return false;
+			  });
+			});
+		</script>
+
+{% endblock %}
+{% block page_content %}
+<div class="page-header">
+    <h1>Data Plotting</h1>
+</div>
+    <div class="container">
+         <form class='form form-group' enctype="multipart/form-data" action="" method="post" role="form">
+            {{ wtf.quick_form(form) }}
+            <a href="#" id="process_input"><button class="btn btn-secondary form-row">Submit</button></a>
+
+         </form>
+    </div>
+<div id="plotarea">
+</div>
+
+
+{% endblock %}

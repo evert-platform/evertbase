@@ -1,0 +1,10 @@
+.form-control{
+    width: 50ch;
+}
+
+textarea.form-control{
+    -webkit-column-span: 10;
+    -webkit-row-span: 1;
+    resize: none;
+}
+
