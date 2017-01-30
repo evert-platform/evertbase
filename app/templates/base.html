@@ -10,7 +10,21 @@
         <!-- Latest compiled JavaScript -->
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+        <script charset="UTF-8">
+            $(document).ready(function(){
+                var path = window.location.pathname;
+                var links = $('.navbar-nav').children('li');
 
+                for (var i=0; i<links.length; i++) {
+                    if (path == $(links[i]).children('a').attr('href')){
+                        $(links[i]).addClass('active');
+
+                    } else{
+                       $(links[i]).removeClass('active');
+                    }
+                }
+            });
+        </script>
     {% block head %}
     {% endblock %}
 </head>
