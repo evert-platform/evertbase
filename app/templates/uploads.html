@@ -20,8 +20,11 @@
     <div class="page-header">
         <h1>File upload</h1>
     </div>
-    {{ wtf.quick_form(form) }}
-    {{ emit_event("uploads") }}
+    <div class="container col-sm-6 col-md-6 col-lg-6">
+        {{ wtf.quick_form(form) }}
+        {{ emit_event("uploads") }}  {# flask-plugins event #}
+    </div>
+
 {% endblock %}
 
 
