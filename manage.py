@@ -1,4 +1,4 @@
-from Evert.app import create_app
+from evert.app import create_app
 from flask import current_app
 from flask_plugins import PluginManager, Plugin
 from flask_uploads import UploadSet, DATA, configure_uploads
