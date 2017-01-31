@@ -1,6 +1,23 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}Plugins{% endblock %}
+{% block head %}
+    <script>
+        $(document).ready(function(){
+            var $disabled_select = $('select#select_disabled').children('option');
+            var $enabled_select = $('select#select_enabled').children('option');
+
+            if ($disabled_select.html() == 'All plugins enabled'){
+                $($disabled_select.parent()).attr('disabled', true)
+            }
+
+            else if ($enabled_select.html() == 'No active plugins'){
+                $($enabled_select.parent()).attr('disabled', true)
+            }
+        });
+
+    </script>
+{% endblock %}
 {% block page_content %}
     <div class="page-header">
         <h1>Available plugins</h1>
@@ -16,5 +33,6 @@
         <input type="button" class="btn btn-default" value="Disable" id="disable">
 
     </div>
+
 
 {% endblock %}
