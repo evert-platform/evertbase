@@ -1,6 +1,6 @@
 from evert.app import create_app
 from flask import current_app
-from flask_plugins import PluginManager, Plugin
+from flask_plugins import Plugin
 from flask_uploads import UploadSet, DATA, configure_uploads
 import os
 
@@ -22,9 +22,6 @@ app.config['STATIC_DIR'] = os.path.join(app.config['BASE_DIR'], 'app/static')
 data = UploadSet('file', DATA)
 app.config['UPLOADED_FILE_DEST'] = os.path.join(app.config['STATIC_DIR'], 'uploads')
 configure_uploads(app, data)
-
-# Configuration of flask_plugins extension
-pluginmanager = PluginManager(app)
 
 
 if __name__ == '__main__':
