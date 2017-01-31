@@ -15,8 +15,9 @@ class DataSelectForm(FlaskForm):
 
 
 class PluginsForm(FlaskForm):
-    select = SelectMultipleField('')
-    submit = SubmitField('Submit')
+    select_enabled = SelectMultipleField('')
+    select_disabled = SelectMultipleField('no')
+
 
 class DataViewerForm(FlaskForm):
     select = SelectField('Select file to view.', choices='', id='text')
