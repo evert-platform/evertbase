@@ -60,9 +60,10 @@ def _plotdata():
 def plugins():
     pluginsmanager = PluginManager()
     form = PluginsForm()
-    form.select.choices = funcs.checkplugins(textbox=False)
+    form.select_disabled.choices = funcs.checkplugins(enabled=False)
+    form.select_enabled.choices = funcs.checkplugins(enabled=True)
     if form.validate_on_submit():
-        plugin = get_plugin(form.select.data[0])
+        plugin = get_plugin(form.select_enabled.data[0])
         pluginsmanager.disable_plugins([plugin])
 
     return render_template('plugins.html', form=form)
