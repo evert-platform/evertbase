@@ -1,5 +1,6 @@
 select[multiple] {
     /*size: auto ;*/
-    width: 600px;
+    width: 30%;
+    padding: 10px;
 
 }
