@@ -5,8 +5,16 @@
     <div class="page-header">
         <h1>Available plugins</h1>
     </div>
-    <div class="container col-sm-6 col-md-6 col-lg-6">
-        {{ wtf.quick_form(form) }}
+    <div class="container">
+        <div class="form-group">
+            {{ form.hidden_tag() }}
+            {{ form.select_disabled}}
+            {{ form.select_enabled }}
+        </div>
+
+        <input type="button" class="btn btn-default" value="Enable" id="enable">
+        <input type="button" class="btn btn-default" value="Disable" id="disable">
+
     </div>
 
 {% endblock %}
