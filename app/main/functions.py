@@ -1,24 +1,33 @@
 import os
 import glob
-from flask_plugins import get_all_plugins
+from flask_plugins import get_enabled_plugins, get_all_plugins
 
 
-def checkplugins(textbox=True):
+def checkplugins(enabled=True):
     """
-    This function is used to populate select fields and textbox fields. It checks which plugins are installed
-    and generates the output required for the DOM element.
-    :param textbox: Defualt value of True. Set to False if a select field needs to be populated.
+    This function is used to populate a multiselect field. It checks which plugins are enabled and disabled
+     and generates the output required for the DOM element.
+    :param enabled: If true a list of enabled plugins are returned else a list of disabled plugins are returned.
     :return: Output required by DOM element
     """
-    plugins = get_all_plugins()
-    p = ''
-    if plugins:
-        if textbox:
-            for plugin in plugins:
-                p += (plugin.name + '\n')
+    plugins = [(plugin.identifier, plugin.name) for plugin in get_all_plugins()]
+    enabled_plugins = [(plugin.identifier, plugin.name) for plugin in get_enabled_plugins()]
+    disabled_plugins = [x for x in plugins if x not in enabled_plugins]
 
-        elif not textbox:
-            p = [(plugin.identifier, plugin.name) for plugin in plugins]
+    if plugins:
+        if enabled:
+            if enabled_plugins != []:
+                p = [plugin for plugin in enabled_plugins]
+
+            else:
+                p = [('', 'No active plugins')]
+
+        else:
+            if disabled_plugins != []:
+                p = [plugin for plugin in disabled_plugins]
+
+            else:
+                p = [('', 'All plugins enabled')]
 
     else:
         p = None
