@@ -15,8 +15,8 @@ class DataSelectForm(FlaskForm):
 
 
 class PluginsForm(FlaskForm):
-    select_enabled = SelectMultipleField('')
-    select_disabled = SelectMultipleField('no')
+    select_enabled = SelectField('Select plugin to disable', choices='', id='select_enabled')
+    select_disabled = SelectField('Select plugin to enable', choices='', id='select_disabled')
 
 
 class DataViewerForm(FlaskForm):
