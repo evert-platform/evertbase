@@ -3,11 +3,11 @@ import pandas as pd
 from flask import render_template, flash, get_flashed_messages, request, jsonify, current_app
 from . import main
 from .forms import *
-from flask_plugins import get_plugin
-from flask_plugins import PluginManager
+from flask_plugins import get_plugin, PluginManager, get_plugin_from_all
 import plotly.offline as offplot
 from . import functions as funcs
 from flask_uploads import UploadSet, DATA, configure_uploads
+
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -67,6 +67,15 @@ def plugins():
         pluginsmanager.disable_plugins([plugin])
 
     return render_template('plugins.html', form=form)
+
+@main.route('/_enable_plugin', methods=['GET', 'POST'])
+def _enable_plugins():
+    filepath = request.args.get('enableplugins', 0, type=str)
+    pluginsmanager = PluginManager()
+    pluginsmanager.enable_plugins([get_plugin_from_all(filepath)])
+    return jsonify(sucess=True)
+
+
 
 
 @main.route('/dataviewer', methods=['GET', 'POST'])
