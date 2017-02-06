@@ -70,10 +70,17 @@ def plugins():
 
 @main.route('/_enable_plugin', methods=['GET', 'POST'])
 def _enable_plugins():
-    filepath = request.args.get('enableplugins', 0, type=str)
+    plugin = request.args.get('enableplugins', 0, type=str)
     pluginsmanager = PluginManager()
-    pluginsmanager.enable_plugins([get_plugin_from_all(filepath)])
+    pluginsmanager.enable_plugins([get_plugin_from_all(plugin)])
     return jsonify(sucess=True)
+
+@main.route('/_disable_plugin', methods=['GET', 'POST'])
+def _disable_plugins():
+    plugin = request.args.get('disableplugins', 0, type=str)
+    pluginsmanager = PluginManager()
+    pluginsmanager.disable_plugins([get_plugin_from_all(plugin)])
+    return jsonify(success=True)
 
 
 
