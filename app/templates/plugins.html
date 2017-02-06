@@ -22,10 +22,16 @@
 				$.getJSON('/_enable_plugin', {
 				  enableplugins: $('select[id="select_disabled"]').val()
 				}, function(data) {
-{#				    var $plotarea = $('#plotarea');#}
-{#				    $plotarea.empty();#}
-{#				    $plotarea.append('<hr><br>');#}
-{#				    $plotarea.append(data.plot);#}
+				});
+				return false;
+			  });
+			});
+
+        $(function() {
+			  $('input#disable').on('click', function() {
+				$.getJSON('/_disable_plugin', {
+				  disableplugins: $('select[id="select_enabled"]').val()
+				}, function(data) {
 				});
 				return false;
 			  });
