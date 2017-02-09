@@ -7,12 +7,17 @@
             var $disabled_select = $('select#select_disabled').children('option');
             var $enabled_select = $('select#select_enabled').children('option');
 
+            var $enable_button = $('input#enable');
+            var $disable_button = $('input#disabe');
+
             if ($disabled_select.html() == 'All plugins enabled'){
-                $($disabled_select.parent()).attr('disabled', true)
+                $($disabled_select.parent()).attr('disabled', true);
+                $($enable_button).attr('disabled', true);
             }
 
             else if ($enabled_select.html() == 'No active plugins'){
-                $($enabled_select.parent()).attr('disabled', true)
+                $($enabled_select.parent()).attr('disabled', true);
+                $($disable_button).attr('disabled', true);
             }
 
         });
@@ -46,9 +51,9 @@
     <div class="container ">
         <div class="form-group col-md-6 col-sm-5 col-lg-6">
             {{ form.hidden_tag() }}
-            {{ form.select_enabled.label(class='col-form-label') }}
-            {{ form.select_disabled(class='form-control')}}
             {{ form.select_disabled.label(class='col-form-label') }}
+            {{ form.select_disabled(class='form-control')}}
+            {{ form.select_enabled.label(class='col-form-label') }}
             {{ form.select_enabled(class='form-control') }}
         </div>
     </div>
