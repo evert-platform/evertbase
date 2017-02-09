@@ -3,11 +3,10 @@ import pandas as pd
 from flask import render_template, flash, get_flashed_messages, request, jsonify, current_app
 from . import main
 from .forms import *
-from flask_plugins import get_plugin, PluginManager, get_plugin_from_all
+from flask_plugins import PluginManager, get_plugin_from_all
 import plotly.offline as offplot
 from . import functions as funcs
 from flask_uploads import UploadSet, DATA, configure_uploads
-
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -29,7 +28,7 @@ def upload():
         flash('{} successfully uploaded to Evert.'.format(filename), category='success')
 
     else:
-        filename=None
+        filename = None
 
     return render_template('uploads.html', form=form)
 
@@ -42,6 +41,7 @@ def plotly_plot():
     return render_template('plot.html', form=form)
 
 
+# Async view
 @main.route('/_plotdata', methods=['GET', 'POST'])
 def _plotdata():
     fig, ax = plt.subplots()
@@ -62,12 +62,10 @@ def plugins():
     form = PluginsForm()
     form.select_disabled.choices = funcs.checkplugins(enabled=False)
     form.select_enabled.choices = funcs.checkplugins(enabled=True)
-    if form.validate_on_submit():
-        plugin = get_plugin(form.select_enabled.data[0])
-        pluginsmanager.disable_plugins([plugin])
-
     return render_template('plugins.html', form=form)
 
+
+# Async view
 @main.route('/_enable_plugin', methods=['GET', 'POST'])
 def _enable_plugins():
     plugin = request.args.get('enableplugins', 0, type=str)
@@ -75,14 +73,14 @@ def _enable_plugins():
     pluginsmanager.enable_plugins([get_plugin_from_all(plugin)])
     return jsonify(sucess=True)
 
+
+# Async view
 @main.route('/_disable_plugin', methods=['GET', 'POST'])
 def _disable_plugins():
     plugin = request.args.get('disableplugins', 0, type=str)
     pluginsmanager = PluginManager()
     pluginsmanager.disable_plugins([get_plugin_from_all(plugin)])
     return jsonify(success=True)
-
-
 
 
 @main.route('/dataviewer', methods=['GET', 'POST'])
