@@ -1,6 +1,3 @@
-select[multiple] {
-    /*size: auto ;*/
-    width: 30%;
-    padding: 10px;
-
+div#plugins_toggle, div#plugins_upload{
+    margin: 10px
 }
