@@ -39,11 +39,21 @@ $(document).ready(function(){
 
         $(function() {
 			  $('input#plugin_submit').on('click', function() {
-				$.getJSON('/_uploadp', {
-				  upload: $('input#file').val()
-				}, function(data) {
-					console.log(data.success)
-				});
-				return false;
+			  	event.preventDefault();
+				  event.stopPropagation();
+
+			  	var formdata = new FormData($('#uploadplugin')[0]);
+
+
+				$.ajax({
+					url: '/_uploadp',
+					type: 'POST',
+					processData: false,
+					contentType:false,
+					data: formdata,
+					dataType: 'json',
+					success: function(data) {
+                    }
+				})
 			  });
 			});
