@@ -1,3 +1,7 @@
 div#plugins_toggle, div#plugins_upload{
     margin: 10px
 }
+
+.col-form-label {
+    padding-top: 10px;
+}
