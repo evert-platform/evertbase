@@ -6,7 +6,7 @@ from .forms import *
 from flask_plugins import PluginManager, get_plugin_from_all
 import plotly.offline as offplot
 from . import functions as funcs
-from flask_uploads import UploadSet, DATA, configure_uploads
+from flask_uploads import UploadSet, DATA, configure_uploads, ALL
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -21,7 +21,7 @@ def upload():
     app = current_app
     configure_uploads(app, data)
     filename = None
-    form = UploadForm()
+    form = FileUploadForm()
 
     if request.method == 'POST' and 'file' in request.files:
         filename = data.save(request.files['file'])
@@ -60,9 +60,10 @@ def _plotdata():
 def plugins():
     pluginsmanager = PluginManager()
     form = PluginsForm()
+    form2 = PluginsUploadForm()
     form.select_disabled.choices = funcs.checkplugins(enabled=False)
     form.select_enabled.choices = funcs.checkplugins(enabled=True)
-    return render_template('plugins.html', form=form)
+    return render_template('plugins.html', form=form, form2=form2)
 
 
 # Async view
@@ -81,6 +82,17 @@ def _disable_plugins():
     pluginsmanager = PluginManager()
     pluginsmanager.disable_plugins([get_plugin_from_all(plugin)])
     return jsonify(success=True)
+
+@main.route('/_uploadp', methods=['GET', 'POST'])
+def _upload_plugins():
+    plugins = request.args.get('upload', 0, type=str)
+    plugin_upload = UploadSet('plugin', ALL)
+    configure_uploads(current_app, plugin_upload)
+    print(request.method, request.files)
+
+
+    return jsonify(success=True)
+
 
 
 @main.route('/dataviewer', methods=['GET', 'POST'])
