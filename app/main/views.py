@@ -7,12 +7,11 @@ from flask_plugins import PluginManager, get_plugin_from_all
 import plotly.offline as offplot
 from . import functions as funcs
 from flask_uploads import UploadSet, DATA, configure_uploads, ALL
-from zipfile import ZipFile
+from zipfile import ZipFile, BadZipFile
 
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-
     return render_template('index.html')
 
 
@@ -90,10 +89,18 @@ def _disable_plugins():
 def _upload_plugins():
     if request.method == 'POST':
         file = request.files['file']
-        zipfile = ZipFile(file)
-        zipfile.extractall(current_app.config['UPLOADED_PLUGIN_DEST'])
+        print(file)
+        try:
+            zipfile = ZipFile(file)
+            zipfile.extractall(current_app.config['UPLOADED_PLUGIN_DEST'])
+            success = True
+            msg = 'Success: Plugin uploaded successfully'
 
-    return jsonify(success=True)
+        except BadZipFile:
+            success = False
+            msg = 'Error: Ensure file is a zip file'
+
+    return jsonify(success=success, msg=msg)
 
 
 @main.route('/dataviewer', methods=['GET', 'POST'])
@@ -112,28 +119,3 @@ def dataview():
         keys = None
 
     return render_template('dataviewer.html', form=form, data=data, titles=keys)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
