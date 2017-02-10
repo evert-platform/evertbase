@@ -89,7 +89,6 @@ def _disable_plugins():
 def _upload_plugins():
     if request.method == 'POST':
         file = request.files['file']
-        print(file)
         try:
             zipfile = ZipFile(file)
             zipfile.extractall(current_app.config['UPLOADED_PLUGIN_DEST'])
