@@ -8,7 +8,7 @@
     <div class="page-header">
         <h1>Available plugins</h1>
     </div>
-    <div class="container ">
+    <div class="container col-md-12 col-lg-12 col-sm-12" id="plugins_toggle">
         <div class="form-group col-md-6 col-sm-5 col-lg-6">
             {{ form.hidden_tag() }}
             {{ form.select_disabled.label(class='col-form-label') }}
@@ -16,13 +16,21 @@
             {{ form.select_enabled.label(class='col-form-label') }}
             {{ form.select_enabled(class='form-control') }}
         </div>
-    </div>`
-    <div class="container form-group col-md-6 col-sm-5 col-lg-6">
+    </div>
+    <div class="container form-group col-md-12 col-sm-12 col-lg-12">
         <input type="submit" class="btn btn-default" value="Enable" id="enable">
         <input type="submit" class="btn btn-default" value="Disable" id="disable">
     </div>
+    <hr>
+    <br>
+    <div class="container " id="plugins_upload">
+        <div class="form-group col-md-6 col-sm-5 col-lg-6">
+            <form class="form" enctype="multipart/form-data" method="post" role="form">
+                {{ form2.hidden_tag() }}
+                {{ form2.file }}
+            <input type="submit" class="btn btn-default" value="Enable" id="plugin_submit" formmethod="post">
+            </form>
+        </div>
 
-
-
-
+    </div>
 {% endblock %}
