@@ -2,7 +2,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}Plugins{% endblock %}
 {% block head %}
-    <script src="../static/javascript/plugins.js"></script>
+    <script src="{{ url_for('static', filename='javascript/plugins.js') }}"></script>
 {% endblock %}
 {% block page_content %}
     <div class="page-header">
