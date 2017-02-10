@@ -2,7 +2,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}Plugins{% endblock %}
 {% block head %}
-    <script src="{{ url_for('static', filename='javascript/plugins.js') }}?v=2"></script>
+    <script src="{{ url_for('static', filename='javascript/plugins.js') }}?v=9"></script>
 {% endblock %}
 {% block page_content %}
     <div id="alerts">
@@ -42,7 +42,7 @@
                 {{ form2.hidden_tag() }}
                 {{ form2.file.label(class='col-form-label') }}
                 {{ form2.file(class='btn btn-defualt btn-file', required=true) }}
-            <input type="submit" class="btn btn-default" value="Enable" id="plugin_submit">
+            <input type="submit" class="btn btn-default" value="Upload" id="plugin_submit">
             </form>
         </div>
         <br class="container col-md-12 col-lg-12 col-sm-12">
