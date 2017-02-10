@@ -36,3 +36,14 @@ $(document).ready(function(){
 				return false;
 			  });
 			});
+
+        $(function() {
+			  $('input#plugin_submit').on('click', function() {
+				$.getJSON('/_uploadp', {
+				  upload: $('input#file').val()
+				}, function(data) {
+					console.log(data.success)
+				});
+				return false;
+			  });
+			});
