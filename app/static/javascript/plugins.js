@@ -7,6 +7,7 @@ $(document).ready(function(){
 
 
 
+
             var $disabled_select = $('select#select_disabled').children('option');
             var $enabled_select = $('select#select_enabled').children('option');
 
@@ -44,6 +45,8 @@ $(document).ready(function(){
 				$.getJSON('/_enable_plugin', {
 				  enableplugins: $('select[id="select_disabled"]').val()
 				}, function(data) {
+				    $.notify('Plugin enabled', 'success',
+                        {position: 'top-center'})
 				});
 				return false;
 			  });
@@ -75,7 +78,19 @@ $(document).ready(function(){
 					data: formdata,
 					dataType: 'json',
 					success: function(data) {
+                        if (data.success == true){
+                            $.notify.defaults({className:'success'})
+                            $.notify(data.msg,{
+                                position: 'top center'
+                            });
 
+                        } else if (data.success == false) {
+                            $.notify.defaults({className:'error'})
+                            $.notify(data.msg, {
+                                position: 'top center'
+                            });
+
+                        }
                     }
 				})
 			  });
