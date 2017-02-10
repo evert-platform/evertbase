@@ -7,6 +7,7 @@ from flask_plugins import PluginManager, get_plugin_from_all
 import plotly.offline as offplot
 from . import functions as funcs
 from flask_uploads import UploadSet, DATA, configure_uploads, ALL
+from zipfile import ZipFile
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -83,16 +84,16 @@ def _disable_plugins():
     pluginsmanager.disable_plugins([get_plugin_from_all(plugin)])
     return jsonify(success=True)
 
+
+# Async view
 @main.route('/_uploadp', methods=['GET', 'POST'])
 def _upload_plugins():
-    plugins = request.args.get('upload', 0, type=str)
-    plugin_upload = UploadSet('plugin', ALL)
-    configure_uploads(current_app, plugin_upload)
-    print(request.method, request.files)
-
+    if request.method == 'POST':
+        file = request.files['file']
+        zipfile = ZipFile(file)
+        zipfile.extractall(current_app.config['UPLOADED_PLUGIN_DEST'])
 
     return jsonify(success=True)
-
 
 
 @main.route('/dataviewer', methods=['GET', 'POST'])
