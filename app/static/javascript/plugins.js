@@ -1,4 +1,12 @@
 $(document).ready(function(){
+            var $toggle = $('li#toggle');
+            var $upload = $('li#upload');
+            $($toggle).addClass('active');
+             $('div#plugins_toggle').show();
+            $('div#plugins_upload').hide();
+
+
+
             var $disabled_select = $('select#select_disabled').children('option');
             var $enabled_select = $('select#select_enabled').children('option');
 
@@ -15,6 +23,20 @@ $(document).ready(function(){
                 $($disable_button).attr('disabled', true);
             }
 
+            $toggle.on('click', function(){
+                $toggle.addClass('active');
+                $upload.removeClass('active');
+                $('div#plugins_toggle').show();
+                $('div#plugins_upload').hide();
+
+            });
+
+            $upload.on('click', function(){
+                $upload.addClass('active');
+                $toggle.removeClass('active');
+                $('div#plugins_toggle').hide();
+                $('div#plugins_upload').show();
+            })
         });
 
         $(function() {
@@ -53,6 +75,7 @@ $(document).ready(function(){
 					data: formdata,
 					dataType: 'json',
 					success: function(data) {
+
                     }
 				})
 			  });
