@@ -1,6 +1,6 @@
 from flask_plugins import connect_event
 from flask import Blueprint, render_template_string, flash
-from evert.manage import AppPlugin
+from manage import AppPlugin
 from .forms import UploadedDataForm
 import os
 import glob
