@@ -1,6 +1,7 @@
 import os
 import glob
 from flask_plugins import get_enabled_plugins, get_all_plugins
+import csv
 
 
 def checkplugins(enabled=True):
@@ -57,3 +58,17 @@ def uploaded_files(textbox=True):
         else:
             up = [('No files uploaded', 'No files uploaded')]
     return up
+
+
+def unique_headers(file):
+    """
+    Get the headers for a csv file
+    :param file: file path to csv file
+    :return: list of headers
+    """
+
+    with open(file) as f:
+        reader = csv.DictReader(f)
+        fieldnames = reader.fieldnames
+
+    return fieldnames

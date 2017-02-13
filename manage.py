@@ -1,8 +1,7 @@
 from evert.app import create_app
 from flask import current_app
 from flask_plugins import Plugin
-from flask_uploads import UploadSet, DATA, configure_uploads
-import os
+from flask_uploads import UploadSet, DATA, configure_uploads, ALL
 
 
 class AppPlugin(Plugin):
@@ -12,17 +11,15 @@ class AppPlugin(Plugin):
 
 # Creating app
 app = create_app()
+app.config.from_pyfile('config.py')
 
-# Basic directory paths
-app.config['BASE_DIR'] = os.path.dirname(__file__)
-app.config['PLUGIN_DIR'] = os.path.join(app.config['BASE_DIR'], 'app/plugins')
-app.config['STATIC_DIR'] = os.path.join(app.config['BASE_DIR'], 'app/static')
-
-# Configuration of flask_uploads extension
+# File upload configuration for data files
 data = UploadSet('file', DATA)
-app.config['UPLOADED_FILE_DEST'] = os.path.join(app.config['STATIC_DIR'], 'uploads')
 configure_uploads(app, data)
 
+# File upload configuration for ZIP files
+plugin_upload = UploadSet('plugin', ALL)
+configure_uploads(app, plugin_upload)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

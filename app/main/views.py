@@ -6,12 +6,12 @@ from .forms import *
 from flask_plugins import PluginManager, get_plugin_from_all
 import plotly.offline as offplot
 from . import functions as funcs
-from flask_uploads import UploadSet, DATA, configure_uploads
+from flask_uploads import UploadSet, DATA, configure_uploads, ALL
+from zipfile import ZipFile, BadZipFile
 
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-
     return render_template('index.html')
 
 
@@ -21,7 +21,7 @@ def upload():
     app = current_app
     configure_uploads(app, data)
     filename = None
-    form = UploadForm()
+    form = FileUploadForm()
 
     if request.method == 'POST' and 'file' in request.files:
         filename = data.save(request.files['file'])
@@ -36,33 +36,45 @@ def upload():
 @main.route('/plotlyplotting', methods=['GET', 'POST'])
 def plotly_plot():
     form = DataSelectForm()
-    form.select.choices = funcs.uploaded_files(textbox=False)
+    files = funcs.uploaded_files(textbox=False)
+    form.select.choices = files
+    headers = funcs.unique_headers(files[0][0])
+    form.selectX.choices = [(header, header) for header in headers]
+    form.selectY.choices = [(header, header) for header in headers]
 
     return render_template('plot.html', form=form)
 
 
 # Async view
-@main.route('/_plotdata', methods=['GET', 'POST'])
+@main.route('/_plotdata', methods=['GET'])
 def _plotdata():
     fig, ax = plt.subplots()
     filepath = request.args.get('plotdata', 0, type=str)
     data = pd.read_csv(filepath, sep=',|;', engine='python')
-    keys = data.columns.values
-    ax.plot(data[keys[0]].values, data[keys[1]].values)
+    keys = [request.args.get('xaxis', 0, type=str), request.args.get('yaxis', 0, type=str)]
+    ax.scatter(data[keys[0]].values, data[keys[1]].values)
     ax.set_xlabel(keys[0])
     ax.set_ylabel(keys[1])
     div = offplot.plot_mpl(fig, show_link=False, output_type='div', include_plotlyjs=True, filename='kfn')
 
     return jsonify(plot=div)
 
+@main.route('/_plotdetails', methods=['GET'])
+def _plotdetails():
+
+    file = request.args.get('plotfile', 0, type=str)
+    headers = funcs.unique_headers(file)
+    return jsonify(success=True, file=file, headers=headers)
+
 
 @main.route('/plugins', methods=['GET', 'POST'])
 def plugins():
     pluginsmanager = PluginManager()
     form = PluginsForm()
+    form2 = PluginsUploadForm()
     form.select_disabled.choices = funcs.checkplugins(enabled=False)
     form.select_enabled.choices = funcs.checkplugins(enabled=True)
-    return render_template('plugins.html', form=form)
+    return render_template('plugins.html', form=form, form2=form2)
 
 
 # Async view
@@ -83,6 +95,24 @@ def _disable_plugins():
     return jsonify(success=True)
 
 
+# Async view
+@main.route('/_uploadp', methods=['GET', 'POST'])
+def _upload_plugins():
+    if request.method == 'POST':
+        file = request.files['file']
+        try:
+            zipfile = ZipFile(file)
+            zipfile.extractall(current_app.config['UPLOADED_PLUGIN_DEST'])
+            success = True
+            msg = 'Success: Plugin uploaded successfully'
+
+        except BadZipFile:
+            success = False
+            msg = 'Error: Ensure file is a zip file'
+
+    return jsonify(success=success, msg=msg)
+
+
 @main.route('/dataviewer', methods=['GET', 'POST'])
 def dataview():
     form = DataViewerForm()
@@ -91,36 +121,11 @@ def dataview():
     if form.validate_on_submit():
         filepath = form.select.data
         data = pd.read_csv(filepath, sep=',|;', engine='python')
-        keys = data.columns.values.tolist()
+        titles = [{'title': key} for key in data.columns.values]
         data = data.values.tolist()
 
     else:
         data = None
-        keys = None
+        titles = ''
 
-    return render_template('dataviewer.html', form=form, data=data, titles=keys)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return render_template('dataviewer.html', form=form, data=data, titles=titles)
