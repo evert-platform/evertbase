@@ -2,13 +2,11 @@ Flask>=0.12
 Flask-Bootstrap>=3.3.5.7
 Flask-Plugins>=1.6.1
 Flask-Testing>=0.6.1
-Flask-Twisted>=0.1.2
 Flask-Uploads>=0.2.1
 Flask-WTF>=0.14.2
 Jinja2>=2.8
 Pandas>=0.18.1
 service-identity>=16.0.0
-Twisted>=16.6.0
 WTForms>=2.1
 WTForms-Components>=0.10.0
 
