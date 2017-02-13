@@ -11,10 +11,10 @@
     <script>
         $(document).ready(function(){
             var tabledata = {{ data|safe }};
-            var columns = {{ titles|safe }};
+            var column_names = {{ titles|safe }};
             var table = $('#dataview').DataTable({
-                data: [[1, 2, 3, 4], [2, 3, 4, 5]],
-                columns: ['a', 'b', 'c', 'e'],
+                data: tabledata,
+                columns: column_names,
                 dom: "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-5'i><'col-sm-7 'p>>",
