@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_plugins import PluginManager
-from flask_twisted import Twisted
+
 
 bootstrap = Bootstrap()
 
@@ -14,8 +14,6 @@ def create_app(development=True):
     :return: Flask application instance
     """
     app = Flask(__name__)
-    if not development:
-        twisted = Twisted(app)
 
     UPLOADFOLDER = 'static/uploads/'
     app.config['SECRET_KEY'] = 'hard to guess string'
