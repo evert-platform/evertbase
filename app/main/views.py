@@ -36,24 +36,35 @@ def upload():
 @main.route('/plotlyplotting', methods=['GET', 'POST'])
 def plotly_plot():
     form = DataSelectForm()
-    form.select.choices = funcs.uploaded_files(textbox=False)
+    files = funcs.uploaded_files(textbox=False)
+    form.select.choices = files
+    headers = funcs.unique_headers(files[0][0])
+    form.selectX.choices = [(header, header) for header in headers]
+    form.selectY.choices = [(header, header) for header in headers]
 
     return render_template('plot.html', form=form)
 
 
 # Async view
-@main.route('/_plotdata', methods=['GET', 'POST'])
+@main.route('/_plotdata', methods=['GET'])
 def _plotdata():
     fig, ax = plt.subplots()
     filepath = request.args.get('plotdata', 0, type=str)
     data = pd.read_csv(filepath, sep=',|;', engine='python')
-    keys = data.columns.values
-    ax.plot(data[keys[0]].values, data[keys[1]].values)
+    keys = [request.args.get('xaxis', 0, type=str), request.args.get('yaxis', 0, type=str)]
+    ax.scatter(data[keys[0]].values, data[keys[1]].values)
     ax.set_xlabel(keys[0])
     ax.set_ylabel(keys[1])
     div = offplot.plot_mpl(fig, show_link=False, output_type='div', include_plotlyjs=True, filename='kfn')
 
     return jsonify(plot=div)
+
+@main.route('/_plotdetails', methods=['GET'])
+def _plotdetails():
+
+    file = request.args.get('plotfile', 0, type=str)
+    headers = funcs.unique_headers(file)
+    return jsonify(success=True, file=file, headers=headers)
 
 
 @main.route('/plugins', methods=['GET', 'POST'])
@@ -115,6 +126,6 @@ def dataview():
 
     else:
         data = None
-        titles = None
+        titles = ''
 
     return render_template('dataviewer.html', form=form, data=data, titles=titles)
