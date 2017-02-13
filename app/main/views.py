@@ -110,11 +110,11 @@ def dataview():
     if form.validate_on_submit():
         filepath = form.select.data
         data = pd.read_csv(filepath, sep=',|;', engine='python')
-        keys = data.columns.values.tolist()
+        titles = [{'title': key} for key in data.columns.values]
         data = data.values.tolist()
 
     else:
         data = None
-        keys = None
+        titles = None
 
-    return render_template('dataviewer.html', form=form, data=data, titles=keys)
+    return render_template('dataviewer.html', form=form, data=data, titles=titles)
