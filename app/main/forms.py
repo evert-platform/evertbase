@@ -10,6 +10,8 @@ class FileUploadForm(FlaskForm):
 
 class DataSelectForm(FlaskForm):
     select = SelectField('Please select file to plot.', choices='', id='text')
+    selectX = SelectField('', choices='', id='plotX')
+    selectY = SelectField('', choices='', id='plotY')
 
 
 class PluginsForm(FlaskForm):
