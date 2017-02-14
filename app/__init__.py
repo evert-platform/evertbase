@@ -35,28 +35,38 @@ def find_plugins(app):
     docdir = app.config['USER_DOCUMENTS']
     docplugins = os.path.join(docdir, 'Evert Plugins')
     pluginfolder = os.path.isdir(docplugins)
+    baseplugindir = app.config['UPLOADED_PLUGIN_DEST']
 
     if pluginfolder:
+        uploadedplugins = os.listdir(baseplugindir)
+
+        for uploaded in uploadedplugins:
+            if uploaded != '__pycache__':
+                filepath = os.path.join(baseplugindir, uploaded)
+                # try:
+                try:
+                    shutil.copytree(filepath, os.path.join(docplugins, uploaded))
+                except FileExistsError:
+                    shutil.rmtree(os.path.join(docplugins, uploaded))
+                    shutil.copytree(filepath, os.path.join(docplugins, uploaded))
+                except NotADirectoryError:
+                    pass
+
+
         plugins = glob.glob(docplugins+'/*')
         if plugins:
             for plugin in plugins:
-                try:
+                if os.path.basename(plugin) not in uploadedplugins:
                     try:
-                        shutil.copytree(plugin, os.path.join(app.config['UPLOADED_PLUGIN_DEST'], os.path.basename(plugin)))
+                        shutil.copytree(plugin, os.path.join(baseplugindir, os.path.basename(plugin)))
                     except FileExistsError:
-                        shutil.rmtree(os.path.join(app.config['UPLOADED_PLUGIN_DEST'], os.path.basename(plugin)))
+                        shutil.rmtree(os.path.join(baseplugindir, os.path.basename(plugin)))
                         shutil.copytree(plugin,
-                                        os.path.join(app.config['UPLOADED_PLUGIN_DEST'], os.path.basename(plugin)))
+                                        os.path.join(baseplugindir, os.path.basename(plugin)))
+                    except NotADirectoryError:
+                        pass
 
-                except OSError as exc:  # python >2.5
-                    if exc.errno == errno.ENOTDIR:
-                        try:
-                            shutil.copy(plugin, os.path.join(app.config['UPLOADED_PLUGIN_DEST'], os.path.basename(plugin)))
-                        except FileExistsError:
-                            shutil.rmtree(os.path.join(app.config['UPLOADED_PLUGIN_DEST'], os.path.basename(plugin)))
-                            shutil.copy(plugin, os.path.join(app.config['UPLOADED_PLUGIN_DEST'], os.path.basename(plugin)))
-                    else:
-                        raise
+
 
     elif not pluginfolder:
         os.mkdir(os.path.join(docdir, 'Evert Plugins'))
