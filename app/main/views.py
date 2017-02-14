@@ -4,10 +4,10 @@ from flask import render_template, flash, get_flashed_messages, request, jsonify
 from . import main
 from .forms import *
 from flask_plugins import PluginManager, get_plugin_from_all
-import plotly.offline as offplot
 from . import functions as funcs
 from flask_uploads import UploadSet, DATA, configure_uploads, ALL
 from zipfile import ZipFile, BadZipFile
+import mpld3
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -55,8 +55,7 @@ def _plotdata():
     ax.scatter(data[keys[0]].values, data[keys[1]].values)
     ax.set_xlabel(keys[0])
     ax.set_ylabel(keys[1])
-    div = offplot.plot_mpl(fig, show_link=False, output_type='div', include_plotlyjs=True, filename='kfn')
-
+    div = mpld3.fig_to_html(fig, figid='testfig')
     return jsonify(plot=div)
 
 @main.route('/_plotdetails', methods=['GET'])
