@@ -17,7 +17,7 @@ Install the requirements in the `requirements.txt` using the following command:
 
 `pip install -r requirements.txt`
 
-Thee application can be started in an IDE or in the commandline using the following command:
+The application can be started in an IDE or in the commandline using the following command:
 
 `python manage.py`
 
