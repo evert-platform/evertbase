@@ -12,7 +12,7 @@ class DataSelectForm(FlaskForm):
     select = SelectField('Please select file to plot.', choices='', id='text')
     selectX = SelectField('', choices='', id='plotX')
     selectY = SelectField('', choices='', id='plotY')
-    selectType = SelectField('', choices=[('scatter', ''), ('Line', '')], id='plotType')
+    selectType = SelectField('', choices=[('Scatter', 'Scatter'), ('Line', 'Line')], id='plotType')
 
 
 class PluginsForm(FlaskForm):
