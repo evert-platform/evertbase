@@ -31,4 +31,11 @@ $(function () {
         })
     });
 
+$(function () {
+    $('button#deleteplot').on('click', function(){
+        console.log(true);
+        $('#plotarea').empty()
+    })
+});
+
 
