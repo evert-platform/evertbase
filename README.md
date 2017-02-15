@@ -15,7 +15,7 @@ Clone the `master` branch of the repository to get the latest stable version of 
 
 Install the requirements in the `requirements.txt` using the following command:
 
-`pip intsall -r requirements.txt`
+`pip install -r requirements.txt`
 
 Thee application can be started in an IDE or in the commandline using the following command:
 
