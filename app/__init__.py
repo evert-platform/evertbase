@@ -3,9 +3,7 @@ from flask_bootstrap import Bootstrap
 from flask_plugins import PluginManager
 import os
 import glob
-import shutil, errno
-
-bootstrap = Bootstrap()
+import shutil
 
 
 def create_app(development=True):
@@ -16,6 +14,7 @@ def create_app(development=True):
     :return: Flask application instance
     """
     app = Flask(__name__)
+    bootstrap = Bootstrap()
 
     UPLOADFOLDER = 'static/uploads/'
     app.config['SECRET_KEY'] = 'hard to guess string'
@@ -32,31 +31,44 @@ def create_app(development=True):
 
 
 def find_plugins(app):
+    """
+    Synchronises the plugins in the base code with the plugins in the documents folder. This ensures the newest version
+    of the plugins are always available when the server resets.
+    :param app: flask application instance
+    """
     docdir = app.config['USER_DOCUMENTS']
     docplugins = os.path.join(docdir, 'Evert Plugins')
     pluginfolder = os.path.isdir(docplugins)
     baseplugindir = app.config['UPLOADED_PLUGIN_DEST']
+    basecopy = []
 
+    # updating documents folder
     if pluginfolder:
         uploadedplugins = os.listdir(baseplugindir)
-
         for uploaded in uploadedplugins:
             if uploaded != '__pycache__':
                 filepath = os.path.join(baseplugindir, uploaded)
-                # try:
                 try:
                     shutil.copytree(filepath, os.path.join(docplugins, uploaded))
+                    basecopy.append(uploaded)
+
                 except FileExistsError:
-                    shutil.rmtree(os.path.join(docplugins, uploaded))
-                    shutil.copytree(filepath, os.path.join(docplugins, uploaded))
+                    srctime = os.path.getmtime(filepath)
+                    dsttime = os.path.getmtime(os.path.join(docplugins, uploaded))
+                    if srctime > dsttime:
+                        shutil.rmtree(os.path.join(docplugins, uploaded))
+                        shutil.copytree(filepath, os.path.join(docplugins, uploaded))
+                        basecopy.append(uploaded)
+                    else:
+                        pass
                 except NotADirectoryError:
                     pass
 
-
+        # updating base folder
         plugins = glob.glob(docplugins+'/*')
         if plugins:
             for plugin in plugins:
-                if os.path.basename(plugin) not in uploadedplugins:
+                if os.path.basename(plugin) not in basecopy:
                     try:
                         shutil.copytree(plugin, os.path.join(baseplugindir, os.path.basename(plugin)))
                     except FileExistsError:
@@ -66,8 +78,5 @@ def find_plugins(app):
                     except NotADirectoryError:
                         pass
 
-
-
     elif not pluginfolder:
         os.mkdir(os.path.join(docdir, 'Evert Plugins'))
-
