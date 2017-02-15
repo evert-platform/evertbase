@@ -3,7 +3,8 @@ $(function() {
 				$.getJSON('/_plotdata', {
 				  plotdata: $('select[name="select"]').val(),
                     xaxis: $('select#plotxaxis').val(),
-                    yaxis: $('select#plotyaxis').val()
+                    yaxis: $('select#plotyaxis').val(),
+                    type: $('select#plotType').val()
 				}, function(data) {
 				    var $plotarea = $('#plotarea');
 				    $plotarea.empty();
