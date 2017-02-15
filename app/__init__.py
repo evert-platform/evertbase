@@ -44,27 +44,26 @@ def find_plugins(app):
 
     # updating documents folder
     if pluginfolder:
-        uploadedplugins = os.listdir(baseplugindir)
+        uploadedplugins = [fld for fld in os.listdir(baseplugindir) if not fld.startswith('__pyc')]
         for uploaded in uploadedplugins:
-            if uploaded != '__pycache__':
-                filepath = os.path.join(baseplugindir, uploaded)
-                try:
+            filepath = os.path.join(baseplugindir, uploaded)
+            try:
+                shutil.copytree(filepath, os.path.join(docplugins, uploaded),
+                                ignore=shutil.ignore_patterns('__pycache*'))
+                basecopy.append(uploaded)
+
+            except FileExistsError:
+                srctime = os.path.getmtime(filepath)
+                dsttime = os.path.getmtime(os.path.join(docplugins, uploaded))
+                if srctime > dsttime:
+                    shutil.rmtree(os.path.join(docplugins, uploaded))
                     shutil.copytree(filepath, os.path.join(docplugins, uploaded),
                                     ignore=shutil.ignore_patterns('__pycache*'))
                     basecopy.append(uploaded)
-
-                except FileExistsError:
-                    srctime = os.path.getmtime(filepath)
-                    dsttime = os.path.getmtime(os.path.join(docplugins, uploaded))
-                    if srctime > dsttime:
-                        shutil.rmtree(os.path.join(docplugins, uploaded))
-                        shutil.copytree(filepath, os.path.join(docplugins, uploaded),
-                                        ignore=shutil.ignore_patterns('__pycache*'))
-                        basecopy.append(uploaded)
-                    else:
-                        pass
-                except NotADirectoryError:
+                else:
                     pass
+            except NotADirectoryError:
+                pass
 
         # updating base folder
         plugins = glob.glob(docplugins+'/*')
