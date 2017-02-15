@@ -6,11 +6,9 @@ import glob
 import shutil
 
 
-def create_app(development=True):
+def create_app():
     """
     Creates the basic app instance for the flask app
-    :param development: If set to True the app will open on the Flask development
-                        server. If False, the app will open on the Twisted web server.
     :return: Flask application instance
     """
     app = Flask(__name__)
