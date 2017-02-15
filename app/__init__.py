@@ -49,7 +49,8 @@ def find_plugins(app):
             if uploaded != '__pycache__':
                 filepath = os.path.join(baseplugindir, uploaded)
                 try:
-                    shutil.copytree(filepath, os.path.join(docplugins, uploaded))
+                    shutil.copytree(filepath, os.path.join(docplugins, uploaded),
+                                    ignore=shutil.ignore_patterns('__pycache*'))
                     basecopy.append(uploaded)
 
                 except FileExistsError:
@@ -57,7 +58,8 @@ def find_plugins(app):
                     dsttime = os.path.getmtime(os.path.join(docplugins, uploaded))
                     if srctime > dsttime:
                         shutil.rmtree(os.path.join(docplugins, uploaded))
-                        shutil.copytree(filepath, os.path.join(docplugins, uploaded))
+                        shutil.copytree(filepath, os.path.join(docplugins, uploaded),
+                                        ignore=shutil.ignore_patterns('__pycache*'))
                         basecopy.append(uploaded)
                     else:
                         pass
