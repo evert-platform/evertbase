@@ -56,7 +56,14 @@ def _plotdata():
     filepath = request.args.get('plotdata', 0, type=str)
     data = pd.read_csv(filepath, sep=',|;', engine='python')
     keys = [request.args.get('xaxis', 0, type=str), request.args.get('yaxis', 0, type=str)]
-    ax.scatter(data[keys[0]].values, data[keys[1]].values)
+    plottype = request.args.get('type', 0, type=str)
+
+    if plottype == 'Line':
+        ax.plot(data[keys[0]].values, data[keys[1]].values)
+
+    elif plottype == 'Scatter':
+        ax.scatter(data[keys[0]].values, data[keys[1]].values, lw=0)
+
     ax.set_xlabel(keys[0])
     ax.set_ylabel(keys[1])
     div = mpld3.fig_to_html(fig, figid='testfig')
