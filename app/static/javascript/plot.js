@@ -1,3 +1,20 @@
+$(document).ready(function () {
+    var $multiplot = $('input#multiplot');
+    var $setdata = $('input#setdata');
+    $setdata.hide();
+
+    $multiplot.on('click', function () {
+        // $(this).toggle(this.checked)
+        var multiplot = document.getElementById('multiplot').checked
+        if (multiplot == true){
+            $setdata.show()
+        } else{
+            $setdata.hide()
+        }
+    })
+
+});
+
 $(function() {
 			  $('input#Submit').on('click', function() {
 				$.getJSON('/_plotdata', {
