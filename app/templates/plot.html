@@ -2,7 +2,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}Plot{% endblock %}
 {% block head %}
-    <script src="{{ url_for('static', filename='javascript/plot.js') }}?v=3" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='javascript/plot.js') }}?v=90" type="text/javascript"></script>
 
 {% endblock %}
 {% block page_content %}
@@ -40,12 +40,18 @@
              </div>
              <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7" style="padding-top: 10px; display: none" id="setdata">
                  Data sets:
-                 <select multiple="multiple" class="form-control" disabled="disabled">
+                 <select multiple="multiple" class="form-control" disabled="disabled" id="datasets">
                      <option></option>
 
                  </select>
                  <div style="padding: 10px">
                      <input type="button" class="btn btn-primary" id="setdatabtn" value="Set">
+                      <button type="button" class="btn btn-default" id="cleardataset" disabled="disabled">
+                        <span class="glyphicon glyphicon-trash"></span>&nbsp;
+                      </button>
+                      <button type="button" class="btn btn-default" id="deletedataset" disabled="disabled">
+                        <span class="glyphicon glyphicon-remove"></span>&nbsp;
+                      </button>
                  </div>
 
              </div>
