@@ -17,13 +17,13 @@ def index():
 
 @main.route('/upload', methods=['GET', 'POST'])
 def upload():
-    data = UploadSet('file', DATA)
-    app = current_app
-    configure_uploads(app, data)
     filename = None
     form = FileUploadForm()
 
     if request.method == 'POST' and 'file' in request.files:
+        data = UploadSet('file', DATA)
+        app = current_app
+        configure_uploads(app, data)
         filename = data.save(request.files['file'])
         flash('{} successfully uploaded to Evert.'.format(filename), category='success')
 
@@ -38,9 +38,13 @@ def plotly_plot():
     form = DataSelectForm()
     files = funcs.uploaded_files(textbox=False)
     form.select.choices = files
-    headers = funcs.unique_headers(files[0][0])
-    form.selectX.choices = [(header, header) for header in headers]
-    form.selectY.choices = [(header, header) for header in headers]
+    try:
+        headers = funcs.unique_headers(files[0][0])
+        form.selectX.choices = [(header, header) for header in headers]
+        form.selectY.choices = [(header, header) for header in headers]
+
+    except FileNotFoundError:
+        return render_template('plot.html', form=form)
 
     return render_template('plot.html', form=form)
 

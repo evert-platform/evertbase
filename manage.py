@@ -1,4 +1,4 @@
-from app import create_app
+from app import create_app, find_plugins
 from flask import current_app
 from flask_plugins import Plugin
 from flask_uploads import UploadSet, DATA, configure_uploads, ALL
@@ -12,6 +12,7 @@ class AppPlugin(Plugin):
 # Creating app
 app = create_app()
 app.config.from_pyfile('config.py')
+find_plugins(app)
 
 # File upload configuration for data files
 data = UploadSet('file', DATA)
