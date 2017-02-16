@@ -57,15 +57,20 @@ def _plotdata():
     data = pd.read_csv(filepath, sep=',|;', engine='python')
     keys = [request.args.get('xaxis', 0, type=str), request.args.get('yaxis', 0, type=str)]
     plottype = request.args.get('type', 0, type=str)
+    xset = request.args.get('xset', 0, type=str)
+    yset = request.args.get('yset', 0, type=str)
 
-    if plottype == 'Line':
-        ax.plot(data[keys[0]].values, data[keys[1]].values)
+    for x, y in zip(xset.split(), yset.split()):
 
-    elif plottype == 'Scatter':
-        ax.scatter(data[keys[0]].values, data[keys[1]].values, lw=0)
+        if plottype == 'Line':
+            ax.plot(data[x].values, data[y].values)
 
-    ax.set_xlabel(keys[0])
-    ax.set_ylabel(keys[1])
+        elif plottype == 'Scatter':
+            ax.plot(data[x].values, data[y].values, '.')
+
+    if len(xset) == 1:
+        ax.set_xlabel(keys[0])
+        ax.set_ylabel(keys[1])
     div = mpld3.fig_to_html(fig, figid='testfig')
     return jsonify(plot=div)
 
