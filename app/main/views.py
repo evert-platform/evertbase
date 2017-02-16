@@ -60,7 +60,7 @@ def _plotdata():
     xset = request.args.get('xset', 0, type=str)
     yset = request.args.get('yset', 0, type=str)
 
-    for x, y in zip(xset.split(), yset.split()):
+    for x, y in zip(xset.split(sep=','), yset.split(sep=',')):
 
         if plottype == 'Line':
             ax.plot(data[x].values, data[y].values)

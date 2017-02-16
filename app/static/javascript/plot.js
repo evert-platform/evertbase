@@ -4,7 +4,7 @@ $(document).ready(function () {
 
 
     $multiplot.on('click', function () {
-        // $(this).toggle(this.checked)
+
         var multiplot = document.getElementById('multiplot').checked;
         if (multiplot == true){
             $setdata.show()
@@ -60,8 +60,35 @@ $(function() {
         sets = [];
     });
 
+    $('button#deletedataset').on('click', function () {
+        var $selectedset = $('select#datasets :selected');
+        var $selectedindex = $('select#datasets').prop('selectedIndex');
+        var xsetarr = xset.toString().split(' ');
+        var ysetarr = yset.split(' ');
+        console.log(xset, xsetarr);
+
+        sets = sets.filter(function(i){
+            return i != sets[$selectedindex]
+        });
+        xsetarr = xsetarr.filter(function(i){
+            return i != xsetarr[$selectedindex]
+        });
+        ysetarr = ysetarr.filter(function(i){
+            return i != ysetarr[$selectedindex]
+        });
+
+        xset = xsetarr.toString();
+        yset = ysetarr.toString();
+
+        console.log(xsetarr);
+
+        $selectedset.remove()
+
+    });
+
 
     $('input#Submit').on('click', function() {
+        console.log(xset, yset);
         $.getJSON('/_plotdata', {
           plotdata: $('select[name="select"]').val(),
             xaxis: $('select#plotxaxis').val(),
@@ -74,6 +101,7 @@ $(function() {
             $plotarea.empty();
             $plotarea.append('<hr><br>');
             $plotarea.append(data.plot);
+            console.log();
         });
         return false;
         });
