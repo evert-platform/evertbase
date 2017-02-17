@@ -8,6 +8,7 @@ from . import functions as funcs
 from flask_uploads import UploadSet, DATA, configure_uploads, ALL
 from zipfile import ZipFile, BadZipFile
 import mpld3
+import re
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -55,22 +56,32 @@ def _plotdata():
     fig, ax = plt.subplots()
     filepath = request.args.get('plotdata', 0, type=str)
     data = pd.read_csv(filepath, sep=',|;', engine='python')
-    keys = [request.args.get('xaxis', 0, type=str), request.args.get('yaxis', 0, type=str)]
     plottype = request.args.get('type', 0, type=str)
     xset = request.args.get('xset', 0, type=str)
     yset = request.args.get('yset', 0, type=str)
 
-    for x, y in zip(xset.split(sep=','), yset.split(sep=',')):
 
+    xset = re.findall(r"[\w']+", xset)
+    yset = re.findall(r"[\w']+", yset)
+    if len(xset) > 1:
+        for x, y in zip(xset, yset):
+
+            if plottype == 'Line' and x != '' and y != '':
+                ax.plot(data[x].values, data[y].values)
+
+            elif plottype == 'Scatter' and x != '' and y != '':
+                ax.plot(data[x].values, data[y].values, '.')
+
+    elif len(xset) == 1:
         if plottype == 'Line':
-            ax.plot(data[x].values, data[y].values)
+            ax.plot(data[xset].values, data[yset].values)
 
         elif plottype == 'Scatter':
-            ax.plot(data[x].values, data[y].values, '.')
+            ax.plot(data[xset].values, data[yset].values, '.')
 
-    if len(xset) == 1:
-        ax.set_xlabel(keys[0])
-        ax.set_ylabel(keys[1])
+        ax.set_xlabel(xset[0])
+        ax.set_ylabel(yset[0])
+
     div = mpld3.fig_to_html(fig, figid='testfig')
     return jsonify(plot=div)
 
