@@ -29,8 +29,7 @@ $(function() {
         var multiplot = document.getElementById('multiplot').checked;
         var xaxis = $plotxaxis.val();
         var yaxis = $plotyaxis.val();
-        xset = '';
-        yset = '';
+
 
         $('button#cleardataset').attr('disabled', false);
         $('button#deletedataset').attr('disabled', false);
@@ -109,6 +108,11 @@ $(function() {
             $plotarea.empty();
             $plotarea.append('<hr><br>');
             $plotarea.append(data.plot);
+            if ($('#multiplot').prop('checked') == false){
+                xset = '';
+                yset = '';
+            }
+
         });
         return false;
         });
