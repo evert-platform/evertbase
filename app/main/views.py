@@ -9,6 +9,7 @@ from flask_uploads import UploadSet, DATA, configure_uploads, ALL
 from zipfile import ZipFile, BadZipFile
 import mpld3
 import re
+import os
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -25,7 +26,12 @@ def upload():
         data = UploadSet('file', DATA)
         app = current_app
         configure_uploads(app, data)
-        filename = data.save(request.files['file'])
+        filename = request.files['file'].filename
+        print(filename.split('.')[0])
+        data = pd.read_csv(request.files['file'])
+        hdf5path = os.path.join(current_app.config['UPLOADED_FILE_DEST'], filename.split('.')[0])
+        print(hdf5path)
+        data.to_hdf('{}.h5'.format(hdf5path), key=filename)
         flash('{} successfully uploaded to Evert.'.format(filename), category='success')
 
     else:
@@ -55,7 +61,7 @@ def plotly_plot():
 def _plotdata():
     fig, ax = plt.subplots()
     filepath = request.args.get('plotdata', 0, type=str)
-    data = pd.read_csv(filepath, sep=',|;', engine='python')
+    data = pd.read_hdf(filepath)
     plottype = request.args.get('type', 0, type=str)
     xset = request.args.get('xset', 0, type=str)
     yset = request.args.get('yset', 0, type=str)
