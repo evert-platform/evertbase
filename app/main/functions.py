@@ -2,6 +2,7 @@ import os
 import glob
 from flask_plugins import get_enabled_plugins, get_all_plugins
 import csv
+import pandas as pd
 
 
 def checkplugins(enabled=True):
@@ -67,8 +68,10 @@ def unique_headers(file):
     :return: list of headers
     """
 
-    with open(file) as f:
-        reader = csv.DictReader(f)
-        fieldnames = reader.fieldnames
+
+
+    df = pd.read_hdf(file)
+    fieldnames = df.columns.values
+    del df
 
     return fieldnames
