@@ -24,10 +24,13 @@ $(function() {
     var $plotyaxis = $('select#plotyaxis');
 
 
+
     $('input#setdatabtn').on('click', function () {
         var multiplot = document.getElementById('multiplot').checked;
         var xaxis = $plotxaxis.val();
         var yaxis = $plotyaxis.val();
+        xset = '';
+        yset = '';
 
         $('button#cleardataset').attr('disabled', false);
         $('button#deletedataset').attr('disabled', false);
@@ -36,6 +39,7 @@ $(function() {
             xset += (xaxis +' ');
             yset += (yaxis + ' ');
             sets.push([xaxis, yaxis]);
+
         } else {
             xset = $plotxaxis.val();
             yset = $plotyaxis.val();
@@ -62,46 +66,49 @@ $(function() {
 
     $('button#deletedataset').on('click', function () {
         var $selectedset = $('select#datasets :selected');
-        var $selectedindex = $('select#datasets').prop('selectedIndex');
         var xsetarr = xset.toString().split(' ');
         var ysetarr = yset.split(' ');
-        console.log(xset, xsetarr);
+        var removeindex = [];
 
-        sets = sets.filter(function(i){
-            return i != sets[$selectedindex]
+        $('select#datasets').children().each(function (index) {
+            if ($(this).prop('selected') == true){
+                removeindex.push(index);
+
+            }
+
+
         });
-        xsetarr = xsetarr.filter(function(i){
-            return i != xsetarr[$selectedindex]
-        });
-        ysetarr = ysetarr.filter(function(i){
-            return i != ysetarr[$selectedindex]
-        });
+
+        xsetarr.splice(removeindex, removeindex.length);
+        ysetarr.splice(removeindex, removeindex.length);
+        sets.splice(removeindex, removeindex.length);
+        removeindex = [];
 
         xset = xsetarr.toString();
         yset = ysetarr.toString();
-
-        console.log(xsetarr);
-
-        $selectedset.remove()
+        $selectedset.remove();
 
     });
 
 
     $('input#Submit').on('click', function() {
-        console.log(xset, yset);
+        if (document.getElementById('multiplot').checked == false){
+            xset = $('select#plotxaxis').val();
+            yset = $('select#plotyaxis').val();
+
+
+        }
+
         $.getJSON('/_plotdata', {
           plotdata: $('select[name="select"]').val(),
-            xaxis: $('select#plotxaxis').val(),
-            yaxis: $('select#plotyaxis').val(),
             type: $('select#plotType').val(),
-           xset: xset,
+            xset: xset,
             yset: yset
         }, function(data) {
             var $plotarea = $('#plotarea');
             $plotarea.empty();
             $plotarea.append('<hr><br>');
             $plotarea.append(data.plot);
-            console.log();
         });
         return false;
         });
