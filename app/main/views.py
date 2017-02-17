@@ -60,7 +60,6 @@ def _plotdata():
     xset = request.args.get('xset', 0, type=str)
     yset = request.args.get('yset', 0, type=str)
 
-
     xset = re.findall(r"[\w']+", xset)
     yset = re.findall(r"[\w']+", yset)
     if len(xset) > 1:
