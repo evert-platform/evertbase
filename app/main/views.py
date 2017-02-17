@@ -87,7 +87,7 @@ def _plotdata():
         ax.set_xlabel(xset[0])
         ax.set_ylabel(yset[0])
 
-    div = mpld3.fig_to_html(fig, figid='testfig')
+    div = mpld3.fig_to_dict(fig)
     return jsonify(plot=div)
 
 @main.route('/_plotdetails', methods=['GET'])
