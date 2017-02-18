@@ -1,8 +1,8 @@
 import os
 import glob
 from flask_plugins import get_enabled_plugins, get_all_plugins
-import csv
 import pandas as pd
+import matplotlib.dates as mdates
 
 
 def checkplugins(enabled=True):
@@ -68,10 +68,39 @@ def unique_headers(file):
     :return: list of headers
     """
 
-
-
     df = pd.read_hdf(file)
     fieldnames = df.columns.values
     del df
 
     return fieldnames
+
+
+def date_parser(start_date, end_date):
+    """
+    This is a date parsing function to automatically determine the best date format to you for time-series data
+    :param start_date: A datetime object of the start date
+    :param end_date: A datetime object of the end date
+    :return: Two DateFormatter objects of the major and minor date format respectively
+    """
+
+    delta = end_date - start_date
+    days = delta.days
+    seconds = delta.seconds
+
+    if days > 365:
+        major_fmt = '%Y'
+        minor_fmt = '%m-%d'
+
+    elif 1 < days < 365:
+        major_fmt = '%Y-%m-%d'
+        minor_fmt = '%Y-%m-%d %H:00'
+
+    elif days == 0 and seconds > 3600:
+        major_fmt = '%H:%M'
+        minor_fmt = '%H:%M:%S'
+
+    elif days == 0 and seconds < 3600:
+        major_fmt = '%M:00'
+        minor_fmt = '%M:%S'
+
+    return mdates.DateFormatter(major_fmt), mdates.DateFormatter(minor_fmt)
