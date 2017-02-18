@@ -40,8 +40,8 @@ def upload():
     return render_template('uploads.html', form=form)
 
 
-@main.route('/plotlyplotting', methods=['GET', 'POST'])
-def plotly_plot():
+@main.route('/plotting', methods=['GET', 'POST'])
+def plot():
     form = DataSelectForm()
     files = funcs.uploaded_files(textbox=False)
     form.select.choices = files
@@ -94,8 +94,10 @@ def _plotdata():
 def _plotdetails():
 
     file = request.args.get('plotfile', 0, type=str)
+
     headers = funcs.unique_headers(file)
-    return jsonify(success=True, file=file, headers=headers)
+
+    return jsonify(success=True, headers=headers)
 
 
 @main.route('/plugins', methods=['GET', 'POST'])
