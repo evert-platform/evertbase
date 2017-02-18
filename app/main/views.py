@@ -151,7 +151,7 @@ def dataview():
 
     if form.validate_on_submit():
         filepath = form.select.data
-        data = pd.read_csv(filepath, sep=',|;', engine='python')
+        data = pd.read_hdf(filepath)
         titles = [{'title': key} for key in data.columns.values]
         data = data.values.tolist()
 
