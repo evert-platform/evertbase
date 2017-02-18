@@ -67,10 +67,12 @@ def unique_headers(file):
     :param file: file path to csv file
     :return: list of headers
     """
-
-    df = pd.read_hdf(file)
-    fieldnames = df.columns.values
-    del df
+    try:
+        df = pd.read_hdf(file)
+        fieldnames = df.columns.values
+        del df
+    except OSError:
+        fieldnames = ['']
 
     return fieldnames
 
