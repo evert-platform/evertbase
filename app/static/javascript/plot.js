@@ -119,9 +119,11 @@ $(function() {
     });
 
 $(function () {
-    $('select#plotfile').on('change', function(){
+    var $plotfile = $('select#plotfile');
+
+    $plotfile.on('change', function(){
         $.getJSON('/_plotdetails', {
-            plotfile: $('select#plotfile').val()},
+            plotfile: $(this).val()},
             function(data){
                 var headers = data.headers;
                 var optionsAsString = "";
