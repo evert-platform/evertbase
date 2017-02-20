@@ -1,6 +1,6 @@
 # Evert
 
-![Travis CI Build](https://travis-ci.org/evert-platform/evertbase.svg?branch=evertdevelop "Travis CI Build")
+![Travis CI Build](https://travis-ci.org/evert-platform/evertbase.svg?branch=evertdevelop_pytest "Travis CI Build")
 
 This is the base code for the Evert project. The aim of the project is to make a
 pluggable web interface for the analysis of time series data.
