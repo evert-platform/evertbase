@@ -5,7 +5,6 @@ from . import main
 from .forms import *
 from flask_plugins import PluginManager, get_plugin_from_all
 from . import functions as funcs
-from flask_uploads import UploadSet, DATA, configure_uploads, ALL
 from zipfile import ZipFile, BadZipFile
 import mpld3
 import re
@@ -23,13 +22,11 @@ def upload():
     form = FileUploadForm()
 
     if request.method == 'POST' and 'file' in request.files:
-        data = UploadSet('file', DATA)
-        app = current_app
-        configure_uploads(app, data)
-        filename = request.files['file'].filename
+        filename = request.files['file'].filename.split('.')[0]
         data = pd.read_csv(request.files['file'])
-        hdf5path = os.path.join(current_app.config['UPLOADED_FILE_DEST'], filename.split('.')[0])
-        data.to_hdf('{}.h5'.format(hdf5path), key=filename)
+        store = pd.HDFStore(current_app.config['HDF5_STORE'])
+        store.put(filename, data)
+        del store
         flash('{} successfully uploaded to Evert.'.format(filename), category='success')
 
     else:
@@ -41,12 +38,12 @@ def upload():
 @main.route('/plotting', methods=['GET', 'POST'])
 def plot():
     form = DataSelectForm()
-    files = funcs.uploaded_files(textbox=False)
+    files = funcs.uploaded_files()
     form.select.choices = files
     try:
-        headers = funcs.unique_headers(files[0][0])
-        form.selectX.choices = [(header, header) for header in headers]
-        form.selectY.choices = [(header, header) for header in headers]
+        headers = funcs.unique_headers(files[0][0], initial=True)
+        form.selectX.choices = headers
+        form.selectY.choices = headers
 
     except FileNotFoundError:
         return render_template('plot.html', form=form)
@@ -59,12 +56,11 @@ def plot():
 def _plotdata():
     fig, ax = plt.subplots()
     filepath = request.args.get('plotdata', 0, type=str)
-    filetype = os.path.basename(filepath).split('.')[-1]
-    if filetype == 'h5':
-        data = pd.read_hdf(filepath)
 
-    else:
-        data = pd.read_csv(filepath, sep=',|;', engine='python')
+    hdf5store = current_app.config["HDF5_STORE"]
+    store = pd.HDFStore(hdf5store)
+    data = store.get(filepath)
+    store.close()
 
     plottype = request.args.get('type', 0, type=str)
     xset = request.args.get('xset', 0, type=str)
@@ -98,7 +94,6 @@ def _plotdata():
 def _plotdetails():
 
     file = request.args.get('plotfile', 0, type=str)
-
     headers = funcs.unique_headers(file)
 
     return jsonify(success=True, headers=headers)
@@ -153,17 +148,14 @@ def _upload_plugins():
 @main.route('/dataviewer', methods=['GET', 'POST'])
 def dataview():
     form = DataViewerForm()
-    form.select.choices = funcs.uploaded_files(textbox=False)
+    form.select.choices = funcs.uploaded_files()
 
     if form.validate_on_submit():
         filepath = form.select.data
-        filetype = os.path.basename(filepath).split('.')[-1]
-        if filetype == 'h5':
-            data = pd.read_hdf(filepath)
-
-        else:
-            data = pd.read_csv(filepath, sep=',|;', engine='python')
-
+        hdf5store = current_app.config["HDF5_STORE"]
+        store = pd.HDFStore(hdf5store)
+        data = store.get(filepath)
+        store.close()
         titles = [{'title': key} for key in data.columns.values]
         data = data.values.tolist()
 
