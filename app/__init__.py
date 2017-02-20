@@ -4,21 +4,22 @@ from flask_plugins import PluginManager
 import os
 import glob
 import shutil
+from config import config
 
 
-def create_app():
+def create_app(config_name):
     """
     Creates the basic app instance for the flask app
     :return: Flask application instance
     """
     app = Flask(__name__)
-    bootstrap = Bootstrap()
+    app.config.from_object(config[config_name])
 
-    UPLOADFOLDER = 'static/uploads/'
-    app.config['SECRET_KEY'] = 'hard to guess string'
+    bootstrap = Bootstrap()
     bootstrap.init_app(app)
 
-    app.config['UPLOAD_FOLDER'] = UPLOADFOLDER
+    if config_name != 'testing':
+        find_plugins(app)
 
     # Configuration of flask_plugins extension
     pluginmanager = PluginManager(app)
