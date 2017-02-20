@@ -13,7 +13,6 @@ class BaseConfig:
     USER_DOCUMENTS = os.path.expanduser('~/Documents')
 
 
-
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
     TESTING = False
