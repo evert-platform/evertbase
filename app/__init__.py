@@ -18,7 +18,7 @@ def create_app(config_name):
     bootstrap = Bootstrap()
     bootstrap.init_app(app)
 
-    if config_name == 'defualt':
+    if config_name != 'testing':
         find_plugins(app)
 
     # Configuration of flask_plugins extension
