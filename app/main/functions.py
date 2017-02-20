@@ -78,6 +78,15 @@ def unique_headers(file):
             with open(file) as f:
                 fin = csv.DictReader(f, delimiter=',')
                 fieldnames = fin.fieldnames
+
+            del f, fin
+
+            if len(fieldnames) == 1:
+                with open(file) as f:
+                    fin = csv.DictReader(f, delimiter=';')
+                    fieldnames = fin.fieldnames
+                del f, fin
+
     except OSError:
         fieldnames = ['']
 
