@@ -3,6 +3,7 @@ import glob
 from flask_plugins import get_enabled_plugins, get_all_plugins
 import pandas as pd
 import matplotlib.dates as mdates
+import csv
 
 
 def checkplugins(enabled=True):
@@ -68,9 +69,15 @@ def unique_headers(file):
     :return: list of headers
     """
     try:
-        df = pd.read_hdf(file)
-        fieldnames = df.columns.values
-        del df
+        if os.path.basename(file).split('.')[-1] == 'h5':
+            df = pd.read_hdf(file)
+            fieldnames = df.columns.values
+            del df
+
+        else:
+            with open(file) as f:
+                fin = csv.DictReader(f, delimiter=',')
+                fieldnames = fin.fieldnames
     except OSError:
         fieldnames = ['']
 
