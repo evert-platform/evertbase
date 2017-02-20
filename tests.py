@@ -5,8 +5,9 @@ from flask import url_for
 
 @pytest.fixture
 def app():
-    app = create_app()
+    app = create_app('testing')
     return app
+
 
 @pytest.mark.usefixtures('client_class')
 class TestViews:
