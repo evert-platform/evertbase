@@ -1,4 +1,4 @@
-from app import create_app, find_plugins
+from app import create_app
 from flask import current_app
 from flask_plugins import Plugin
 from flask_uploads import UploadSet, configure_uploads, ALL
