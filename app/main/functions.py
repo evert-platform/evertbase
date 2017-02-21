@@ -1,9 +1,6 @@
-import os
-import glob
 from flask_plugins import get_enabled_plugins, get_all_plugins
 import pandas as pd
 import matplotlib.dates as mdates
-import csv
 from flask import current_app
 
 def checkplugins(enabled=True):
@@ -19,14 +16,14 @@ def checkplugins(enabled=True):
 
     if plugins:
         if enabled:
-            if enabled_plugins != []:
+            if enabled_plugins:
                 p = [plugin for plugin in enabled_plugins]
 
             else:
                 p = [('', 'No active plugins')]
 
         else:
-            if disabled_plugins != []:
+            if disabled_plugins:
                 p = [plugin for plugin in disabled_plugins]
 
             else:
@@ -42,7 +39,6 @@ def uploaded_files():
     """
     This function is used to populate select fields and textbox fields. It checks which files are uploaded
     and generates the output required for the DOM element.
-    :param textbox: Defualt value of True. Set to False if a select field needs to be populated.
     :return: Output required by DOM element
     """
     hdf5store = current_app.config["HDF5_STORE"]
@@ -60,18 +56,17 @@ def uploaded_files():
     return columns
 
 
-
-def unique_headers(file, initial=False):
+def unique_headers(table_key, initial=False):
     """
     Get the headers for a csv file
-    :param file: file path to csv file
+    :param table_key: key pointing to table in HDF5 store
     :return: list of headers
     # """
 
     try:
         hdf5store = current_app.config["HDF5_STORE"]
         store = pd.HDFStore(hdf5store)
-        data = store.get(file)
+        data = store.get(table_key)
         store.close()
         del store
 
@@ -80,7 +75,6 @@ def unique_headers(file, initial=False):
 
         else:
             fieldnames = [fieldname for fieldname in data.columns.values]
-
 
     except KeyError:
         if initial:
