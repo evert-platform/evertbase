@@ -11,6 +11,7 @@ Pandas==0.18.1
 pytest==2.8.5
 pytest-flask==0.10.0
 service-identity==16.0.0
+tables==3.2.2
 WTForms==2.1
 WTForms-Components==0.10.0
 
