@@ -1,4 +1,3 @@
-name: Evert
 dependencies:
  - python==$TRAVIS_PYTHON_VERSION
  - flask==0.12
