@@ -1,7 +1,7 @@
 python-targets:
  - 3
 
-test_warnings: false
+test-warnings: false
 pep8:
   full: true
 
