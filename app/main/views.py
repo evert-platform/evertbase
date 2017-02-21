@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-from flask import render_template, flash, get_flashed_messages, request, jsonify, current_app
+from flask import render_template, flash, request, jsonify, current_app
 from . import main
 from .forms import FileUploadForm, DataViewerForm, DataSelectForm, PluginsUploadForm, PluginsForm
 from flask_plugins import PluginManager, get_plugin_from_all
@@ -63,7 +63,7 @@ def _plotdata():
     plottype = request.args.get('type', 0, type=str)
     xset = request.args.get('xset', 0, type=str)
     yset = request.args.get('yset', 0, type=str)
-    timeseries = request.args.get('datatype', 0, type=bool)
+    # timeseries = request.args.get('datatype', 0, type=bool)
 
 
     xset = re.findall(r"[\w']+", xset)
