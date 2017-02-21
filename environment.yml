@@ -1,5 +1,6 @@
 name: Evert
 dependencies:
+ - python==$TRAVIS_PYTHON_VERSION
  - flask==0.12
  - matplotlib==1.5.1
  - Pandas==0.18.1
