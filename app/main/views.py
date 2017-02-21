@@ -9,6 +9,8 @@ from zipfile import ZipFile, BadZipFile
 import mpld3
 import re
 import os
+from io import StringIO
+from werkzeug.utils import secure_filename
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -26,7 +28,6 @@ def upload():
         data = pd.read_csv(request.files['file'])
         store = pd.HDFStore(current_app.config['HDF5_STORE'])
         store.put(filename, data)
-        del store
         flash('{} successfully uploaded to Evert.'.format(filename), category='success')
 
     else:
