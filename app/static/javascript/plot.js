@@ -102,7 +102,8 @@ $(function() {
           plotdata: $('select[name="select"]').val(),
             type: $('select#plotType').val(),
             xset: xset,
-            yset: yset
+            yset: yset,
+            datatype: $('input#timeseries').prop('checked')
         }, function(data) {
             var $plotarea = $('#plotarea');
             $plotarea.empty();
