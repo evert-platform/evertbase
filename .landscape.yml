@@ -1,5 +1,4 @@
 python-targets:
- - 2
  - 3
 
 test_warnings: false
