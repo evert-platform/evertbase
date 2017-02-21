@@ -1,5 +1,5 @@
 dependencies:
- matplotlib==1.5.1
+ - matplotlib==1.5.1
  Pandas==0.18.1
  pytables==3.2.2
  pip:
