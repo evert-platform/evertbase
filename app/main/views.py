@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from flask import render_template, flash, get_flashed_messages, request, jsonify, current_app
 from . import main
-from .forms import *
+from .forms import FileUploadForm, DataViewerForm, DataSelectForm, PluginsUploadForm, PluginsForm
 from flask_plugins import PluginManager, get_plugin_from_all
 from . import functions as funcs
 from zipfile import ZipFile, BadZipFile
@@ -95,15 +95,14 @@ def _plotdata():
 @main.route('/_plotdetails', methods=['GET'])
 def _plotdetails():
 
-    file = request.args.get('plotfile', 0, type=str)
-    headers = funcs.unique_headers(file)
+    table_key = request.args.get('plotfile', 0, type=str)
+    headers = funcs.unique_headers(table_key)
 
     return jsonify(success=True, headers=headers)
 
 
 @main.route('/plugins', methods=['GET', 'POST'])
 def plugins():
-    pluginsmanager = PluginManager()
     form = PluginsForm()
     form2 = PluginsUploadForm()
     form.select_disabled.choices = funcs.checkplugins(enabled=False)
@@ -133,9 +132,9 @@ def _disable_plugins():
 @main.route('/_uploadp', methods=['GET', 'POST'])
 def _upload_plugins():
     if request.method == 'POST':
-        file = request.files['file']
+        zip_file = request.files['file']
         try:
-            zipfile = ZipFile(file)
+            zipfile = ZipFile(zip_file)
             zipfile.extractall(current_app.config['UPLOADED_PLUGIN_DEST'])
             success = True
             msg = 'Success: Plugin uploaded successfully'
