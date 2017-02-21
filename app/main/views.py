@@ -8,9 +8,6 @@ from . import functions as funcs
 from zipfile import ZipFile, BadZipFile
 import mpld3
 import re
-import os
-from io import StringIO
-from werkzeug.utils import secure_filename
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -66,10 +63,13 @@ def _plotdata():
     plottype = request.args.get('type', 0, type=str)
     xset = request.args.get('xset', 0, type=str)
     yset = request.args.get('yset', 0, type=str)
+    timeseries = request.args.get('datatype', 0, type=bool)
+
 
     xset = re.findall(r"[\w']+", xset)
     yset = re.findall(r"[\w']+", yset)
     if len(xset) > 1:
+
         for x, y in zip(xset, yset):
 
             if plottype == 'Line' and x != '' and y != '':
@@ -77,6 +77,7 @@ def _plotdata():
 
             elif plottype == 'Scatter' and x != '' and y != '':
                 ax.plot(data[x].values, data[y].values, '.')
+
 
     elif len(xset) == 1:
         if plottype == 'Line':
