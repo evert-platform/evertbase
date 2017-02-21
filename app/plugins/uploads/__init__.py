@@ -15,8 +15,8 @@ def uploaded_files(string=True):
     up = ''
     if string:
         if files:
-            for file in files:
-                up += (os.path.basename(file) + '\n')
+            for file_path in files:
+                up += (os.path.basename(file_path) + '\n')
         else:
             up = 'No files uploaded'
 
