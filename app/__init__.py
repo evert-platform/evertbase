@@ -3,6 +3,7 @@ from flask_bootstrap import Bootstrap
 from flask_plugins import PluginManager
 from .main.functions import find_plugins
 from config import config
+import os
 
 
 def create_app(config_name):
@@ -15,6 +16,9 @@ def create_app(config_name):
 
     bootstrap = Bootstrap()
     bootstrap.init_app(app)
+
+    if not os.path.isdir(app.config['UPLOADED_FILE_DEST']):
+        os.mkdir(app.config['UPLOADED_FILE_DEST'])
 
     if not app.config['TESTING']:
         find_plugins(app)
