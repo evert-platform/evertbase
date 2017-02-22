@@ -97,9 +97,9 @@ def unique_headers(table_key, initial=False):
 def copy_files(src, dst, check_mod_time=False):
     """
     Copies subdirectories from one directory to another
-    :param src:
-    :param dst:
-    :param check_mod_time:
+    :param src: Source directory.
+    :param dst: Destination directory.
+    :param check_mod_time: Defualt is False. When true only the newest files are copied.
     :return:
     """
     try:
