@@ -20,8 +20,8 @@ def create_app(config_name):
     if not os.path.isdir(os.path.join(app.config['STATIC_DIR'], 'uploads')):
         os.mkdir(os.path.join(app.config['STATIC_DIR'], 'uploads'))
 
-    if not os.path.isdir(os.mkdir(os.path.join(os.path.expanduser('~Documents'), 'Evert Plugins'))):
-        os.path.join(os.path.expanduser('~Documents'), 'Evert Plugins')
+    if not os.path.isdir(os.path.join(os.path.expanduser('~/Documents'), 'Evert Plugins')):
+        os.path.join(os.path.expanduser('~/Documents'), 'Evert Plugins')
 
     # Configuration of flask_plugins extension
     PluginManager(app)
