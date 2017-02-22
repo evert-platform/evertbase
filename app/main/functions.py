@@ -43,7 +43,7 @@ def uploaded_files(textbox=True):
     """
     This function is used to populate select fields and textbox fields. It checks which files are uploaded
     and generates the output required for the DOM element.
-    :param textbox: Defualt value of True. Set to False if a select field needs to be populated.
+    :param textbox: Default value of True. Set to False if a select field needs to be populated.
     :return: Output required by DOM element
     """
     files = glob.glob('app/static/uploads/*')
