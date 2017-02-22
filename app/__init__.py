@@ -53,7 +53,7 @@ def find_plugins(app):
         if src_folder:
             for plugin in src_folder:
                 dst = os.path.join(baseplugindir, os.path.basename(plugin))
-                copy_files(plugin, dst, True)
+                copy_files(plugin, dst)
 
     elif not pluginfolder:
         try:
@@ -75,7 +75,7 @@ def copy_files(src, dst, check_mod_time=False):
             srctime = os.path.getmtime(src)
             dsttime = os.path.getmtime(dst)
             if srctime > dsttime:
-                shutil.rmtree(src)
+                shutil.rmtree(dst)
                 shutil.copytree(src, dst, ignore=shutil.ignore_patterns('__pycache*'))
             else:
                 pass
