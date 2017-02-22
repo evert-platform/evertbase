@@ -4,6 +4,7 @@ from flask_plugins import get_enabled_plugins, get_all_plugins
 import pandas as pd
 import matplotlib.dates as mdates
 import csv
+import shutil
 
 
 def checkplugins(enabled=True):
@@ -19,14 +20,14 @@ def checkplugins(enabled=True):
 
     if plugins:
         if enabled:
-            if enabled_plugins != []:
+            if enabled_plugins:
                 p = [plugin for plugin in enabled_plugins]
 
             else:
                 p = [('', 'No active plugins')]
 
         else:
-            if disabled_plugins != []:
+            if disabled_plugins:
                 p = [plugin for plugin in disabled_plugins]
 
             else:
@@ -122,3 +123,64 @@ def date_parser(start_date, end_date):
         minor_fmt = '%M:%S'
 
     return mdates.DateFormatter(major_fmt), mdates.DateFormatter(minor_fmt)
+
+
+def copy_files(src, dst, check_mod_time=False):
+    """
+    Copies subdirectories from one directory to another
+    :param src:
+    :param dst:
+    :param check_mod_time:
+    :return:
+    """
+    try:
+        shutil.copytree(src, dst)
+    except FileExistsError:
+        if not check_mod_time:
+            shutil.rmtree(dst)
+            shutil.copytree(src, dst, ignore=shutil.ignore_patterns('__pycache*'))
+
+        if check_mod_time:
+            srctime = os.path.getmtime(src)
+            dsttime = os.path.getmtime(dst)
+            if srctime > dsttime:
+                shutil.rmtree(dst)
+                shutil.copytree(src, dst, ignore=shutil.ignore_patterns('__pycache*'))
+            else:
+                pass
+    except NotADirectoryError:
+        pass
+
+
+def find_plugins(app):
+    """
+    Synchronises the plugins in the base code with the plugins in the documents folder. This ensures the newest version
+    of the plugins are always available when the server resets.
+    :param app: flask application instance
+    """
+    docdir = app.config['USER_DOCUMENTS']
+    docplugins = os.path.join(docdir, 'Evert Plugins')
+    pluginfolder = os.path.isdir(docplugins)
+    baseplugindir = app.config['UPLOADED_PLUGIN_DEST']
+
+    # updating documents folder
+    if pluginfolder:
+        uploadedplugins = [fld for fld in os.listdir(baseplugindir) if not fld.startswith('__pyc')]
+        for uploaded in uploadedplugins:
+            src = os.path.join(baseplugindir, uploaded)
+            dst = os.path.join(docplugins, uploaded)
+            copy_files(src, dst, True)
+
+        # updating base folder
+        src_folder = glob.glob(docplugins+'/*')
+        if src_folder:
+            for plugin in src_folder:
+                dst = os.path.join(baseplugindir, os.path.basename(plugin))
+                copy_files(plugin, dst)
+
+    elif not pluginfolder:
+        try:
+            os.mkdir(os.path.join(docdir, 'Evert Plugins'))
+
+        except FileNotFoundError:
+            pass
