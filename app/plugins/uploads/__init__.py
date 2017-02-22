@@ -10,6 +10,7 @@ __plugin__ = "UploadedData"
 
 uploads = Blueprint('uploads', __name__, template_folder='templates')
 
+
 def uploaded_files(string=True):
     files = glob.glob('app/static/uploads/*')
     up = ''
@@ -37,9 +38,9 @@ def show_uploads():
         {{ wtf.quick_form(form2) }}
         """, form2=form)
 
+
 def test():
     return flash("it works", "success")
-
 
 
 class UploadedData(AppPlugin):
