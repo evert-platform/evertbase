@@ -1,10 +1,10 @@
-import os
-import glob
 from flask_plugins import get_enabled_plugins, get_all_plugins
+from flask import current_app
 import pandas as pd
 import matplotlib.dates as mdates
-import csv
 import shutil
+import os
+import glob
 
 
 def checkplugins(enabled=True):
@@ -39,57 +39,57 @@ def checkplugins(enabled=True):
     return p
 
 
-def uploaded_files(textbox=True):
+def uploaded_files():
     """
     This function is used to populate select fields and textbox fields. It checks which files are uploaded
     and generates the output required for the DOM element.
+<<<<<<< HEAD
     :param textbox: Default value of True. Set to False if a select field needs to be populated.
+=======
+>>>>>>> origin/evertdevelop_pytest
     :return: Output required by DOM element
     """
-    files = glob.glob('app/static/uploads/*')
-    up = ''
-    if textbox:
-        if files:
-            for file in files:
-                up += (os.path.basename(file) + '\n')
-        else:
-            up = 'No files uploaded'
+    hdf5store = current_app.config["HDF5_STORE"]
+    store = pd.HDFStore(hdf5store)
+    keys = store.keys()
+    store.close()
+    del store
 
-    if not textbox:
-        if files:
-            up = [(file, os.path.basename(file)) for file in files]
-        else:
-            up = [('No files uploaded', 'No files uploaded')]
-    return up
+    if not keys:
+        columns = [('No files uploaded', 'No files uploaded')]
+
+    else:
+        columns = [(key, key.split('/')[1]) for key in keys]
+
+    return columns
 
 
-def unique_headers(file):
+def unique_headers(table_key, initial=False):
     """
     Get the headers for a csv file
-    :param file: file path to csv file
+    :param table_key: key pointing to table in HDF5 store
     :return: list of headers
-    """
+    # """
+
     try:
-        if os.path.basename(file).split('.')[-1] == 'h5':
-            df = pd.read_hdf(file)
-            fieldnames = df.columns.values
-            del df
+        hdf5store = current_app.config["HDF5_STORE"]
+        store = pd.HDFStore(hdf5store)
+        data = store.get(table_key)
+        store.close()
+        del store
+
+        if initial:
+            fieldnames = [(fieldname, fieldname) for fieldname in data.columns.values]
 
         else:
-            with open(file) as f:
-                fin = csv.DictReader(f, delimiter=',')
-                fieldnames = fin.fieldnames
+            fieldnames = [fieldname for fieldname in data.columns.values]
 
-            del f, fin
+    except KeyError:
+        if initial:
+            fieldnames = [('', '')]
 
-            if len(fieldnames) == 1:
-                with open(file) as f:
-                    fin = csv.DictReader(f, delimiter=';')
-                    fieldnames = fin.fieldnames
-                del f, fin
-
-    except OSError:
-        fieldnames = ['']
+        else:
+            fieldnames = ['']
 
     return fieldnames
 

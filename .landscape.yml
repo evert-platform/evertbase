@@ -1,0 +1,12 @@
+python-targets:
+ - 3
+
+test-warnings: false
+pep8:
+  full: true
+
+requirements:
+ - requirements.txt
+
+uses:
+ - flask
