@@ -1,7 +1,6 @@
 from flask_plugins import get_enabled_plugins, get_all_plugins
 from flask import current_app
 import pandas as pd
-import matplotlib.dates as mdates
 import shutil
 import os
 import glob
@@ -43,10 +42,6 @@ def uploaded_files():
     """
     This function is used to populate select fields and textbox fields. It checks which files are uploaded
     and generates the output required for the DOM element.
-<<<<<<< HEAD
-    :param textbox: Default value of True. Set to False if a select field needs to be populated.
-=======
->>>>>>> origin/evertdevelop_pytest
     :return: Output required by DOM element
     """
     hdf5store = current_app.config["HDF5_STORE"]
