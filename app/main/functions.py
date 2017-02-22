@@ -1,7 +1,6 @@
 from flask_plugins import get_enabled_plugins, get_all_plugins
 from flask import current_app
 import pandas as pd
-import matplotlib.dates as mdates
 import shutil
 import os
 import glob
