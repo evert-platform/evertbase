@@ -17,8 +17,8 @@ def create_app(config_name):
     bootstrap = Bootstrap()
     bootstrap.init_app(app)
 
-    if not os.path.isdir(app.config['UPLOADED_FILE_DEST']):
-        os.mkdir(app.config['UPLOADED_FILE_DEST'])
+    if not os.path.isdir(os.path.join(app.config['STATIC_DIR'], 'uploads')):
+        os.mkdir(os.path.join(app.config['STATIC_DIR'], 'uploads'))
 
     if not app.config['TESTING']:
         find_plugins(app)
