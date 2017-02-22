@@ -2,8 +2,8 @@ name: Evert
 dependencies:
  - python=3.5
  - flask==0.12
- - matplotlib==1.5.1
- - Pandas==0.18.1
+ - matplotlib==2.0.0
+ - Pandas==0.19.2
  - pytables==3.2.2
  - pip:
     - Flask-Bootstrap==3.3.5.7
