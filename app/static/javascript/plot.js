@@ -108,8 +108,8 @@ $(function() {
             $plotarea.append('<hr><br>');
             $plotarea.append(mpld3.draw_figure('plotarea', data.plot));
             if ($('#multiplot').prop('checked') == false){
-                xset = '';
-                yset = '';
+                xset = [];
+                yset = [];
             }
 
         });
