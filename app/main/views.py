@@ -73,10 +73,6 @@ def _plotdata():
         elif plottype == 'Scatter':
             data.plot.line(x=x, y=y, lw=0, marker='.', ax=ax)
 
-    if len(xset) == 1:
-        ax.set_xlabel(xset[0])
-        ax.set_ylabel(yset[0])
-
     ax.legend(loc=0)
     fig.tight_layout()
     div = mpld3.fig_to_dict(fig)
