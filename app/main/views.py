@@ -65,7 +65,6 @@ def _plotdata():
 
     for x, y in zip(xset, yset):
         if plottype == 'Line':
-
             data.plot.line(x=x, y=y, ax=ax)
 
         elif plottype == 'Scatter':
