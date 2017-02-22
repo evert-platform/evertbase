@@ -35,8 +35,7 @@ def show_uploads():
         """
         {% import "bootstrap/wtf.html" as wtf %}
         {{ wtf.quick_form(form2) }}
-        """
-        , form2=form)
+        """, form2=form)
 
 def test():
     return flash("it works", "success")
