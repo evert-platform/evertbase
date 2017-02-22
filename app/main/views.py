@@ -64,6 +64,9 @@ def _plotdata():
     yset = request.args.getlist('yset[]')
 
     for x, y in zip(xset, yset):
+        if data[x].dtype == 'O':
+            data[x] = pd.to_datetime(data[x])
+
         if plottype == 'Line':
             data.plot.line(x=x, y=y, ax=ax)
 
