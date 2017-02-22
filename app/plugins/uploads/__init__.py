@@ -10,13 +10,14 @@ __plugin__ = "UploadedData"
 
 uploads = Blueprint('uploads', __name__, template_folder='templates')
 
+
 def uploaded_files(string=True):
     files = glob.glob('app/static/uploads/*')
     up = ''
     if string:
         if files:
-            for file in files:
-                up += (os.path.basename(file) + '\n')
+            for file_path in files:
+                up += (os.path.basename(file_path) + '\n')
         else:
             up = 'No files uploaded'
 
@@ -35,12 +36,11 @@ def show_uploads():
         """
         {% import "bootstrap/wtf.html" as wtf %}
         {{ wtf.quick_form(form2) }}
-        """
-        , form2=form)
+        """, form2=form)
+
 
 def test():
     return flash("it works", "success")
-
 
 
 class UploadedData(AppPlugin):

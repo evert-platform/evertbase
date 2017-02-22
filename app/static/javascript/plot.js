@@ -16,8 +16,8 @@ $(document).ready(function () {
 });
 
 $(function() {
-    var xset = '';
-    var yset = '';
+    var xset = [];
+    var yset = [];
     var sets = [];
     var $datasets = $('select#datasets');
     var $plotxaxis = $('select#plotxaxis');
@@ -35,13 +35,13 @@ $(function() {
         $('button#deletedataset').attr('disabled', false);
 
         if (multiplot == true){
-            xset += (xaxis +' ');
-            yset += (yaxis + ' ');
+            xset.push(xaxis);
+            yset.push(yaxis);
             sets.push([xaxis, yaxis]);
 
         } else {
-            xset = $plotxaxis.val();
-            yset = $plotyaxis.val();
+            xset.push($plotxaxis.val());
+            yset.push($plotyaxis.val());
         }
 
         var optionsAsString = "";
@@ -58,15 +58,13 @@ $(function() {
         $datasets.empty().append("<option></option>").attr('disabled', true);
         $(this).attr('disabled', true);
         $('button#deletedataset').attr('disabled', true);
-        xset = '';
-        yset = '';
+        xset = [];
+        yset = [];
         sets = [];
     });
 
     $('button#deletedataset').on('click', function () {
         var $selectedset = $('select#datasets :selected');
-        var xsetarr = xset.toString().split(' ');
-        var ysetarr = yset.split(' ');
         var removeindex = [];
 
         $('select#datasets').children().each(function (index) {
@@ -78,13 +76,11 @@ $(function() {
 
         });
 
-        xsetarr.splice(removeindex, removeindex.length);
-        ysetarr.splice(removeindex, removeindex.length);
+        xset.splice(removeindex, removeindex.length);
+        yset.splice(removeindex, removeindex.length);
         sets.splice(removeindex, removeindex.length);
         removeindex = [];
 
-        xset = xsetarr.toString();
-        yset = ysetarr.toString();
         $selectedset.remove();
 
     });
@@ -92,8 +88,10 @@ $(function() {
 
     $('input#Submit').on('click', function() {
         if (document.getElementById('multiplot').checked == false){
-            xset = $('select#plotxaxis').val();
-            yset = $('select#plotyaxis').val();
+            xset = [];
+            yset = [];
+            xset.push($('select#plotxaxis').val());
+            yset.push($('select#plotyaxis').val());
 
 
         }
@@ -102,15 +100,15 @@ $(function() {
           plotdata: $('select[name="select"]').val(),
             type: $('select#plotType').val(),
             xset: xset,
-            yset: yset
+            yset: yset,
         }, function(data) {
             var $plotarea = $('#plotarea');
             $plotarea.empty();
             $plotarea.append('<hr><br>');
             $plotarea.append(mpld3.draw_figure('plotarea', data.plot));
             if ($('#multiplot').prop('checked') == false){
-                xset = '';
-                yset = '';
+                xset = [];
+                yset = [];
             }
 
         });

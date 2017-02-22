@@ -24,6 +24,7 @@ class DataViewerForm(FlaskForm):
     select = SelectField('Select file to view.', choices='', id='text')
     submit = SubmitField('View')
 
+
 class PluginsUploadForm(FlaskForm):
     file = FileField('Select plugin to upload', validators=[DataRequired()])
 
