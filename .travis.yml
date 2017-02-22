@@ -14,6 +14,7 @@ before_install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
+  - mkdir "$HOME/Documents"
 
 install:
   - pip install -r requirements.txt
