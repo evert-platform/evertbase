@@ -112,7 +112,8 @@ def copy_files(src, dst, check_mod_time=False):
                 shutil.copytree(src, dst, ignore=shutil.ignore_patterns('__pycache*'))
             else:
                 pass
-
+    except NotADirectoryError:
+        pass
 
 
 def find_plugins(app):
@@ -142,8 +143,5 @@ def find_plugins(app):
                 copy_files(plugin, dst)
 
     elif not pluginfolder:
-        try:
             os.mkdir(os.path.join(docdir, 'Evert Plugins'))
 
-        except FileNotFoundError:
-            pass
