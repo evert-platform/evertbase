@@ -1,7 +1,7 @@
 # Evert
 
 ![Travis CI Build](https://travis-ci.org/evert-platform/evertbase.svg?branch=evertdevelopcsc "Travis CI Build")
-[![Code Health](https://landscape.io/github/evert-platform/evertdevelop/evertdevelopcsc/landscape.svg?style=plastic)](https://landscape.io/github/evert-platform/evertbase/evertdevelop_pytest)
+[![Code Health](https://landscape.io/github/evert-platform/evertbase/evertdevelopcsc/landscape.svg?style=flat)](https://landscape.io/github/evert-platform/evertbase/evertdevelopcsc)
 
 This is the base code for the Evert project. The aim of the project is to make a
 pluggable web interface for the analysis of time series data.
