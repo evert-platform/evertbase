@@ -39,44 +39,21 @@ def find_plugins(app):
     docplugins = os.path.join(docdir, 'Evert Plugins')
     pluginfolder = os.path.isdir(docplugins)
     baseplugindir = app.config['UPLOADED_PLUGIN_DEST']
-    basecopy = []
 
     # updating documents folder
     if pluginfolder:
         uploadedplugins = [fld for fld in os.listdir(baseplugindir) if not fld.startswith('__pyc')]
         for uploaded in uploadedplugins:
-            filepath = os.path.join(baseplugindir, uploaded)
-            try:
-                shutil.copytree(filepath, os.path.join(docplugins, uploaded),
-                                ignore=shutil.ignore_patterns('__pycache*'))
-                basecopy.append(uploaded)
-
-            except FileExistsError:
-                srctime = os.path.getmtime(filepath)
-                dsttime = os.path.getmtime(os.path.join(docplugins, uploaded))
-                if srctime > dsttime:
-                    shutil.rmtree(os.path.join(docplugins, uploaded))
-                    shutil.copytree(filepath, os.path.join(docplugins, uploaded),
-                                    ignore=shutil.ignore_patterns('__pycache*'))
-                    basecopy.append(uploaded)
-                else:
-                    pass
-            except NotADirectoryError:
-                pass
+            src = os.path.join(baseplugindir, uploaded)
+            dst = os.path.join(docplugins, uploaded)
+            copy_files(src, dst, True)
 
         # updating base folder
-        plugins = glob.glob(docplugins+'/*')
-        if plugins:
-            for plugin in plugins:
-                if os.path.basename(plugin) not in basecopy:
-                    try:
-                        shutil.copytree(plugin, os.path.join(baseplugindir, os.path.basename(plugin)))
-                    except FileExistsError:
-                        shutil.rmtree(os.path.join(baseplugindir, os.path.basename(plugin)))
-                        shutil.copytree(plugin,
-                                        os.path.join(baseplugindir, os.path.basename(plugin)))
-                    except NotADirectoryError:
-                        pass
+        src_folder = glob.glob(docplugins+'/*')
+        if src_folder:
+            for plugin in src_folder:
+                dst = os.path.join(baseplugindir, os.path.basename(plugin))
+                copy_files(plugin, dst, True)
 
     elif not pluginfolder:
         try:
@@ -84,3 +61,23 @@ def find_plugins(app):
 
         except FileNotFoundError:
             pass
+
+
+def copy_files(src, dst, check_mod_time=False):
+    try:
+        shutil.copytree(src, dst)
+    except FileExistsError:
+        if not check_mod_time:
+            shutil.rmtree(dst)
+            shutil.copytree(src, dst)
+
+        if check_mod_time:
+            srctime = os.path.getmtime(src)
+            dsttime = os.path.getmtime(dst)
+            if srctime > dsttime:
+                shutil.rmtree(src)
+                shutil.copytree(src, dst, ignore=shutil.ignore_patterns('__pycache*'))
+            else:
+                pass
+    except NotADirectoryError:
+        pass
