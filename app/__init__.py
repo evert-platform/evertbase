@@ -69,7 +69,7 @@ def copy_files(src, dst, check_mod_time=False):
     except FileExistsError:
         if not check_mod_time:
             shutil.rmtree(dst)
-            shutil.copytree(src, dst)
+            shutil.copytree(src, dst, ignore=shutil.ignore_patterns('__pycache*'))
 
         if check_mod_time:
             srctime = os.path.getmtime(src)
