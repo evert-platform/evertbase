@@ -10,8 +10,7 @@ class BaseConfig:
     STATIC_DIR = os.path.join(BASE_DIR, 'app/static')
     HDF5_STORE = os.path.join(STATIC_DIR, 'uploads/EvertStore.h5')
     UPLOADED_PLUGIN_DEST = os.path.join(BASE_DIR, 'app/plugins')
-    USER_DOCUMENTS = os.path.expanduser('~/Documents')
-
+    USER_PLUGINS = os.path.join(os.path.expanduser('~/Documents'), 'Evert Plugins')
 
 
 class DevelopmentConfig(BaseConfig):
