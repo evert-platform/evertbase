@@ -124,24 +124,21 @@ def find_plugins(app):
     """
     docdir = app.config['USER_DOCUMENTS']
     docplugins = os.path.join(docdir, 'Evert Plugins')
-    pluginfolder = os.path.isdir(docplugins)
     baseplugindir = app.config['UPLOADED_PLUGIN_DEST']
 
     # updating documents folder
-    if pluginfolder:
-        uploadedplugins = [fld for fld in os.listdir(baseplugindir) if not fld.startswith('__pyc')]
-        for uploaded in uploadedplugins:
-            src = os.path.join(baseplugindir, uploaded)
-            dst = os.path.join(docplugins, uploaded)
-            copy_files(src, dst, True)
+    uploadedplugins = [fld for fld in os.listdir(baseplugindir) if not fld.startswith('__pyc')]
+    for uploaded in uploadedplugins:
+        src = os.path.join(baseplugindir, uploaded)
+        dst = os.path.join(docplugins, uploaded)
+        copy_files(src, dst, True)
 
-        # updating base folder
-        src_folder = glob.glob(docplugins+'/*')
-        if src_folder:
-            for plugin in src_folder:
-                dst = os.path.join(baseplugindir, os.path.basename(plugin))
-                copy_files(plugin, dst)
+    # updating base folder
+    src_folder = glob.glob(docplugins+'/*')
+    if src_folder:
+        for plugin in src_folder:
+            dst = os.path.join(baseplugindir, os.path.basename(plugin))
+            copy_files(plugin, dst)
 
-    elif not pluginfolder:
-            os.mkdir(os.path.join(docdir, 'Evert Plugins'))
+
 
