@@ -7,7 +7,6 @@ from flask_plugins import PluginManager, get_plugin_from_all
 from . import functions as funcs
 from zipfile import ZipFile, BadZipFile
 import mpld3
-import re
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -61,36 +60,26 @@ def _plotdata():
     store.close()
 
     plottype = request.args.get('type', 0, type=str)
-    xset = request.args.get('xset', 0, type=str)
-    yset = request.args.get('yset', 0, type=str)
-    # timeseries = request.args.get('datatype', 0, type=bool)
+    xset = request.args.getlist('xset[]')
+    yset = request.args.getlist('yset[]')
 
-
-    xset = re.findall(r"[\w']+", xset)
-    yset = re.findall(r"[\w']+", yset)
-    if len(xset) > 1:
-
-        for x, y in zip(xset, yset):
-
-            if plottype == 'Line' and x != '' and y != '':
-                ax.plot(data[x].values, data[y].values)
-
-            elif plottype == 'Scatter' and x != '' and y != '':
-                ax.plot(data[x].values, data[y].values, '.')
-
-
-    elif len(xset) == 1:
+    for x, y in zip(xset, yset):
         if plottype == 'Line':
-            ax.plot(data[xset].values, data[yset].values)
+
+            data.plot.line(x=x, y=y, ax=ax)
 
         elif plottype == 'Scatter':
-            ax.plot(data[xset].values, data[yset].values, '.')
+            data.plot.line(x=x, y=y, lw=0, marker='.', ax=ax)
 
+    if len(xset) == 1:
         ax.set_xlabel(xset[0])
         ax.set_ylabel(yset[0])
 
+    ax.legend(loc=0)
+    fig.tight_layout()
     div = mpld3.fig_to_dict(fig)
     return jsonify(plot=div)
+
 
 @main.route('/_plotdetails', methods=['GET'])
 def _plotdetails():
