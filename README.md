@@ -1,6 +1,6 @@
 # Evert
 
-![Travis CI Build](https://travis-ci.org/evert-platform/evertbase.svg?branch=evertdevelop "Travis CI Build")
+![Travis CI Build](https://travis-ci.org/evert-platform/evertbase.svg?branch=master "Travis CI Build")
 [![Code Health](https://landscape.io/github/evert-platform/evertdevelop/master/landscape.svg?style=plastic)](https://landscape.io/github/evert-platform/evertbase/evertdevelop_pytest)
 
 This is the base code for the Evert project. The aim of the project is to make a
