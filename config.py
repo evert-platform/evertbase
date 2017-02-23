@@ -1,6 +1,7 @@
 import os
 
 
+# Defualt configuration
 class BaseConfig:
     DEBUG = False
     TESTING = False
@@ -13,11 +14,13 @@ class BaseConfig:
     USER_PLUGINS = os.path.join(os.path.expanduser('~/Documents'), 'Evert Plugins')
 
 
+# configuration for developing
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
     TESTING = False
 
 
+# configuration for testing
 class TestingConfig(BaseConfig):
     DEBUG = False
     TESTING = True

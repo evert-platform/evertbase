@@ -40,16 +40,17 @@ def checkplugins(enabled=True):
 
 def uploaded_files():
     """
-    This function is used to populate select fields and textbox fields. It checks which files are uploaded
+    This function is used to populate select fields. It checks which files are uploaded
     and generates the output required for the DOM element.
     :return: Output required by DOM element
     """
-    hdf5store = current_app.config["HDF5_STORE"]
-    store = pd.HDFStore(hdf5store)
+
+    # opening,  retrieving and closing of hdf5 store.
+    store = pd.HDFStore(current_app.config["HDF5_STORE"])
     keys = store.keys()
     store.close()
-    del store
 
+    # formatting to populate select elements
     if not keys:
         columns = [('No files uploaded', 'No files uploaded')]
 
@@ -61,17 +62,16 @@ def uploaded_files():
 
 def unique_headers(table_key, initial=False):
     """
-    Get the headers for a csv file
+    Get the headers of an uploaded file from HDF5 store
+    :param initial: Only set to True when elements must be populated on initial page rendering
     :param table_key: key pointing to table in HDF5 store
     :return: list of headers
     # """
 
     try:
-        hdf5store = current_app.config["HDF5_STORE"]
-        store = pd.HDFStore(hdf5store)
+        store = pd.HDFStore(current_app.config["HDF5_STORE"])
         data = store.get(table_key)
         store.close()
-        del store
 
         if initial:
             fieldnames = [(fieldname, fieldname) for fieldname in data.columns.values]
@@ -79,6 +79,7 @@ def unique_headers(table_key, initial=False):
         else:
             fieldnames = [fieldname for fieldname in data.columns.values]
 
+    # KeyError will be raised when no files have been uploaded to central store
     except KeyError:
         if initial:
             fieldnames = [('', '')]
@@ -91,7 +92,7 @@ def unique_headers(table_key, initial=False):
 
 def copy_files(src, dst, check_mod_time=False):
     """
-    Copies subdirectories from one directory to another
+    Copies subdirectories from one directory to another. Used to sync plugin folders.
     :param src: Source directory.
     :param dst: Destination directory.
     :param check_mod_time: Defualt is False. When true only the newest files are copied.
@@ -99,11 +100,15 @@ def copy_files(src, dst, check_mod_time=False):
     """
     try:
         shutil.copytree(src, dst)
+
+    # exception for when a file already exists in the destination directory
     except FileExistsError:
+        # file will be deleted and new file will be copied from src
         if not check_mod_time:
             shutil.rmtree(dst)
             shutil.copytree(src, dst, ignore=shutil.ignore_patterns('__pycache*'))
 
+        # the file will only be deleted if the source has a newer version
         if check_mod_time:
             srctime = os.path.getmtime(src)
             dsttime = os.path.getmtime(dst)
@@ -112,6 +117,7 @@ def copy_files(src, dst, check_mod_time=False):
                 shutil.copytree(src, dst, ignore=shutil.ignore_patterns('__pycache*'))
             else:
                 pass
+    # This is raised when the copy encounters a file. It will skip over the file
     except NotADirectoryError:
         pass
 
@@ -122,8 +128,8 @@ def find_plugins(app):
     of the plugins are always available when the server resets.
     :param app: flask application instance
     """
-    docdir = app.config['USER_DOCUMENTS']
-    docplugins = os.path.join(docdir, 'Evert Plugins')
+
+    docplugins = app.config['USER_PLUGINS']
     baseplugindir = app.config['UPLOADED_PLUGIN_DEST']
 
     # updating documents folder
@@ -139,6 +145,3 @@ def find_plugins(app):
         for plugin in src_folder:
             dst = os.path.join(baseplugindir, os.path.basename(plugin))
             copy_files(plugin, dst)
-
-
-
