@@ -18,6 +18,7 @@ before_install:
 
 install:
   - conda env create --file environment.yml
+  - source activate Evert
   - conda install pytables
 
 script: py.test tests.py
