@@ -1,5 +1,7 @@
 from flask import Blueprint
 
+# main application blueprint
 main = Blueprint('main', __name__, static_folder='static', template_folder='templates')
 
-from . import views  # silence pyflakes
+# imported at bottom to prevent circular importing
+from . import views, views_async
