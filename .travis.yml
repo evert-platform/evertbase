@@ -18,7 +18,7 @@ before_install:
   - mkdir "$HOME/Documents"
 
 install:
-  - conda env create --file environment.yml
+  - conda env create --file environment.yml python=$TRAVIS_PYTHON_VERSION
   - source activate Evert
 
 script: py.test tests.py
