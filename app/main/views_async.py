@@ -12,13 +12,16 @@ from . import main
 # mpld3.js
 @main.route('/_plotdata', methods=['GET'])
 def _plotdata():
+
     fig, ax = plt.subplots()
     filepath = request.args.get('plotdata', 0, type=str)
-
     hdf5store = current_app.config["HDF5_STORE"]
     store = pd.HDFStore(hdf5store)
-    data = store.get(filepath)
-    store.close()
+    try:
+        data = store.get(filepath)
+        store.close()
+    except KeyError:
+        store.close()
 
     plottype = request.args.get('type', 0, type=str)
     xset = request.args.getlist('xset[]')
@@ -37,7 +40,7 @@ def _plotdata():
     ax.legend(loc=0)
     fig.tight_layout()
     div = mpld3.fig_to_dict(fig)
-    return jsonify(plot=div)
+    return jsonify(success=True, plot=div)
 
 
 # this function updates the x- and y-axis select elements on the plotting page
@@ -55,8 +58,11 @@ def _plotdetails():
 def _enable_plugins():
     plugin = request.args.get('enableplugins', 0, type=str)
     pluginsmanager = PluginManager()
-    pluginsmanager.enable_plugins([get_plugin_from_all(plugin)])
-    return jsonify(sucess=True)
+    try:
+        pluginsmanager.enable_plugins([get_plugin_from_all(plugin)])
+    except KeyError:
+        pass
+    return jsonify(success=True)
 
 
 # this functions disables the plugin selected in the disable plugin select element on the plugins page
@@ -64,13 +70,18 @@ def _enable_plugins():
 def _disable_plugins():
     plugin = request.args.get('disableplugins', 0, type=str)
     pluginsmanager = PluginManager()
-    pluginsmanager.disable_plugins([get_plugin_from_all(plugin)])
+    try:
+        pluginsmanager.disable_plugins([get_plugin_from_all(plugin)])
+    except KeyError:
+        pass
     return jsonify(success=True)
 
 
 # this function handles the ajax upload of plugin zip files
 @main.route('/_uploadp', methods=['GET', 'POST'])
 def _upload_plugins():
+    success = True
+    msg = None
     if request.method == 'POST':
         zip_file = request.files['file']
         try:
