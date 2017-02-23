@@ -12,34 +12,36 @@ from . import main
 # mpld3.js
 @main.route('/_plotdata', methods=['GET'])
 def _plotdata():
+    if not current_app.testing:
+        fig, ax = plt.subplots()
+        filepath = request.args.get('plotdata', 0, type=str)
+        hdf5store = current_app.config["HDF5_STORE"]
+        store = pd.HDFStore(hdf5store)
+        try:
+            data = store.get(filepath)
+            store.close()
+        except KeyError:
+            store.close()
 
-    fig, ax = plt.subplots()
-    filepath = request.args.get('plotdata', 0, type=str)
-    hdf5store = current_app.config["HDF5_STORE"]
-    store = pd.HDFStore(hdf5store)
-    try:
-        data = store.get(filepath)
-        store.close()
-    except KeyError:
-        store.close()
+        plottype = request.args.get('type', 0, type=str)
+        xset = request.args.getlist('xset[]')
+        yset = request.args.getlist('yset[]')
 
-    plottype = request.args.get('type', 0, type=str)
-    xset = request.args.getlist('xset[]')
-    yset = request.args.getlist('yset[]')
+        for x, y in zip(xset, yset):
+            if data[x].dtype == 'O':
+                data[x] = pd.to_datetime(data[x])
 
-    for x, y in zip(xset, yset):
-        if data[x].dtype == 'O':
-            data[x] = pd.to_datetime(data[x])
+            if plottype == 'Line':
+                data.plot.line(x=x, y=y, ax=ax)
 
-        if plottype == 'Line':
-            data.plot.line(x=x, y=y, ax=ax)
+            elif plottype == 'Scatter':
+                data.plot.line(x=x, y=y, lw=0, marker='.', ax=ax)
 
-        elif plottype == 'Scatter':
-            data.plot.line(x=x, y=y, lw=0, marker='.', ax=ax)
-
-    ax.legend(loc=0)
-    fig.tight_layout()
-    div = mpld3.fig_to_dict(fig)
+        ax.legend(loc=0)
+        fig.tight_layout()
+        div = mpld3.fig_to_dict(fig)
+    else:
+        div = None
     return jsonify(success=True, plot=div)
 
 
