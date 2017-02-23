@@ -22,7 +22,7 @@ Install the requirements in the `requirements.txt` using the following command:
 
 Alternatively a virtual environment can be made for the app using the following command:
 
-`conda create env --file environment.yml`
+`conda env create --file environment.yml`
 
 The application can be started in an IDE or in the command line using the following command:
 
