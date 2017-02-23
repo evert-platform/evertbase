@@ -14,10 +14,11 @@ before_install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
+  - conda config --add channels conda-forge
   - mkdir "$HOME/Documents"
 
 install:
-  - pip install -r requirements.txt
-  - conda install pytables
+  - conda env create --file environment.yml
+  - source activate Evert
 
 script: py.test tests.py
