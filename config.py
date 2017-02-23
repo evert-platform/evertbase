@@ -5,7 +5,6 @@ import os
 class BaseConfig:
     DEBUG = False
     TESTING = False
-    FIND_PLUGINS = True
     SECRET_KEY = 'hard to guess string'
     BASE_DIR = os.path.dirname(__file__)
     STATIC_DIR = os.path.join(BASE_DIR, 'app/static')
