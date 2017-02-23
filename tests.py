@@ -1,6 +1,6 @@
 from app import create_app
 import pytest
-from flask import url_for
+from flask import url_for, request
 
 
 @pytest.fixture
@@ -33,6 +33,10 @@ class TestViews:
     def test_dataviewer(self):
         assert self.client.get(url_for('main.dataview')).status_code == 200
 
+    # def test_ajax(self):
+    #     res = self.client.get('/_plotdetails')
+    #     assert res.json['success'] == True
+
 
 @pytest.mark.parametrize("fixture, app_config, debug, testing", [
     (conf_app, 'default', False, False),
@@ -44,3 +48,14 @@ def test_debug_testing_values_for_config(fixture, app_config, debug, testing):
     assert test_app.debug == debug
     assert test_app.testing == testing
 
+
+@pytest.mark.parametrize('url', [
+    ('/_plotdetails'),
+    ('/_disable_plugin'),
+    ('/_enable_plugin'),
+    ('/_uploadp'),
+    ('/_plotdata')
+])
+def test_ajax(client, url):
+    res = client.get(url)
+    assert res.json['success']
