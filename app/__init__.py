@@ -31,6 +31,9 @@ def create_app(config_name):
     # Configuration of flask_plugins extension
     PluginManager(app)
 
+    # finding user plugins
+    find_plugins(app)
+
     # registering main blueprint
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
