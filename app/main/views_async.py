@@ -8,6 +8,8 @@ from . import functions as funcs
 from . import main
 
 
+# this retrieves the data that needs to be plotted and returns the data that will be rendered as a figure by
+# mpld3.js
 @main.route('/_plotdata', methods=['GET'])
 def _plotdata():
     fig, ax = plt.subplots()
@@ -38,6 +40,7 @@ def _plotdata():
     return jsonify(plot=div)
 
 
+# this function updates the x- and y-axis select elements on the plotting page
 @main.route('/_plotdetails', methods=['GET'])
 def _plotdetails():
 
@@ -47,7 +50,7 @@ def _plotdetails():
     return jsonify(success=True, headers=headers)
 
 
-
+# this functions enables the plugin selected in the enable plugin select element on the plugins page
 @main.route('/_enable_plugin', methods=['GET', 'POST'])
 def _enable_plugins():
     plugin = request.args.get('enableplugins', 0, type=str)
@@ -56,7 +59,7 @@ def _enable_plugins():
     return jsonify(sucess=True)
 
 
-
+# this functions disables the plugin selected in the disable plugin select element on the plugins page
 @main.route('/_disable_plugin', methods=['GET', 'POST'])
 def _disable_plugins():
     plugin = request.args.get('disableplugins', 0, type=str)
@@ -65,7 +68,7 @@ def _disable_plugins():
     return jsonify(success=True)
 
 
-
+# this function handles the ajax upload of plugin zip files
 @main.route('/_uploadp', methods=['GET', 'POST'])
 def _upload_plugins():
     if request.method == 'POST':
