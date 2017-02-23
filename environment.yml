@@ -4,7 +4,7 @@ dependencies:
  - flask==0.12
  - matplotlib==2.0.0
  - Pandas==0.19.2
- - pytables==3.2.2
+ - pytables
  - pip:
     - Flask-Bootstrap==3.3.5.7
     - Flask-Plugins==1.6.1
