@@ -17,12 +17,8 @@ def _plotdata():
         filepath = request.args.get('plotdata', 0, type=str)
         hdf5store = current_app.config["HDF5_STORE"]
         store = pd.HDFStore(hdf5store)
-        try:
-            data = store.get(filepath)
-            store.close()
-        except KeyError:
-            store.close()
-
+        data = store.get(filepath)
+        store.close()
         plottype = request.args.get('type', 0, type=str)
         xset = request.args.getlist('xset[]')
         yset = request.args.getlist('yset[]')
