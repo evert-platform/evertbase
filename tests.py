@@ -9,6 +9,11 @@ def app():
     return app
 
 
+@pytest.fixture
+def conf_app(config):
+    return create_app(config)
+
+
 # Class based test for testing the initial rendering of views
 @pytest.mark.usefixtures('client_class')
 class TestViews:
@@ -29,7 +34,13 @@ class TestViews:
         assert self.client.get(url_for('main.dataview')).status_code == 200
 
 
-
-
-
+@pytest.mark.parametrize("fixture, app_config, debug, testing", [
+    (conf_app, 'default', False, False),
+    (conf_app, 'testing', False, True),
+    (conf_app, 'development', True, False)
+])
+def test_debug_testing_values_for_config(fixture, app_config, debug, testing):
+    test_app = fixture(app_config)
+    assert test_app.debug == debug
+    assert test_app.testing == testing
 
