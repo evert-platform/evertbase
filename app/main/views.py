@@ -1,7 +1,7 @@
 import pandas as pd
 from flask import render_template, flash, request, current_app
 from . import main
-from .forms import FileUploadForm, DataViewerForm, DataSelectForm, PluginsUploadForm, PluginsForm
+from .forms import FileUploadForm, DataViewerForm, PlotDataSelectForm, PluginsUploadForm, PluginsForm
 from . import functions as funcs
 
 
@@ -33,7 +33,7 @@ def upload():
 # renders the plotting template
 @main.route('/plotting', methods=['GET', 'POST'])
 def plot():
-    form = DataSelectForm()
+    form = PlotDataSelectForm()
     files = funcs.uploaded_files()
     form.select.choices = files
     try:
