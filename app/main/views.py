@@ -1,15 +1,17 @@
 import pandas as pd
-from flask import render_template, flash, request, jsonify, current_app
+from flask import render_template, flash, request, current_app
 from . import main
 from .forms import FileUploadForm, DataViewerForm, DataSelectForm, PluginsUploadForm, PluginsForm
 from . import functions as funcs
 
 
+# Renders the main index template
 @main.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
 
 
+# Renders the file uploads template
 @main.route('/upload', methods=['GET', 'POST'])
 def upload():
     filename = None
@@ -28,6 +30,7 @@ def upload():
     return render_template('uploads.html', form=form)
 
 
+# renders the plotting template
 @main.route('/plotting', methods=['GET', 'POST'])
 def plot():
     form = DataSelectForm()
@@ -44,6 +47,7 @@ def plot():
     return render_template('plot.html', form=form)
 
 
+# renders the plugins page template
 @main.route('/plugins', methods=['GET', 'POST'])
 def plugins():
     form = PluginsForm()
@@ -53,6 +57,7 @@ def plugins():
     return render_template('plugins.html', form=form, form2=form2)
 
 
+# renders the dataview template
 @main.route('/dataviewer', methods=['GET', 'POST'])
 def dataview():
     form = DataViewerForm()
