@@ -129,11 +129,10 @@ def find_plugins(app):
     :param app: flask application instance
     """
 
-    docplugins = app.config['USER_PLUGINS']                 # directory for users plugin folder
-    baseplugindir = app.config['UPLOADED_PLUGIN_DEST']      # directory for evert base code plugin folder
+    docplugins = app.config['USER_PLUGINS']
+    baseplugindir = app.config['UPLOADED_PLUGIN_DEST']
 
     # updating documents folder
-    # getting plugins in base directory
     uploadedplugins = [fld for fld in os.listdir(baseplugindir) if not fld.startswith('__pyc')]
     for uploaded in uploadedplugins:
         src = os.path.join(baseplugindir, uploaded)
@@ -141,12 +140,8 @@ def find_plugins(app):
         copy_files(src, dst, True)
 
     # updating base folder
-    # getting plugins in src and excluding '__pycache__' files
-    user_plugins = [plugin for plugin in os.listdir(docplugins) if not plugin.splitlines('__pyc')]
-
-    # checking if the user has any plugins
-    if user_plugins:
-        for user_plugin in user_plugins:
-            src = os.path.join(docplugins, user_plugin)
-            dst = os.path.join(baseplugindir, user_plugin)
-            copy_files(src, dst)
+    src_folder = glob.glob(docplugins+'/*')
+    if src_folder:
+        for plugin in src_folder:
+            dst = os.path.join(baseplugindir, os.path.basename(plugin))
+            copy_files(plugin, dst)
