@@ -145,3 +145,42 @@ def find_plugins(app):
         for plugin in src_folder:
             dst = os.path.join(baseplugindir, os.path.basename(plugin))
             copy_files(plugin, dst)
+
+
+def read_csv_to_db():
+    db = sql.connect('test.db')
+    cur = db.cursor()
+
+    cur.execute('''CREATE TABLE tags
+                    (id, tag, upperbound, lowerbound, units)''')
+
+    db.commit()
+
+    def write_to_db(db, df, key):
+        df = pd.melt(df, id_vars='Timestamp')
+        cur = db.cursor()
+        tags = np.unique(df['variable'].values)
+        cur.execute('SELECT tag from tags')
+        cur_tags = cur.fetchall()
+        cur_tags = [tag[0] for tag in cur_tags]
+        current_index_max = len(cur_tags)
+        tags_commit = []
+        for tag in tags:
+            if tag not in cur_tags:
+                current_index_max += 1
+                tags_commit.append((current_index_max, tag, None, None, None))
+
+        cur.executemany('INSERT INTO tags VALUES (?,?,?,?,?)', tags_commit)
+        df.to_sql(key, db)
+
+        #     update_data_tags =
+        #     for tag
+
+
+        db.commit()
+        print('commit successful')
+
+        # update data with tag ids
+        cur.execute("""UPDATE data
+                        SET variable = (SELECT id FROM tags
+                                        WHERE tag=data.variable)""")
