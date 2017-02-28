@@ -160,7 +160,10 @@ class DataBase:
 
         # Create tags table
         cur.execute('''CREATE TABLE IF NOT EXISTS tags
-                        (id, tag, upperbound, lowerbound, units)''')
+                        (id INTEGER, tag TEXT, upperbound NUMERIC, lowerbound NUMERIC, units TEXT)''')
+
+        cur.execute('''CREATE TABLE IF NOT EXISTS data
+                        (Timestamp, variable INTEGER, value NUMERIC)''')
 
         db.commit()
         return db, cur
@@ -181,7 +184,7 @@ class DataBase:
                 tags_commit.append((current_index_max, tag, None, None, None))
 
         self.cur.executemany('INSERT INTO tags VALUES (?,?,?,?,?)', tags_commit)
-        df.to_sql(key, self.db, if_exists='append')
+        df.to_sql(key, self.db, if_exists='append', index=False)
 
     def normalize_tags(self):
         # update data with tag ids
