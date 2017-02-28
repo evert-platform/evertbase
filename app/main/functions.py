@@ -4,6 +4,8 @@ import pandas as pd
 import shutil
 import os
 import glob
+import sqlite3 as sql
+import numpy as np
 
 
 def checkplugins(enabled=True):
@@ -147,40 +149,47 @@ def find_plugins(app):
             copy_files(plugin, dst)
 
 
-def read_csv_to_db():
-    db = sql.connect('test.db')
-    cur = db.cursor()
+class DataBase:
+    def __init__(self, name):
+        self.name = name
+        self.db, self.cur = self.create_db(name)
 
-    cur.execute('''CREATE TABLE tags
-                    (id, tag, upperbound, lowerbound, units)''')
-
-    db.commit()
-
-    def write_to_db(db, df, key):
-        df = pd.melt(df, id_vars='Timestamp')
+    def create_db(self, name):
+        db = sql.connect(name)
         cur = db.cursor()
+
+        # Create tags table
+        cur.execute('''CREATE TABLE IF NOT EXISTS tags
+                        (id, tag, upperbound, lowerbound, units)''')
+
+        db.commit()
+        return db, cur
+
+    def write_to_db(self, df, key):
+        df = pd.melt(df, id_vars='Timestamp')
         tags = np.unique(df['variable'].values)
-        cur.execute('SELECT tag from tags')
-        cur_tags = cur.fetchall()
-        cur_tags = [tag[0] for tag in cur_tags]
-        current_index_max = len(cur_tags)
+        self.cur.execute('SELECT tag FROM tags')
+        cur_tags = self.cur.fetchall()
+
+        current_index_max = self.cur.execute('SELECT MAX(id) FROM tags').fetchone()[0]
+        if current_index_max is None:
+            current_index_max = 0
         tags_commit = []
         for tag in tags:
             if tag not in cur_tags:
                 current_index_max += 1
                 tags_commit.append((current_index_max, tag, None, None, None))
 
-        cur.executemany('INSERT INTO tags VALUES (?,?,?,?,?)', tags_commit)
-        df.to_sql(key, db)
+        self.cur.executemany('INSERT INTO tags VALUES (?,?,?,?,?)', tags_commit)
+        df.to_sql(key, self.db, if_exists='append')
 
-        #     update_data_tags =
-        #     for tag
-
-
-        db.commit()
-        print('commit successful')
-
+    def normalize_tags(self):
         # update data with tag ids
-        cur.execute("""UPDATE data
+
+        self.cur.execute("""UPDATE data
                         SET variable = (SELECT id FROM tags
                                         WHERE tag=data.variable)""")
+        self.db.commit()
+
+    def close_db(self):
+        self.db.close()

@@ -5,6 +5,7 @@ from flask_uploads import UploadSet, configure_uploads, ALL
 import os
 
 
+
 # class for registering plugins
 class AppPlugin(Plugin):
     def register_blueprint(self, blueprint, **kwargs):

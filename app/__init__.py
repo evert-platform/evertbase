@@ -1,9 +1,11 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_plugins import PluginManager
-from .main.functions import find_plugins
+from .main.functions import find_plugins, DataBase
 from config import config
 import os
+
+sqldb = DataBase('test.db')
 
 
 def create_app(config_name):
