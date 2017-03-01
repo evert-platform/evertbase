@@ -158,37 +158,62 @@ class DataBase:
         db = sql.connect(name)
         cur = db.cursor()
 
-        # Create tags table
-        cur.execute('''CREATE TABLE IF NOT EXISTS tags
-                        (id, tag, upperbound, lowerbound, units)''')
+        # Create database tables
+        cur.executescript('''CREATE TABLE IF NOT EXISTS tags
+                            (tag_id INTEGER, tag_name TEXT);
+
+                            CREATE TABLE IF NOT EXISTS tag_data
+                            (time_stamp, tag_id INTEGER, tag_value NUMERIC);
+
+                            CREATE TABLE IF NOT EXISTS tag_metadata
+                            (tag_id INTEGER, upper_bound NUMERIC, lower_bound NUMERIC, units TEXT );
+
+                            ''')
 
         db.commit()
         return db, cur
 
-    def write_to_db(self, df, key):
+    def write_to_db(self, df):
         df = pd.melt(df, id_vars='Timestamp')
-        tags = np.unique(df['variable'].values)
-        self.cur.execute('SELECT tag FROM tags')
-        cur_tags = self.cur.fetchall()
+        df.columns = ['time_stamp', 'tag_id', 'tag_value']
+        df_tags = np.unique(df['tag_id'].values)
 
-        current_index_max = self.cur.execute('SELECT MAX(id) FROM tags').fetchone()[0]
-        if current_index_max is None:
-            current_index_max = 0
+        # current tags in the database
+        cur_tags = self.cur.execute('SELECT tag_name FROM tags').fetchall()
+
+        # current number of tags
+        current_index_max = self.cur.execute('SELECT COUNT(*) FROM tags').fetchone()[0]
+
+        # initialize tag list to add to datbase
         tags_commit = []
-        for tag in tags:
+
+        # initialize tag meta data to add to database
+        tag_meta = []
+        for tag in df_tags:
             if tag not in cur_tags:
+                # assigning unique tag id
                 current_index_max += 1
-                tags_commit.append((current_index_max, tag, None, None, None))
+                tags_commit.append((current_index_max, tag))
+                tag_meta.append((current_index_max, '', '', ''))
 
-        self.cur.executemany('INSERT INTO tags VALUES (?,?,?,?,?)', tags_commit)
-        df.to_sql(key, self.db, if_exists='append')
+        # adding new tags to data base
+        self.cur.executemany('INSERT INTO tags VALUES (?, ?)', tags_commit)
 
-    def normalize_tags(self):
-        # update data with tag ids
+        # adding new tag meta data
+        self.cur.executemany('INSERT INTO tag_metadata VALUES (?, ?, ?,?)', tag_meta)
 
-        self.cur.execute("""UPDATE data
-                        SET variable = (SELECT id FROM tags
-                                        WHERE tag=data.variable)""")
+        unique_tags = self.cur.execute('SELECT tag_id, tag_name FROM tags').fetchall()
+
+        # creating tagmap
+        tag_map = dict(self.cur.execute('SELECT tag_name, tag_id FROM tags').fetchall())
+
+        # normalizing dataframe tag_id
+        df.tag_id = [tag_map[key] for key in df['tag_id'].values]
+
+        # adding data to tag_data table
+        df.to_sql('tag_data', self.db, if_exists='append', index=False)
+
+        # saving data in database
         self.db.commit()
 
     def close_db(self):
