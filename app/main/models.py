@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 
-DATABASE = os.path.abspath('../static/uploads/EvertStore.db')
+DATABASE = os.path.abspath('./app/static/uploads/EvertStore.db')
 
 
 def create_db(name):
@@ -16,7 +16,7 @@ def create_db(name):
                              tag_name TEXT NOT NULL );
 
                             CREATE TABLE IF NOT EXISTS tag_data
-                            (time_stamp PRIMARY KEY , tag_id INTEGER,
+                            (time_stamp , tag_id INTEGER,
                              tag_value NUMERIC);
 
                             CREATE TABLE IF NOT EXISTS tag_metadata
@@ -44,7 +44,7 @@ def write_data_to_db(file_name):
         cur_tags = cur.execute('SELECT tag_name FROM tags').fetchall()
 
         # initialize tag list to add to database
-        tags_commit = [(tag) for tag in df_tags if tag not in cur_tags]
+        tags_commit = [(tag,) for tag in df_tags if tag not in cur_tags]
 
         # initialize tag meta data to add to database
         tag_meta = [('', '', '') for i in df_tags if i not in cur_tags]
@@ -64,4 +64,3 @@ def write_data_to_db(file_name):
 
         # adding data to tag_data table
         df.to_sql('tag_data', con, if_exists='append', index=False)
-
