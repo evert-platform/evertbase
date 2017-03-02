@@ -81,3 +81,26 @@ def write_data_to_db(file_name, plant_name):
 
         # adding data to tag_data table
         df.to_sql('tag_data', con, if_exists='append', index=False)
+
+def get_tag_names():
+
+    with sql.connect(DATABASE) as con:
+        cur = con.cursor()
+        tag_names = np.asarray(cur.execute('''SELECT tag_name FROM tags''').fetchall()).T[0]
+        tag_names = [(tag, tag) for tag in tag_names]
+
+    return tag_names
+
+def get_tag_data(tag_name):
+
+    with sql.connect(DATABASE) as con:
+        cur = con.cursor()
+        data = cur.execute("""SELECT time_stamp, tag_value
+                              FROM tag_data
+                              JOIN tags
+                              ON tag_data.tag_id=tags.tag_id
+                              WHERE tag_name=(?)""", (tag_name,)).fetchall()
+    print(data)
+
+    return data
+
