@@ -14,15 +14,8 @@
          <fieldset class="col-xs-5 col-sm-5 col-md-5 col-lg-5" style="display: inline;">
              <legend>Plot Data</legend>
               <div class="form-row row" style="display: block">
-                Select file to plot: {{ form.select(class='form-control', id='plotfile') }}
+                Select tag to plot: {{ form.select(class='form-control', id='plotfile') }}
              </div>
-             <div class="form-row row" style="padding-top: 10px; display: block">
-                x-axis: {{ form.selectX(class='form-control', id='plotxaxis') }}
-             </div>
-             <div class="form-row row" style="padding-top: 10px;">
-                y-axis: {{ form.selectY(class='form-control', id='plotyaxis') }}
-             </div>
-
               <div class="form-group col-xs-12 col-md-12 col-sm-12 col-lg-12" style="padding-top: 20px">
                  <input type="submit" class="btn btn-primary" id='Submit' value="Plot">
                  <button type="button" class="btn btn-default" id="deleteplot">
