@@ -4,32 +4,64 @@
     <script src="{{ url_for('static', filename='javascript/uploads.js') }}"></script>
 {% endblock %}
 
-{% block title %}Uploads{% endblock %}
+{% block title %}Data Setup{% endblock %}
 {% block page_content %}
     <div class="page-header">
-        <h1>File upload</h1>
+        <h1>Data Setup</h1>
     </div>
+
+    <p>
+    There are 2 different ways use data on Evert:
+        <ol>
+            <li>
+                <strong>Open</strong> - This will open the data and you will be able to use the basic features of Evert
+                .
+            </li>
+            <li>
+                <strong>Upload</strong> - This will import the data into the database and all the features of evert
+                will be
+                available to you. The data will also not be lost should you close Evert.
+            </li>
+        </ol>
+
+        The file format currently supported for Evert is: <strong>.csv</strong>
+    </p>
+
     <br>
 
      <ul class="nav nav-tabs">
-        <li id="upload" class="active"><a  href="#"><span class="glyphicon glyphicon-open"></span>&nbsp;Upload</a> </li>
+         <li id="open" class="active"><a href="#"><span class="glyphicon glyphicon-folder-open">&nbsp;Open</span></a></li>
+        <li id="upload"><a  href="#"><span class="glyphicon glyphicon-upload"></span>&nbsp;Upload</a> </li>
         <li id="setup"><a href="#" ><span class="glyphicon glyphicon-cog"></span>&nbsp; Plant setup</a></li>
     </ul>
     <br>
 
-    <div id="upload_file" class="container col-sm-6 col-md-6 col-lg-6">
-        {{ wtf.quick_form(form) }}
+        <form class='form form-horizontal' enctype="multipart/form-data" action="" method="post" role="form">
+            <fieldset class="container col-sm-6 col-md-6 col-lg-6" id="open_file">
+                <div class="form-inline">
+                    {{ form.hidden_tag() }}
+                    {{ form.file.label(class='form-file-label') }} {{ form.file(class='form-file') }}
+                    <br>
+                </div>
+                <input type="submit" class="btn btn-default" value="Open">
+            </fieldset>
+
+            <fieldset class="container col-sm-6 col-md-6 col-lg-6" id="upload_file" hidden="hidden">
+                <div class="form-inline">
+                    {{ form.hidden_tag() }}
+                    {{ form.file.label(class='form-file-label') }} {{ form.file(class='form-file') }}
+                    <br>
+                </div>
+                <input type="submit" class="btn btn-default" value="Upload">
+            </fieldset>
+
+            <fieldset class="container col-sm-6 col-md-6 col-lg-6" id="plantsetup" hidden="hidden">
+                <div>
+                    {{ form2.hidden_tag() }}
+                    {{ form2.plant_name.label(class='form-text-label') }} {{ form2.plant_name(class='form-input') }}
+                </div>
+            </fieldset>
+
+        </form>
     </div>
-
-    <div id="plantsetup" class="container col-sm-6 col-md-6 col-lg-6" hidden="hidden">
-        {{ wtf.quick_form(form2) }}
-
-
-    </div>
-
-
-
-
 {% endblock %}
-
-
