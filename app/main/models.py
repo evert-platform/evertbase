@@ -11,20 +11,39 @@ def create_db(name):
         cur = con.cursor()
 
         # Create database tables
-        cur.executescript('''CREATE TABLE IF NOT EXISTS tags
-                            (tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                             tag_name TEXT NOT NULL );
+        cur.executescript('''CREATE TABLE IF NOT EXISTS plants
+                              (plant_id INTEGER PRIMARY KEY  AUTOINCREMENT,
+                               plant_name TEXT );
 
-                            CREATE TABLE IF NOT EXISTS tag_data
-                            (time_stamp , tag_id INTEGER,
-                             tag_value NUMERIC);
+                            CREATE TABLE  IF NOT EXISTS sections
+                            (section_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                             section_name TEXT,
+                             plant_id INTEGER,
+                             FOREIGN KEY(plant_id) REFERENCES plants(plant_id) );
 
-                            CREATE TABLE IF NOT EXISTS tag_metadata
+                             CREATE TABLE IF NOT EXISTS equipment
+                             (equipment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                              equipment_name TEXT,
+                              plant_id FOREIGN KEY REFERENCES plants(plant_id),
+                              section_id,
+                              FOREIGN KEY(section_id) REFERENCES sections(section_id));
+
+                            CREATE TABLE IF NOT EXISTS tags
                             (tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                             section_id INTEGER NOT NULL,
+                             equipment_id INTEGER NOT NULL,
+                             tag_name TEXT NOT NULL,
                              upper_bound NUMERIC NOT NULL ,
                              lower_bound NUMERIC NOT NULL ,
-                              units TEXT NOT NULL );
+                             units TEXT NOT NULL,
+                             FOREIGN KEY (section_id) REFERENCES sections(section_id),
+                             FOREIGN KEY (equipment_id) REFERENCES equipment(equipment_id));
 
+                            CREATE TABLE IF NOT EXISTS tag_data
+                            (timestamp,
+                             tag_id INTEGER,
+                             tag_value NUMERIC,
+                             FOREIGN KEY (tag_id) REFERENCES tags(tag_id));
                             ''')
 
         con.commit()
