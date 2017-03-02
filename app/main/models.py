@@ -24,9 +24,10 @@ def create_db(name):
                              CREATE TABLE IF NOT EXISTS equipment
                              (equipment_id INTEGER PRIMARY KEY AUTOINCREMENT,
                               equipment_name TEXT,
-                              plant_id FOREIGN KEY REFERENCES plants(plant_id),
-                              section_id,
-                              FOREIGN KEY(section_id) REFERENCES sections(section_id));
+                              plant_id,
+                              section_id INTEGER,
+                              FOREIGN KEY(section_id) REFERENCES sections(section_id),
+                              FOREIGN KEY (plant_id) REFERENCES plants(plant_id));
 
                             CREATE TABLE IF NOT EXISTS tags
                             (tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,7 +40,7 @@ def create_db(name):
                              FOREIGN KEY (section_id) REFERENCES sections(section_id),
                              FOREIGN KEY (equipment_id) REFERENCES equipment(equipment_id));
 
-                            CREATE TABLE IF NOT EXISTS tag_data
+                            CREATE TABLE IF NOT EXISTS measurement_data
                             (timestamp,
                              tag_id INTEGER,
                              tag_value NUMERIC,
