@@ -4,8 +4,6 @@ import pandas as pd
 import shutil
 import os
 import glob
-import sqlite3 as sql
-import numpy as np
 
 
 def checkplugins(enabled=True):
@@ -148,51 +146,3 @@ def find_plugins(app):
             dst = os.path.join(baseplugindir, os.path.basename(plugin))
             copy_files(plugin, dst)
 
-
-class DataBase:
-    def __init__(self, name):
-        self.name = name
-        self.db, self.cur = self.create_db(name)
-
-    def create_db(self, name):
-        db = sql.connect(name)
-        cur = db.cursor()
-
-        # Create tags table
-        cur.execute('''CREATE TABLE IF NOT EXISTS tags
-                        (id INTEGER, tag TEXT, upperbound NUMERIC, lowerbound NUMERIC, units TEXT)''')
-
-        cur.execute('''CREATE TABLE IF NOT EXISTS data
-                        (Timestamp, variable INTEGER, value NUMERIC)''')
-
-        db.commit()
-        return db, cur
-
-    def write_to_db(self, df, key):
-        df = pd.melt(df, id_vars='Timestamp')
-        tags = np.unique(df['variable'].values)
-        self.cur.execute('SELECT tag FROM tags')
-        cur_tags = self.cur.fetchall()
-
-        current_index_max = self.cur.execute('SELECT MAX(id) FROM tags').fetchone()[0]
-        if current_index_max is None:
-            current_index_max = 0
-        tags_commit = []
-        for tag in tags:
-            if tag not in cur_tags:
-                current_index_max += 1
-                tags_commit.append((current_index_max, tag, None, None, None))
-
-        self.cur.executemany('INSERT INTO tags VALUES (?,?,?,?,?)', tags_commit)
-        df.to_sql(key, self.db, if_exists='append', index=False)
-
-    def normalize_tags(self):
-        # update data with tag ids
-
-        self.cur.execute("""UPDATE data
-                        SET variable = (SELECT id FROM tags
-                                        WHERE tag=data.variable)""")
-        self.db.commit()
-
-    def close_db(self):
-        self.db.close()

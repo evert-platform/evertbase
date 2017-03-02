@@ -1,29 +1,34 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% block head %}
+    <script src="{{ url_for('static', filename='javascript/uploads.js') }}"></script>
+{% endblock %}
+
 {% block title %}Uploads{% endblock %}
 {% block page_content %}
-    <div class="row">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-
-            {% if messages%}
-                {% for cat, message in messages %}
-                    <div class="alert alert-{{ cat }} alert-dismissible col-md-7 text-center" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                      </button>
-                      {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
     <div class="page-header">
         <h1>File upload</h1>
     </div>
-    <div class="container col-sm-6 col-md-6 col-lg-6">
+    <br>
+
+     <ul class="nav nav-tabs">
+        <li id="upload" class="active"><a  href="#"><span class="glyphicon glyphicon-open"></span>&nbsp;Upload</a> </li>
+        <li id="setup"><a href="#" ><span class="glyphicon glyphicon-cog"></span>&nbsp; Plant setup</a></li>
+    </ul>
+    <br>
+
+    <div id="upload_file" class="container col-sm-6 col-md-6 col-lg-6">
         {{ wtf.quick_form(form) }}
-        {{ emit_event("uploads") }}  {# flask-plugins event #}
     </div>
+
+    <div id="plantsetup" class="container col-sm-6 col-md-6 col-lg-6" hidden="hidden">
+        {{ wtf.quick_form(form2) }}
+
+
+    </div>
+
+
+
 
 {% endblock %}
 

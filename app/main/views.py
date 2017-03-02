@@ -1,8 +1,9 @@
 import pandas as pd
 from flask import render_template, flash, request, current_app
 from . import main
-from .forms import FileUploadForm, DataViewerForm, PlotDataSelectForm, PluginsUploadForm, PluginsForm
+from .forms import FileUploadForm, DataViewerForm, PlotDataSelectForm, PluginsUploadForm, PluginsForm, PlantSetupForm
 from . import functions as funcs
+from . import models
 
 
 # Renders the main index template
@@ -16,18 +17,17 @@ def index():
 def upload():
     filename = None
     form = FileUploadForm()
+    form2 = PlantSetupForm()
 
     if request.method == 'POST' and 'file' in request.files:
-        filename = request.files['file'].filename.split('.')[0]
-        data = pd.read_csv(request.files['file'])
-        store = pd.HDFStore(current_app.config['HDF5_STORE'])
-        store.put(filename, data)
-        flash('{} successfully uploaded to Evert.'.format(filename), category='success')
+        filename = request.files['file']
+        models.write_data_to_db(filename)
+        flash('{} successfully uploaded to Evert.'.format(filename.filename), category='success')
 
     else:
         filename = None
 
-    return render_template('uploads.html', form=form)
+    return render_template('uploads.html', form=form, form2=form2)
 
 
 # renders the plotting template
