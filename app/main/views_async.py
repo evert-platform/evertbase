@@ -6,6 +6,7 @@ from flask import jsonify, request, current_app
 import pandas as pd
 from . import functions as funcs
 from . import main
+from . import models
 
 
 # this retrieves the data that needs to be plotted and returns the data that will be rendered as a figure by
@@ -15,25 +16,26 @@ def _plotdata():
     if not current_app.testing:
         fig, ax = plt.subplots()
         filepath = request.args.get('plotdata', 0, type=str)
-        hdf5store = current_app.config["HDF5_STORE"]
-        store = pd.HDFStore(hdf5store)
-        data = store.get(filepath)
-        store.close()
         plottype = request.args.get('type', 0, type=str)
-        xset = request.args.getlist('xset[]')
-        yset = request.args.getlist('yset[]')
 
-        for x, y in zip(xset, yset):
-            if data[x].dtype == 'O':
-                data[x] = pd.to_datetime(data[x])
+        # xset = request.args.getlist('xset[]')
+        # yset = request.args.getlist('yset[]')
 
-            if plottype == 'Line':
-                data.plot.line(x=x, y=y, ax=ax)
+        data_cols = ['Timestamp', filepath]
+        data = pd.DataFrame(models.get_tag_data(filepath), columns=data_cols)
 
-            elif plottype == 'Scatter':
-                data.plot.line(x=x, y=y, lw=0, marker='.', ax=ax)
+        # for x, y in zip(xset, yset):
+        if data['Timestamp'].dtype == 'O':
+            data['Timestamp'] = pd.to_datetime(data['Timestamp'])
+
+        if plottype == 'Line':
+            data.plot.line(x='Timestamp', y=filepath, ax=ax)
+
+        elif plottype == 'Scatter':
+            data.plot.line(x='Timestamp', y=filepath, lw=0, marker='.', ax=ax)
 
         ax.legend(loc=0)
+
         fig.tight_layout()
         div = mpld3.fig_to_dict(fig)
     else:
