@@ -13,7 +13,7 @@ def index():
 
 
 # Renders the file uploads template
-@main.route('/upload', methods=['GET', 'POST'])
+@main.route('/data', methods=['GET', 'POST'])
 def upload():
     filename = None
     form = FileUploadForm()
