@@ -21,7 +21,7 @@ def upload():
 
     if request.method == 'POST' and 'file' in request.files:
         filename = request.files['file']
-        models.write_data_to_db(filename)
+        models.write_data_to_db(filename, filename.filename.split('.')[0])
         flash('{} successfully uploaded to Evert.'.format(filename.filename), category='success')
 
     else:
@@ -34,15 +34,7 @@ def upload():
 @main.route('/plotting', methods=['GET', 'POST'])
 def plot():
     form = PlotDataSelectForm()
-    files = funcs.uploaded_files()
-    form.select.choices = files
-    try:
-        headers = funcs.unique_headers(files[0][0], initial=True)
-        form.selectX.choices = headers
-        form.selectY.choices = headers
-
-    except FileNotFoundError:
-        return render_template('plot.html', form=form)
+    form.select.choices = models.get_tag_names()
 
     return render_template('plot.html', form=form)
 
