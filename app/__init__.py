@@ -1,11 +1,10 @@
-from flask import Flask
+from flask import Flask, g
 from flask_bootstrap import Bootstrap
 from flask_plugins import PluginManager
-from .main.functions import find_plugins, DataBase
+from .main.functions import find_plugins
+from .main.models import create_db
 from config import config
 import os
-
-sqldb = DataBase('test.db')
 
 
 def create_app(config_name):
@@ -39,6 +38,10 @@ def create_app(config_name):
     # registering main blueprint
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
+
+    # creating database
+    create_db(app.config['DB_PATH'])
+
     return app
 
 
