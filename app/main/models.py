@@ -31,12 +31,12 @@ def create_db(name):
 
                             CREATE TABLE IF NOT EXISTS tags
                             (tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                             section_id INTEGER NOT NULL,
-                             equipment_id INTEGER NOT NULL,
+                             section_id INTEGER,
+                             equipment_id INTEGER,
                              tag_name TEXT NOT NULL,
-                             upper_bound NUMERIC NOT NULL ,
-                             lower_bound NUMERIC NOT NULL ,
-                             units TEXT NOT NULL,
+                             upper_bound NUMERIC,
+                             lower_bound NUMERIC,
+                             units TEXT,
                              FOREIGN KEY (section_id) REFERENCES sections(section_id),
                              FOREIGN KEY (equipment_id) REFERENCES equipment(equipment_id));
 
@@ -50,10 +50,14 @@ def create_db(name):
         con.commit()
 
 
-def write_data_to_db(file_name):
+def write_data_to_db(file_name, plant_name):
     with sql.connect(DATABASE) as con:
         # creating database cursor object
         cur = con.cursor()
+
+        # adding plant name
+        cur.execute("""INSERT INTO plants (plant_name) VALUES (?)""", (plant_name,))
+
         # handling csv file
         df = pd.read_csv(file_name)
         df = pd.melt(df, id_vars=df.columns.values[0])
@@ -66,15 +70,8 @@ def write_data_to_db(file_name):
         # initialize tag list to add to database
         tags_commit = [(tag,) for tag in df_tags if tag not in cur_tags]
 
-        # initialize tag meta data to add to database
-        tag_meta = [('', '', '') for i in df_tags if i not in cur_tags]
-
         # adding new tags to data base
         cur.executemany('INSERT INTO tags (tag_name) VALUES (?)', tags_commit)
-
-        # adding new tag meta data
-        cur.executemany('INSERT INTO tag_metadata (upper_bound, lower_bound, units) VALUES (?,?,?)',
-                        tag_meta)
 
         # creating tagmap from tags in tags table
         tag_map = dict(cur.execute('SELECT tag_name, tag_id FROM tags').fetchall())
