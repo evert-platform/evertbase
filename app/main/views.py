@@ -53,14 +53,11 @@ def plugins():
 @main.route('/dataviewer', methods=['GET', 'POST'])
 def dataview():
     form = DataViewerForm()
-    form.select.choices = funcs.uploaded_files()
+    form.select.choices = models.get_tag_names()
 
     if form.validate_on_submit():
         filepath = form.select.data
-        hdf5store = current_app.config["HDF5_STORE"]
-        store = pd.HDFStore(hdf5store)
-        data = store.get(filepath)
-        store.close()
+        data = pd.DataFrame(models.get_tag_data(filepath), columns=['Timestamp',filepath])
         titles = [{'title': key} for key in data.columns.values]
         data = data.values.tolist()
 
