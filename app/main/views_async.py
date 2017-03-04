@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from flask_plugins import PluginManager, get_plugin_from_all
+from flask import session
 from zipfile import ZipFile, BadZipFile
 import mpld3
 from flask import jsonify, request, current_app
@@ -95,3 +96,22 @@ def _upload_plugins():
             msg = 'Error: Ensure file is a zip file'
 
     return jsonify(success=success, msg=msg)
+
+
+# open/upload data files
+@main.route('/_dataopen', methods=['GET', 'POST'])
+@main.route('/_dataupload', methods=['GET', 'POST'])
+def _data_handle():
+
+    if request.method == 'POST' and 'file' in request.files:
+        file = request.files['file']
+        filename = file.filename.split('.')[0]
+        request_path = request.path
+
+        if request_path == '/_dataopen':
+            models.write_data_to_db(file, filename, 1, 0)
+
+        elif request_path =='/_dataupload':
+            models.write_data_to_db(file, filename, 0, 1)
+
+    return jsonify(success=True)
