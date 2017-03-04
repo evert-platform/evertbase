@@ -1,5 +1,5 @@
 from flask_plugins import get_enabled_plugins, get_all_plugins
-from flask import current_app
+from flask import current_app, request
 import pandas as pd
 import shutil
 import os
@@ -146,3 +146,8 @@ def find_plugins(app):
             dst = os.path.join(baseplugindir, os.path.basename(plugin))
             copy_files(plugin, dst)
 
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
