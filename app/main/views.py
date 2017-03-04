@@ -15,17 +15,8 @@ def index():
 # Renders the file uploads template
 @main.route('/data', methods=['GET', 'POST'])
 def upload():
-    filename = None
     form = FileUploadForm()
     form2 = PlantSetupForm()
-
-    if request.method == 'POST' and 'file' in request.files:
-        filename = request.files['file']
-        models.write_data_to_db(filename, filename.filename.split('.')[0])
-        flash('{} successfully uploaded to Evert.'.format(filename.filename), category='success')
-
-    else:
-        filename = None
 
     return render_template('uploads.html', form=form, form2=form2)
 
@@ -66,3 +57,5 @@ def dataview():
         titles = ''
 
     return render_template('dataviewer.html', form=form, data=data, titles=titles)
+
+
