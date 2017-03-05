@@ -14,7 +14,7 @@ def create_db(name):
         # Create database tables
         cur.executescript('''CREATE TABLE IF NOT EXISTS plants
                               (plant_id INTEGER PRIMARY KEY  AUTOINCREMENT,
-                               plant_name TEXT,
+                               plant_name TEXT UNIQUE,
                                opened INTEGER,
                                uploaded INTEGER,
                                timestamp TEXT);
@@ -54,7 +54,7 @@ def create_db(name):
         con.commit()
 
 
-def write_data_to_db(file_name, plant_name, open, upload):
+def write_data_to_db(file_name, plant_name, open, upload, append=False):
     with sql.connect(DATABASE) as con:
         # creating database cursor object
         cur = con.cursor()
@@ -85,10 +85,15 @@ def write_data_to_db(file_name, plant_name, open, upload):
         df_tags = np.unique(df['tag_id'].values)
 
         # current tags in the database
-        cur_tags = cur.execute('SELECT tag_name FROM tags').fetchall()
+        if append:
+            cur_tags = cur.execute('SELECT tag_name FROM tags').fetchall()
 
-        # initialize tag list to add to database
-        tags_commit = [(section_id, tag,) for tag in df_tags if tag not in cur_tags]
+            # initialize tag list to add to database
+            tags_commit = [(section_id, tag,) for tag in df_tags if tag not in cur_tags]
+
+        else:
+            # initialize tag list to add to database
+            tags_commit = [(section_id, tag,) for tag in df_tags]
 
         # adding new tags to data base
         cur.executemany('INSERT INTO tags (section_id, tag_name) VALUES (?, ?)', tags_commit)
@@ -120,7 +125,13 @@ def get_tag_data(tag_name):
                               JOIN tags
                               ON tag_data.tag_id=tags.tag_id
                               WHERE tag_name=(?)""", (tag_name,)).fetchall()
-    print(data)
-
     return data
 
+
+def get_plant_names():
+    with sql.connect(DATABASE) as con:
+        cur = con.cursor()
+        data = cur.execute("""SELECT plant_name
+                              FROM plants""").fetchall()
+
+    return data
