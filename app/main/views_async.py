@@ -109,9 +109,9 @@ def _data_handle():
         request_path = request.path
 
         if request_path == '/_dataopen':
-            models.write_data_to_db(file, filename, 1, 0)
+            models.Measurement_data.write_data_to_db(file, filename, 1, 0)
 
         elif request_path =='/_dataupload':
-            models.write_data_to_db(file, filename, 0, 1)
+            models.Measurement_data.write_data_to_db(file, filename, 0, 1)
 
     return jsonify(success=True)
