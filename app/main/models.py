@@ -31,6 +31,11 @@ class BaseMixin:
         db.session.commit()
 
 
+    @classmethod
+    def query_columns_all(cls, *args):
+        return cls.query.with_entities(*args).all()
+
+
 # Model for plants table
 class Plants(BaseMixin, db.Model):
     plant_id = db.Column('plant_id', db.Integer, primary_key=True)
@@ -71,6 +76,13 @@ class Tags(BaseMixin, db.Model):
     def create_multiple(list):
         for section_id, tag_name in list:
             Tags.create(tag_name=tag_name, section_id=section_id)
+
+
+    @classmethod
+    def get_tags(cls):
+        tags = cls.query.with_entities(cls.tag_id, cls.tag_name).all()
+        return [(str(tag_id), tag_name) for tag_id, tag_name in tags]
+
 
 
 # Model for measurement data table
@@ -119,3 +131,9 @@ class MeasurementData(db.Model):
 
             # adding data to tag_data table
             df.to_sql('measurement_data', db.engine, if_exists='append', index=False)
+
+    @staticmethod
+    def get_tag_data(**kwargs):
+
+        return MeasurementData.query.with_entities(MeasurementData.timestamp, MeasurementData.tag_value).\
+                filter_by(**kwargs).all()
