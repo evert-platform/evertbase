@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 from flask_plugins import PluginManager, get_plugin_from_all
-from flask import session
 from zipfile import ZipFile, BadZipFile
 import mpld3
 from flask import jsonify, request, current_app
@@ -108,10 +107,13 @@ def _data_handle():
         filename = file.filename.split('.')[0]
         request_path = request.path
 
-        if request_path == '/_dataopen':
-            models.Measurement_data.write_data_to_db(file, filename, 1, 0)
+        if filename:
+            if request_path == '/_dataopen':
+                models.MeasurementData.write_data_to_db(file, filename, 1, 0)
 
-        elif request_path =='/_dataupload':
-            models.Measurement_data.write_data_to_db(file, filename, 0, 1)
+            elif request_path =='/_dataupload':
+                models.MeasurementData.write_data_to_db(file, filename, 0, 1)
+        else:
+            pass
 
     return jsonify(success=True)
