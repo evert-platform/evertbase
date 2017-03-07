@@ -17,7 +17,18 @@ def index():
 def upload():
     form = FileUploadForm()
     form2 = PlantSetupForm()
-
+    plant_names = models.Plants.get_names()
+    if plant_names:
+        section_names = models.Sections.get_filtered_names(plant=int(plant_names[0][0]))
+        form2.plant_select.choices = plant_names
+        form2.plant_name.data = plant_names[0][1]
+        form2.unit_select.choices = section_names
+        form2.unit_select.data = section_names[0][0]
+        form2.tags.choices = models.Tags.get_unassigned_tags(plant=int(plant_names[0][0]))
+        form2.unit_tags.choices = models.Tags.get_filtered_names(section=int(section_names[0][0]),
+                                                                 plant=int(plant_names[0][0]))
+        print(models.Tags.get_filtered_names(section=int(section_names[0][0]),
+                                                                 plant=int(plant_names[0][0])))
     return render_template('uploads.html', form=form, form2=form2)
 
 
