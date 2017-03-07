@@ -125,4 +125,14 @@ $(function () {
 
 
     });
+
+
+    $('input#updateplantname').on('click', function(){
+        $.getJSON('/_plantnamechange',{
+            newname: $('input#plant_name').val(),
+            plant: $('select#plant_select :selected').val()
+        }, function (data) {
+
+        })
+    })
 });
