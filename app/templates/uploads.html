@@ -10,52 +10,89 @@
         <h1>Data Setup</h1>
     </div>
 
-    <p>
-    There are 2 different ways use data on Evert:
-        <ol>
-            <li>
-                <strong>Open</strong> - This will open the data and you will be able to use the basic features of Evert
-                .
-            </li>
-            <li>
-                <strong>Upload</strong> - This will import the data into the database and all the features of evert
-                will be
-                available to you. The data will also not be lost should you close Evert.
-            </li>
-        </ol>
-
-        The file format currently supported for Evert is: <strong>.csv</strong>
-    </p>
-
-    <br>
-
-     <ul class="nav nav-tabs">
-         <li id="open" class="active"><a href="#"><span class="glyphicon glyphicon-folder-open">&nbsp;Open</span></a></li>
-        <li id="upload"><a  href="#"><span class="glyphicon glyphicon-upload"></span>&nbsp;Upload</a> </li>
+    <ul class="nav nav-tabs">
+         <li id="open" class="active"><a href="#"><span class="glyphicon glyphicon-folder-open">&nbsp;Open/Upload</span></a></li>
         <li id="setup"><a href="#" ><span class="glyphicon glyphicon-cog"></span>&nbsp; Plant setup</a></li>
     </ul>
     <br>
 
-        <form class='form form-horizontal' enctype="multipart/form-data" action="" method="post" role="form"
-              id="datafile">
-            <fieldset class="container col-sm-6 col-md-6 col-lg-6" id="datafileform">
-                <div class="form-inline">
-                    {{ form.hidden_tag() }}
-                    {{ form.file.label(class='form-file-label') }} {{ form.file(class='form-file', id='datafile') }}
-                    <br>
-                </div>
-                <input type="submit" class="btn btn-default" value="Open" id="open_file">
-                <input type="submit" class="btn btn-default" value="Upload" id="upload_file" hidden="hidden">
-            </fieldset>
 
+    <div  id="uploaddesc">
+        <p>
+        There are 2 different ways use data on Evert:
+            <ol>
+                <li>
+                    <strong>Open</strong> - This will open the data and you will be able to use the basic features of Evert
+                    .
+                </li>
+                <li>
+                    <strong>Upload</strong> - This will import the data into the database and all the features of evert
+                    will be
+                    available to you. The data will also not be lost should you close Evert.
+                </li>
+            </ol>
 
-            <fieldset class="container col-sm-6 col-md-6 col-lg-6" id="plantsetup" hidden="hidden">
-                <div>
+            The file format currently supported for Evert is: <strong>.csv</strong>
+        </p>
+    </div>
+
+    <form class='form form-horizontal' enctype="multipart/form-data" action="" method="post" role="form"
+          id="datafile">
+
+        <fieldset class="container col-sm-6 col-md-6 col-lg-6" id="datafileform">
+            <hr>
+            <div class="form-inline">
+                {{ form.hidden_tag() }}
+                {{ form.file.label(class='form-file-label') }} {{ form.file(class='form-file', id='datafile') }}
+                <br>
+            </div>
+            <input type="submit" class="btn btn-default" value="Open" id="open_file">
+            <input type="submit" class="btn btn-default" value="Upload" id="upload_file">
+        </fieldset>
+    </form>
+
+    <div id="plant_setup">
+        <form class='form form-horizontal' enctype="multipart/form-data" action="" method="post" role="form">
+            <fieldset class="container col-sm-12 col-md-12 col-lg-12" id="plantsetup" hidden="hidden">
                     {{ form2.hidden_tag() }}
-                    {{ form2.plant_name.label(class='form-text-label') }} {{ form2.plant_name(class='form-input') }}
-                </div>
-            </fieldset>
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        {{ form2.plant_select.label(class='form-select-label') }} {{ form2.plant_select(class='form-control') }}<br>
+                        {{ form2.plant_name.label(class='form-text-label') }} {{ form2.plant_name(class='form-control') }}
+                        <input type="button" value="Update" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px"><br>
+                        {{ form2.unit_name.label(class='form-select-label') }}{{ form2.unit_name(class='form-control') }}
+                        <input type="button" value="Update" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px">
+                        <input type="button" value="Add" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px">
+                    </div>
 
+                    <div class="col-sm-12 col-md-12 col-lg-12"></div>
+
+                    <br>
+
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        {{ form2.unit_select.label(class='form-select-label') }}{{ form2.unit_select(class='form-control') }}
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        {{ form2.tags.label(class='form-select-label') }}{{ form2.tags(class='form-control') }}
+                        <input type="button" value="Set" class="btn btn-primary" style="margin-top: 10px"><br>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12"></div>
+
+                    <div class="col-sm-4 col-md-4 col-lg-4" style="display: inline">
+                        {{ form2.unit_tags.label(class='form-select-label') }}{{ form2.unit_tags(class='form-control') }}
+                        <input type="button" value="Delete" class="btn btn-primary" style="margin-top: 10px;">
+                    </div>
+
+
+
+
+
+
+{#                {{ wtf.quick_form(form2) }}#}
+
+            </fieldset>
         </form>
     </div>
+
+
+
 {% endblock %}
