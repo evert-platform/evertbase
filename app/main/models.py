@@ -48,13 +48,10 @@ class BaseMixin:
         return [(str(_id), _name) for _id, _name in names]
 
 
-
-
-
 # Model for plants table
 class Plants(BaseMixin, db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
-    name = db.Column('plant_name', db.VARCHAR(50), unique=True)
+    name = db.Column('name', db.VARCHAR(50), unique=True)
     opened = db.Column('opened', db.Integer)
     uploaded = db.Column('uploaded', db.Integer)
     time = db.Column('time', db.TEXT)
