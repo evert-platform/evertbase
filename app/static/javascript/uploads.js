@@ -11,23 +11,13 @@ $(document).ready(function () {
 
         $('fieldset#datafileform').show();
         $('input#open_file').show();
+        $('div#uploaddesc').show();
         $('input#upload_file').hide();
         $('fieldset#plantsetup').hide();
 
     });
 
-    $uploadtab.on('click', function () {
-        $(this).addClass('active');
-        $plantsetuptab.removeClass('active');
-        $opentab.removeClass('active');
 
-        $('input#open_file').hide();
-        $('input#upload_file').show();
-        $('fieldset#plantsetup').hide();
-        $('fieldset#datafileform').show();
-
-
-    });
 
     $plantsetuptab.on('click', function () {
         $(this).addClass('active');
@@ -38,6 +28,7 @@ $(document).ready(function () {
         $('input#upload_file').hide();
         $('fieldset#plantsetup').show();
         $('fieldset#datafileform').hide();
+        $('div#uploaddesc').hide();
     });
 
 
