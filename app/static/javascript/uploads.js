@@ -83,3 +83,46 @@ $(function() {
       })
 
       });
+
+function update_select(selector, data){
+    selector.empty();
+    $.each(data, function (value, key) {
+                selector.append($("<option></option>")
+                    .attr("value", value).text(key))
+    });
+}
+
+
+$(function () {
+    $('select#plant_select').on('change', function () {
+        var cur_plant = $(this).val();
+
+        $.getJSON('/_plantchange', {
+            plant: cur_plant
+        }, function (data) {
+            var $unitselect = $('select#unit_select');
+            var $plantname = $('input#plant_name');
+            var $unittags = $('select#unit_tags');
+            var $tags = $('select#tags');
+
+            $plantname.val(data.plant_name[1]);
+
+            // updating the unit select field
+            update_select($unitselect, data.sections);
+
+            // selecting the first element
+            var $firstunit = $('select#unit_select :first-child');
+            $firstunit.attr('selected', true);
+
+            $('input#unit_name').val($firstunit.text());
+
+            // updating the unit_tags select field
+            update_select($unittags, data.unittags);
+
+            //updateing the tags select field
+            update_select($tags, data.tags);
+        });
+
+
+    });
+});
