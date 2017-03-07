@@ -118,3 +118,13 @@ def _plantchange():
     tags = models.Tags.get_unassigned_tags(plant=cur_plant)
 
     return jsonify(plant_name=plant_name, sections=dict(sections), unittags=dict(unit_tags), tags=dict(tags))
+
+
+@main.route('/_plantnamechange', methods=['GET','POST'])
+def _plantnamechange():
+
+    new_name = request.args.get('newname', 0, type=str)
+    cur_plant = request.args.get('plant', 0, type=int)
+    models.Plants.query.filter_by(id=cur_plant).update(dict(name=new_name))
+    models.db.session.commit()
+    return jsonify(success=True)
