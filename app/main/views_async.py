@@ -4,7 +4,6 @@ from zipfile import ZipFile, BadZipFile
 import mpld3
 from flask import jsonify, request, current_app
 import pandas as pd
-from . import functions as funcs
 from . import main
 from . import models
 
@@ -107,6 +106,7 @@ def _data_handle():
             pass
 
     return jsonify(success=True)
+
 
 @main.route('/_plantchange', methods=['GET', 'POST'])
 def _plantchange():
