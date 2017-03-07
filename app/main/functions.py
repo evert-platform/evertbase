@@ -1,6 +1,5 @@
 from flask_plugins import get_enabled_plugins, get_all_plugins
-from flask import current_app, request
-import pandas as pd
+from flask import request
 import shutil
 import os
 import glob
