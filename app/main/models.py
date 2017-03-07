@@ -4,7 +4,7 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy, event
 from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
-from sqlite3 import IntegrityError
+from sqlalchemy.exc import IntegrityError
 
 db = SQLAlchemy()
 
@@ -95,47 +95,52 @@ class MeasurementData(db.Model):
 
     @staticmethod
     def write_data_to_db(file_name, plant_name, open, upload):
-            try:
-                time = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        # using global variable for rollback of data
+        global plant_id
+        plant_id = None
 
-                # adding plant name
-                Plants.create(name=plant_name, opened=open, uploaded=upload, time=time)
+        try:
+            time = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
 
-                # Finding default plant id
-                plant_id = Plants.query.with_entities(Plants.id).filter_by(name=plant_name).first()
+            # adding plant name
+            Plants.create(name=plant_name, opened=open, uploaded=upload, time=time)
 
-                # adding defualt unit name
-                default_section_name = plant_name + '_Unit01'
-                Sections.create(name=default_section_name, plant=plant_id[0])
+            # Finding default plant id
 
-                # getting unique id for default section
-                section_id = Sections.query.with_entities(Sections.id).filter_by(name=default_section_name).first()
+            plant_id = Plants.query.with_entities(Plants.id).filter_by(name=plant_name).first()
 
-                # handling csv file
-                df = pd.read_csv(file_name)
-                df = pd.melt(df, id_vars=df.columns.values[0])
-                df.columns = ['timestamp', 'tag', 'tag_value']
-                df_tags = np.unique(df['tag'].values)
+            # adding defualt unit name
+            default_section_name = plant_name + '_Unit01'
+            Sections.create(name=default_section_name, plant=plant_id[0])
 
-                tags_commit = [(section_id[0], tag,) for tag in df_tags]
+            # getting unique id for default section
+            section_id = Sections.query.with_entities(Sections.id).filter_by(name=default_section_name).first()
 
-                # adding new tags to data base
-                Tags.create_multiple(tags_commit)
+            # handling csv file
+            df = pd.read_csv(file_name)
+            df = pd.melt(df, id_vars=df.columns.values[0])
+            df.columns = ['timestamp', 'tag', 'tag_value']
+            df_tags = np.unique(df['tag'].values)
 
-                # creating tagmap from tags in tags table
-                tag_map = dict(Tags.query.with_entities(Tags.name, Tags.id).all())
+            tags_commit = [(section_id[0], tag,) for tag in df_tags]
+
+            # adding new tags to data base
+            Tags.create_multiple(tags_commit)
+
+            # creating tagmap from tags in tags table
+            tag_map = dict(Tags.query.with_entities(Tags.name, Tags.id).all())
 
 
-                # normalizing dataframe tag_id with tag_ids from tags table
-                df.tag = [tag_map[key] for key in df['tag'].values]
+            # normalizing dataframe tag_id with tag_ids from tags table
+            df.tag = [tag_map[key] for key in df['tag'].values]
 
-                # adding data to tag_data table
-                # df.to_sql('measurement_data', db.engine, if_exists='append', index=False)
+            # adding data to tag_data table
+            # df.to_sql('measurement_data', db.engine, if_exists='append', index=False)
 
-            except IntegrityError or KeyError as e:
-                # TODO: Add method of letting user know the write has failed
-                print(e)
-                Plants.delete(name=plant_name)
+        except IntegrityError or KeyError as e:
+            # TODO: Add method of letting user know the write has failed
+            db.session.rollback()
+            Plants.delete(id=plant_id)
 
     @staticmethod
     def get_tag_data(**kwargs):
