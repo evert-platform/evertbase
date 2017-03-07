@@ -39,8 +39,15 @@ class BaseMixin:
 
     @classmethod
     def get_names(cls):
-        tags = cls.query.with_entities(cls.id, cls.name).all()
-        return [(str(_id), _name) for _id, _name in tags]
+        names = cls.query.with_entities(cls.id, cls.name).all()
+        return [(str(_id), _name) for _id, _name in names]
+
+    @classmethod
+    def get_filtered_names(cls, **kwargs):
+        names = cls.query.with_entities(cls.id, cls.name).filter_by(**kwargs).all()
+        return [(str(_id), _name) for _id, _name in names]
+
+
 
 
 
@@ -60,7 +67,6 @@ class Sections(BaseMixin, db.Model):
     plant = db.Column('plant', db.Integer, db.ForeignKey('plants.id', ondelete='CASCADE',
                                                                onupdate='CASCADE'))
 
-
 # Model for equipment table
 class Equipment(BaseMixin, db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
@@ -72,6 +78,7 @@ class Equipment(BaseMixin, db.Model):
 # Model for tags table
 class Tags(BaseMixin, db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
+    plant = db.Column('plant', db.ForeignKey('plants.id', ondelete='CASCADE', onupdate="CASCADE"))
     section = db.Column('section', db.ForeignKey('sections.id', ondelete='CASCADE', onupdate="CASCADE"))
     equipment = db.Column('equipment', db.ForeignKey('equipment.id', onupdate='CASCADE',
                                                            ondelete="CASCADE"))
@@ -82,8 +89,13 @@ class Tags(BaseMixin, db.Model):
 
     @staticmethod
     def create_multiple(list):
-        for section_id, tag_name in list:
-            Tags.create(name=tag_name, section=section_id)
+        for plant, section_id, tag_name in list:
+            Tags.create(name=tag_name, section=section_id, plant=plant)
+
+    @staticmethod
+    def get_unassigned_tags(**kwargs):
+        tags = Tags.query.with_entities(Tags.id, Tags.name).filter_by(section=None, **kwargs).all()
+        return [(str(_id), _name) for _id, _name in tags]
 
 
 # Model for measurement data table
@@ -106,7 +118,6 @@ class MeasurementData(db.Model):
             Plants.create(name=plant_name, opened=open, uploaded=upload, time=time)
 
             # Finding default plant id
-
             plant_id = Plants.query.with_entities(Plants.id).filter_by(name=plant_name).first()
 
             # adding defualt unit name
@@ -122,7 +133,7 @@ class MeasurementData(db.Model):
             df.columns = ['timestamp', 'tag', 'tag_value']
             df_tags = np.unique(df['tag'].values)
 
-            tags_commit = [(section_id[0], tag,) for tag in df_tags]
+            tags_commit = [(plant_id[0], section_id[0], tag,) for tag in df_tags]
 
             # adding new tags to data base
             Tags.create_multiple(tags_commit)
