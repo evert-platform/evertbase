@@ -81,7 +81,7 @@ class MeasurementData(db.Model):
     tag_value = db.Column('tag_value', db.Float)
 
     @staticmethod
-    def write_data_to_db(file_name, plant_name, open, upload, append=False):
+    def write_data_to_db(file_name, plant_name, open, upload):
 
             time = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
 
@@ -105,15 +105,6 @@ class MeasurementData(db.Model):
             df.columns = ['timestamp', 'tag_id', 'tag_value']
             df_tags = np.unique(df['tag_id'].values)
 
-            # current tags in the database
-            # if append:
-            #     cur_tags = cur.execute('SELECT tag_name FROM tags').fetchall()
-            #
-            #     # initialize tag list to add to database
-            #     tags_commit = [(section_id, tag,) for tag in df_tags if tag not in cur_tags]
-            #
-            # else:
-                # initialize tag list to add to database
             tags_commit = [(section_id[0], tag,) for tag in df_tags]
 
             # adding new tags to data base
