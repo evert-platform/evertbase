@@ -1,22 +1,37 @@
 import pandas as pd
 import numpy as np
-import os
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, event
+from sqlalchemy.engine import Engine
+from sqlite3 import Connection as SQLite3Connection
 
 db = SQLAlchemy()
 
+# add event for enabling foreign keys on SQLite database
+@event.listens_for(Engine, "connect")
+def _set_sqlite_pragma(dbapi_connection, connection_record):
+    if isinstance(dbapi_connection, SQLite3Connection):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON;")
+        cursor.close()
+
+
+# custom base class with features that are inherited over all table classes
 class BaseMixin:
 
     @classmethod
-    def create(cls, **kwargs):
+    def create(cls, **kwargs):  # method for adding data to table
         obj = cls(**kwargs)
         db.session.add(obj)
         db.session.commit()
 
+    @classmethod
+    def delete(cls, **kwargs):  # method for deleting data from table
+        cls.query.filter_by(**kwargs).delete()
+        db.session.commit()
 
 
-
+# Model for plants table
 class Plants(BaseMixin, db.Model):
     plant_id = db.Column('plant_id', db.Integer, primary_key=True)
     plant_name = db.Column('plant_name', db.VARCHAR(50), unique=True)
@@ -25,6 +40,7 @@ class Plants(BaseMixin, db.Model):
     time = db.Column('time', db.TEXT)
 
 
+# Model for sections table
 class Sections(BaseMixin, db.Model):
     section_id = db.Column('section_id', db.Integer, primary_key=True)
     section_name = db.Column('section_name', db.TEXT)
@@ -32,6 +48,7 @@ class Sections(BaseMixin, db.Model):
                                                                onupdate='CASCADE'))
 
 
+# Model for equipment table
 class Equipment(BaseMixin, db.Model):
     equipment_id = db.Column('equipment_id', db.Integer, primary_key=True)
     equipment_name = db.Column('equipment_name', db.Text)
@@ -39,10 +56,10 @@ class Equipment(BaseMixin, db.Model):
     section_id = db.Column('section_id', db.ForeignKey('sections.section_id', onupdate='CASCADE', ondelete="CASCADE"))
 
 
+# Model for tags table
 class Tags(BaseMixin, db.Model):
     tag_id = db.Column('tag_id', db.Integer, primary_key=True)
     section_id = db.Column('section_id', db.ForeignKey('sections.section_id', ondelete='CASCADE', onupdate="CASCADE"))
-    plant_id = db.Column('plant_id', db.ForeignKey('plants.plant_id', onupdate='CASCADE', ondelete="CASCADE"))
     equipment_id = db.Column('equipment_id', db.ForeignKey('equipment.equipment_id', onupdate='CASCADE',
                                                            ondelete="CASCADE"))
     tag_name = db.Column('tag_name', db.Text)
@@ -56,8 +73,8 @@ class Tags(BaseMixin, db.Model):
             Tags.create(tag_name=tag_name, section_id=section_id)
 
 
-
-class Measurement_data(db.Model):
+# Model for measurement data table
+class MeasurementData(db.Model):
     data_id = db.Column('data_id', db.Integer, primary_key=True)
     timestamp = db.Column('timestamp', db.Text)
     tag_id = db.Column('tag_id', db.ForeignKey('tags.tag_id', ondelete="CASCADE", onupdate="CASCADE"))
@@ -110,4 +127,4 @@ class Measurement_data(db.Model):
             df.tag_id = [tag_map[key] for key in df['tag_id'].values]
 
             # adding data to tag_data table
-            df.to_sql('tag_data', db.engine, if_exists='append', index=False)
+            df.to_sql('measurement_data', db.engine, if_exists='append', index=False)
