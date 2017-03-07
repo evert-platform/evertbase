@@ -44,11 +44,11 @@ def plugins():
 @main.route('/dataviewer', methods=['GET', 'POST'])
 def dataview():
     form = DataViewerForm()
-    form.select.choices = models.Tags.get_tags()
+    form.select.choices = models.Tags.get_names()
 
     if form.validate_on_submit():
         filepath = form.select.data
-        data = pd.DataFrame(models.MeasurementData.get_tag_data(tag_id=int(filepath)))
+        data = pd.DataFrame(models.MeasurementData.get_tag_data(id=int(filepath)))
         titles = [{'title': key} for key in data.columns.values]
         data = data.values.tolist()
 
