@@ -119,7 +119,7 @@ $(function () {
             // updating the unit_tags select field
             update_select($unittags, data.unittags);
 
-            //updateing the tags select field
+            //updating the tags select field
             update_select($tags, data.tags);
         });
 
