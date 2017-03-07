@@ -43,16 +43,6 @@ def _plotdata():
     return jsonify(success=True, plot=div)
 
 
-# this function updates the x- and y-axis select elements on the plotting page
-@main.route('/_plotdetails', methods=['GET'])
-def _plotdetails():
-
-    table_key = request.args.get('plotfile', 0, type=str)
-    headers = funcs.unique_headers(table_key)
-
-    return jsonify(success=True, headers=headers)
-
-
 # this functions enables the plugin selected in the enable plugin select element on the plugins page
 @main.route('/_enable_plugin', methods=['GET', 'POST'])
 def _enable_plugins():
@@ -117,3 +107,14 @@ def _data_handle():
             pass
 
     return jsonify(success=True)
+
+@main.route('/_plantchange', methods=['GET', 'POST'])
+def _plantchange():
+
+    cur_plant = request.args.get('plant', 0, type=int)
+    plant_name = models.Plants.get_filtered_names(id=cur_plant)[0]
+    sections = models.Sections.get_filtered_names(plant=cur_plant)
+    unit_tags = models.Tags.get_filtered_names(section=sections[0][0])
+    tags = models.Tags.get_unassigned_tags(plant=cur_plant)
+
+    return jsonify(plant_name=plant_name, sections=dict(sections), unittags=dict(unit_tags), tags=dict(tags))
