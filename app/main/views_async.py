@@ -170,3 +170,13 @@ def _unitschange():
 
     return jsonify(data)
 
+
+@main.route('/_settags')
+def _settags():
+    unit_name = request.args.get('unitname', 0, type=str)
+    cur_unit = request.args.get('unit', 0, type=int)
+    tags = request.args.getlist('tags[]')
+
+    return jsonify(success=True)
+
+
