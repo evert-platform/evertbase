@@ -17,14 +17,12 @@ function plant_setup(data) {
             // updating the unit select field
             update_select($unitselect, data.sections);
 
-            // selecting the first element
-            var $firstunit = $('select#unit_select :first-child');
-            $firstunit.attr('selected', true);
-
-            $('input#unit_name').val($firstunit.text());
-
             // updating the unit_tags select field
             update_select($unittags, data.unittags);
+
+            // reselecting users selected plant
+            $("select#unit_select option")
+            .each(function() { this.selected = (this.text == data.cursection); });
 
             //updating the tags select field
             update_select($tags, data.tags);
@@ -36,7 +34,7 @@ $(document).ready(function () {
     var $plantsetuptab = $('li#setup');
     var $opentab = $('li#open');
 
-    //
+
     $.getJSON('/_plantupload',{
 
                 }, function (data) {
@@ -57,7 +55,6 @@ $(document).ready(function () {
         $('div#uploaddesc').show();
         $('input#upload_file').hide();
         $('fieldset#plantsetup').hide();
-
     });
 
 
@@ -76,19 +73,11 @@ $(document).ready(function () {
         $.getJSON('/_plantchange',{
             plant: $('select#plant_select').val()
         }, plant_setup);
-
     });
-
-
-
 });
 
 
-
-
 $(function() {
-
-
         var $openbtn = $('input#open_file');
         var $uploadbtn = $('input#upload_file');
 
@@ -138,8 +127,7 @@ $(function() {
             });
 
       })
-
-      });
+});
 
 
 
@@ -151,8 +139,6 @@ $(function () {
         $.getJSON('/_plantchange', {
             plant: cur_plant
         }, plant_setup);
-
-
     });
 
 
@@ -161,7 +147,23 @@ $(function () {
             newname: $('input#plant_name').val(),
             plant: $('select#plant_select :selected').val()
         }, function (data) {
-
         })
+    });
+
+
+    $('input#addunit').on('click', function () {
+        $.getJSON('/_unitadd',{
+            plant: $('select#plant_select :selected').val(),
+            unit: $('select#unit_select :selected').val(),
+            unitname: $('input#unit_name').val()
+        }, plant_setup)
+    });
+
+    $('input#updateunit').on('click', function () {
+        $.getJSON('/_unitnamechange',{
+            plant: $('select#plant_select :selected').val(),
+            unit: $('select#unit_select :selected').val(),
+            unitname: $('input#unit_name').val()
+        }, plant_setup)
     })
 });
