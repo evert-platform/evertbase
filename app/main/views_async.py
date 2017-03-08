@@ -109,15 +109,33 @@ def _data_handle():
 
 
 @main.route('/_plantchange', methods=['GET', 'POST'])
-def _plantchange():
+def _plantchange(json=True):
 
     cur_plant = request.args.get('plant', 0, type=int)
     plant_name = models.Plants.get_filtered_names(id=cur_plant)[0]
     sections = models.Sections.get_filtered_names(plant=cur_plant)
-    unit_tags = models.Tags.get_filtered_names(section=sections[0][0])
     tags = models.Tags.get_unassigned_tags(plant=cur_plant)
 
-    return jsonify(plant_name=plant_name, sections=dict(sections), unittags=dict(unit_tags), tags=dict(tags))
+    if sections:
+        unit_tags = models.Tags.get_filtered_names(section=sections[0][0])
+        data = dict(plant_name=plant_name, sections=dict(sections),
+                    tags=dict(tags), unittags=unit_tags)
+
+    else:
+        data = dict(plant_name=plant_name, sections=dict(sections),
+                    tags=dict(tags), unittags=[('', '')])
+    if not json:
+        return data
+
+    else:
+        return jsonify(data)
+
+
+@main.route('/_plantupload', methods=['GET', 'POST'])
+def _updateplantlist():
+    plant = models.Plants.get_names()
+
+    return jsonify(plants=dict(plant))
 
 
 @main.route('/_plantnamechange', methods=['GET','POST'])
@@ -128,3 +146,27 @@ def _plantnamechange():
     models.Plants.query.filter_by(id=cur_plant).update(dict(name=new_name))
     models.db.session.commit()
     return jsonify(success=True)
+
+
+@main.route('/_unitadd', methods=['GET'])
+@main.route('/_unitnamechange', methods=['GET'])
+def _unitschange():
+
+    unit_name = request.args.get('unitname', 0, type=str)
+
+    if request.path =='/_unitadd':
+        cur_plant = request.args.get('plant', 0, type=int)
+        models.Sections.create(name=unit_name, plant=cur_plant)
+        data = _plantchange(False)
+        data['cursection'] = unit_name
+
+
+    else:
+        cur_unit = request.args.get('unit', 0, type=int)
+        models.Sections.query.filter_by(id=cur_unit).update(dict(name=unit_name))
+        models.db.session.commit()
+        data = _plantchange(False)
+        data['cursection'] = unit_name
+
+    return jsonify(data)
+
