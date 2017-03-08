@@ -56,25 +56,25 @@
             <fieldset class="container col-sm-12 col-md-12 col-lg-12" id="plantsetup" hidden="hidden">
                     {{ form2.hidden_tag() }}
                     <div class="col-sm-6 col-md-6 col-lg-6">
-                        {{ form2.plant_select.label(class='form-select-label') }} {{ form2.plant_select(class='form-control') }}<br>
+                        {{ form2.plant_select.label(class='form-select-label') }} {{ form2.plant_select(class='chosen-select') }}<br>
                         {{ form2.plant_name.label(class='form-text-label') }} {{ form2.plant_name(class='form-control') }}
                         <input type="button" value="Update" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px"
                                id="updateplantname"><br>
                         {{ form2.unit_name.label(class='form-select-label') }}{{ form2.unit_name(class='form-control') }}
-                        <input type="button" value="Update" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px">
-                        <input type="button" value="Add" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px">
+                        <input type="button" value="Update" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px" id="updateunit">
+                        <input type="button" value="Add" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px" id="addunit">
                     </div>
 
                     <div class="col-sm-12 col-md-12 col-lg-12"></div>
 
                     <br>
 
-                    <div class="col-sm-4 col-md-4 col-lg-4">
-                        {{ form2.unit_select.label(class='form-select-label') }}{{ form2.unit_select(class='form-control') }}
+                    <div class="col-sm-5 col-md-4 col-lg-5">
+                        {{ form2.unit_select.label(class='form-select-label') }}<br>{{ form2.unit_select(class='form-control') }}
                     </div>
                     <div class="col-sm-4 col-md-4 col-lg-4">
                         {{ form2.tags.label(class='form-select-label') }}{{ form2.tags(class='form-control') }}
-                        <input type="button" value="Set" class="btn btn-primary" style="margin-top: 10px"><br>
+                        <input type="button" value="Set" class="btn btn-primary" style="margin-top: 10px" id="settags"><br>
                     </div>
                     <div class="col-sm-12 col-md-12 col-lg-12"></div>
 

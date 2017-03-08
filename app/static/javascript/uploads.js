@@ -1,7 +1,7 @@
 function update_select(selector, data){
     selector.empty();
     $.each(data, function (value, key) {
-                selector.append($("<option></option>")
+                selector.append($("<option class='active-result'></option>")
                     .attr("value", value).text(key))
     });
 }
@@ -26,6 +26,11 @@ function plant_setup(data) {
 
             //updating the tags select field
             update_select($tags, data.tags);
+
+            $('select#unit_select').trigger('chosen:updated');
+            $('select#plant_select').trigger('chosen:updated');
+            $('select#tags').trigger('chosen:updated');
+            $('select#unit_tags').trigger('chosen:updated');
         }
 
 
@@ -34,6 +39,11 @@ $(document).ready(function () {
     var $plantsetuptab = $('li#setup');
     var $opentab = $('li#open');
 
+
+    $('select#plant_select').chosen({width: '100%'});
+    $('select#tags').chosen({width: '100%'});
+    $('select#unit_select').chosen({width: '100%'});
+    $('select#unit_tags').chosen({width: '100%'});
 
     $.getJSON('/_plantupload',{
 
@@ -70,9 +80,12 @@ $(document).ready(function () {
         $('fieldset#datafileform').hide();
         $('div#uploaddesc').hide();
 
+
         $.getJSON('/_plantchange',{
             plant: $('select#plant_select').val()
         }, plant_setup);
+
+        $('.chosen-select').trigger('chosen:updated')
     });
 });
 
@@ -165,5 +178,17 @@ $(function () {
             unit: $('select#unit_select :selected').val(),
             unitname: $('input#unit_name').val()
         }, plant_setup)
+    });
+
+    $('input#settags').on('click', function () {
+        $.getJSON('/_settags',{
+            plant: $('select#plant_select :selected').val(),
+            unit: $('select#unit_select :selected').val(),
+            unitname: $('select#unit_select :selected').text(),
+            tags: $('select#tags').val()
+
+        }, function (data) {
+
+        })
     })
 });
