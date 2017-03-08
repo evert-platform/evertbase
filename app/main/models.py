@@ -94,6 +94,12 @@ class Tags(BaseMixin, db.Model):
         tags = Tags.query.with_entities(Tags.id, Tags.name).filter_by(section=None, **kwargs).all()
         return [(str(_id), _name) for _id, _name in tags]
 
+    @staticmethod
+    def assign_tag_sections(section, tags):
+        for tag in tags:
+            Tags.query.filter_by(id=tag).update(dict(section=section))
+            db.session.commit()
+
 
 # Model for measurement data table
 class MeasurementData(db.Model):
