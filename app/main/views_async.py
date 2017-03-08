@@ -119,11 +119,11 @@ def _plantchange(json=True):
     if sections:
         unit_tags = models.Tags.get_filtered_names(section=sections[0][0])
         data = dict(plant_name=plant_name, sections=dict(sections),
-                    tags=dict(tags), unittags=unit_tags)
+                    tags=dict(tags), unittags=dict(unit_tags))
 
     else:
         data = dict(plant_name=plant_name, sections=dict(sections),
-                    tags=dict(tags), unittags=[('', '')])
+                    tags=dict(tags))
     if not json:
         return data
 
@@ -175,8 +175,16 @@ def _unitschange():
 def _settags():
     unit_name = request.args.get('unitname', 0, type=str)
     cur_unit = request.args.get('unit', 0, type=int)
-    tags = request.args.getlist('tags[]')
+    tags = tuple([int(tag) for tag in request.args.getlist('tags[]')])
 
-    return jsonify(success=True)
+    for tag in tags:
+        models.Tags.query.filter_by(id=tag).update(dict(section=cur_unit))
+        models.db.session.commit()
+
+    data = _plantchange(False)
+    data['cursection'] = unit_name
+
+
+    return jsonify(data)
 
 

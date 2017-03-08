@@ -27,9 +27,10 @@ function plant_setup(data) {
             //updating the tags select field
             update_select($tags, data.tags);
 
-            $('select#unit_select').trigger('chosen:updated');
+
             $('select#plant_select').trigger('chosen:updated');
             $('select#tags').trigger('chosen:updated');
+            $('select#unit_select').trigger('chosen:updated');
             $('select#unit_tags').trigger('chosen:updated');
         }
 
@@ -85,7 +86,7 @@ $(document).ready(function () {
             plant: $('select#plant_select').val()
         }, plant_setup);
 
-        $('.chosen-select').trigger('chosen:updated')
+        $(this).trigger('chosen:updated');
     });
 });
 
@@ -152,6 +153,7 @@ $(function () {
         $.getJSON('/_plantchange', {
             plant: cur_plant
         }, plant_setup);
+        $(this).trigger('chosen:updated');
     });
 
 
@@ -160,7 +162,8 @@ $(function () {
             newname: $('input#plant_name').val(),
             plant: $('select#plant_select :selected').val()
         }, function (data) {
-        })
+        });
+        $(this).trigger('chosen:updated')
     });
 
 
@@ -169,7 +172,9 @@ $(function () {
             plant: $('select#plant_select :selected').val(),
             unit: $('select#unit_select :selected').val(),
             unitname: $('input#unit_name').val()
-        }, plant_setup)
+        }, plant_setup);
+
+        $(this).trigger('chosen:updated')
     });
 
     $('input#updateunit').on('click', function () {
@@ -177,7 +182,9 @@ $(function () {
             plant: $('select#plant_select :selected').val(),
             unit: $('select#unit_select :selected').val(),
             unitname: $('input#unit_name').val()
-        }, plant_setup)
+        }, plant_setup);
+
+        $(this).trigger('chosen:updated')
     });
 
     $('input#settags').on('click', function () {
@@ -187,8 +194,8 @@ $(function () {
             unitname: $('select#unit_select :selected').text(),
             tags: $('select#tags').val()
 
-        }, function (data) {
+        }, plant_setup);
 
-        })
+        $(this).trigger('chosen:updated')
     })
 });
