@@ -86,8 +86,8 @@ class Tags(BaseMixin, db.Model):
 
     @staticmethod
     def create_multiple(list):
-        for plant, section_id, tag_name in list:
-            Tags.create(name=tag_name, section=section_id, plant=plant)
+        for plant, tag_name in list:
+            Tags.create(name=tag_name, plant=plant)
 
     @staticmethod
     def get_unassigned_tags(**kwargs):
@@ -117,20 +117,13 @@ class MeasurementData(db.Model):
             # Finding default plant id
             plant_id = Plants.query.with_entities(Plants.id).filter_by(name=plant_name).first()
 
-            # adding defualt unit name
-            default_section_name = plant_name + '_Unit01'
-            Sections.create(name=default_section_name, plant=plant_id[0])
-
-            # getting unique id for default section
-            section_id = Sections.query.with_entities(Sections.id).filter_by(name=default_section_name).first()
-
             # handling csv file
             df = pd.read_csv(file_name)
             df = pd.melt(df, id_vars=df.columns.values[0])
             df.columns = ['timestamp', 'tag', 'tag_value']
             df_tags = np.unique(df['tag'].values)
 
-            tags_commit = [(plant_id[0], section_id[0], tag,) for tag in df_tags]
+            tags_commit = [(plant_id[0], tag,) for tag in df_tags]
 
             # adding new tags to data base
             Tags.create_multiple(tags_commit)
