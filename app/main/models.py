@@ -131,12 +131,11 @@ class MeasurementData(db.Model):
             # creating tagmap from tags in tags table
             tag_map = dict(Tags.query.with_entities(Tags.name, Tags.id).all())
 
-
             # normalizing dataframe tag_id with tag_ids from tags table
             df.tag = [tag_map[key] for key in df['tag'].values]
 
             # adding data to tag_data table
-            # df.to_sql('measurement_data', db.engine, if_exists='append', index=False)
+            df.to_sql('measurement_data', db.engine, if_exists='append', index=False)
 
         except IntegrityError or KeyError as e:
             # TODO: Add method of letting user know the write has failed
