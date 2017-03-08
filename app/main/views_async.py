@@ -145,7 +145,8 @@ def _plantnamechange():
     cur_plant = request.args.get('plant', 0, type=int)
     models.Plants.query.filter_by(id=cur_plant).update(dict(name=new_name))
     models.db.session.commit()
-    return jsonify(success=True)
+    plants = models.Plants.get_names()
+    return jsonify(success=True, plants=dict(plants))
 
 
 @main.route('/_unitadd', methods=['GET'])
@@ -170,9 +171,19 @@ def _unitschange():
 
     return jsonify(data)
 
+@main.route('/_unitchange', methods=['GET'])
+def _unit_change():
+    unit = request.args.getlist('unit[]')
+    if unit:
+        unittags = models.Tags.get_filtered_names(section=int(unit[0]))
+        return jsonify(success=True, unittags=dict(unittags))
+    else:
+        return jsonify(success=True)
+
 
 @main.route('/_settags')
 def _settags():
+    plant = request.args.get('plant', 0, type=int)
     unit_name = request.args.get('unitname', 0, type=str)
     cur_unit = request.args.get('unit', 0, type=int)
     tags = tuple([int(tag) for tag in request.args.getlist('tags[]')])
@@ -181,10 +192,9 @@ def _settags():
         models.Tags.query.filter_by(id=tag).update(dict(section=cur_unit))
         models.db.session.commit()
 
-    data = _plantchange(False)
-    data['cursection'] = unit_name
+    freetags = models.Tags.get_unassigned_tags(plant=plant)
+    unittags = models.Tags.get_filtered_names(section=cur_unit)
 
-
-    return jsonify(data)
+    return jsonify(cursection=unit_name, freetags=dict(freetags), unittags=dict(unittags))
 
 

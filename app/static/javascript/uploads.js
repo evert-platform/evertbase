@@ -4,6 +4,8 @@ function update_select(selector, data){
                 selector.append($("<option class='active-result'></option>")
                     .attr("value", value).text(key))
     });
+
+    selector.trigger('chosen:updated');
 }
 
 function plant_setup(data) {
@@ -16,9 +18,6 @@ function plant_setup(data) {
 
             // updating the unit select field
             update_select($unitselect, data.sections);
-
-            // updating the unit_tags select field
-            update_select($unittags, data.unittags);
 
             // reselecting users selected plant
             $("select#unit_select option")
@@ -162,8 +161,9 @@ $(function () {
             newname: $('input#plant_name').val(),
             plant: $('select#plant_select :selected').val()
         }, function (data) {
+            var $plantselect = $('select#plant_select');
+            update_select($plantselect, data.plants)
         });
-        $(this).trigger('chosen:updated')
     });
 
 
@@ -187,6 +187,18 @@ $(function () {
         $(this).trigger('chosen:updated')
     });
 
+    $('select#unit_select').on('change', function () {
+        $.getJSON('/_unitchange',{
+            unit: $(this).val(),
+            plant: $('select#plant_select :selected').val()
+        }, function (data) {
+            var $unittags= $('select#unit_tags');
+            update_select($unittags, data.unittags)
+        })
+    });
+
+
+
     $('input#settags').on('click', function () {
         $.getJSON('/_settags',{
             plant: $('select#plant_select :selected').val(),
@@ -194,7 +206,13 @@ $(function () {
             unitname: $('select#unit_select :selected').text(),
             tags: $('select#tags').val()
 
-        }, plant_setup);
+        }, function(data){
+            var $unittags = $('select#unit_tags');
+            var $freetags = $('select#tags');
+
+            update_select($unittags, data.unittags);
+            update_select($freetags, data.freetags);
+        });
 
         $(this).trigger('chosen:updated')
     })
