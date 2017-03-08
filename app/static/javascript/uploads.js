@@ -222,7 +222,7 @@ $(function () {
         $.getJSON('/_removeunittags', {
             plant: $('select#plant_select :selected').val(),
             unit: $('select#unit_select :selected').val(),
-            removetags: $('select#unit_tags').val()
+            tags: $('select#unit_tags').val()
         }, function(data){
             var $unittags = $('select#unit_tags');
             var $freetags = $('select#tags');
