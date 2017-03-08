@@ -182,19 +182,23 @@ def _unit_change():
 
 
 @main.route('/_settags')
+@main.route('/_removeunittags', methods=['GET'])
 def _settags():
     plant = request.args.get('plant', 0, type=int)
     unit_name = request.args.get('unitname', 0, type=str)
     cur_unit = request.args.get('unit', 0, type=int)
-    tags = tuple([int(tag) for tag in request.args.getlist('tags[]')])
+    tags = [int(tag) for tag in request.args.getlist('tags[]')]
 
-    for tag in tags:
-        models.Tags.query.filter_by(id=tag).update(dict(section=cur_unit))
-        models.db.session.commit()
+    if request.path == '/_settags':
+        models.Tags.assign_tag_sections(cur_unit, tags)
+
+    else:
+        models.Tags.assign_tag_sections(None, tags)
 
     freetags = models.Tags.get_unassigned_tags(plant=plant)
     unittags = models.Tags.get_filtered_names(section=cur_unit)
 
-    return jsonify(cursection=unit_name, freetags=dict(freetags), unittags=dict(unittags))
+    return jsonify(freetags=dict(freetags), unittags=dict(unittags))
+
 
 
