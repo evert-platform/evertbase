@@ -185,7 +185,6 @@ def _unit_change():
 @main.route('/_removeunittags', methods=['GET'])
 def _settags():
     plant = request.args.get('plant', 0, type=int)
-    unit_name = request.args.get('unitname', 0, type=str)
     cur_unit = request.args.get('unit', 0, type=int)
     tags = [int(tag) for tag in request.args.getlist('tags[]')]
 
