@@ -207,12 +207,19 @@ def _settags():
     return jsonify(freetags=dict(freetags), unittags=dict(unittags))
 
 @main.route('/_deleteplant', methods=['GET'])
-def _deletedata():
+def _deleteplant():
 
     plant = request.args.get('plant', None, type=int)
     models.Plants.delete(id=plant)
     new_plants = models.Plants.get_names()
-    log.debug('PLANTDELETE{}'.format(new_plants))
 
     return jsonify(plants=dict(new_plants))
 
+
+@main.route('/_deleteunit', methods=['GET'])
+def _deleteunit():
+    unit = request.args.getlist('unit[]')
+    models.Sections.delete_multiple_by_id(unit)
+    new_units = models.Sections.get_names()
+
+    return jsonify(units=dict(new_units))
