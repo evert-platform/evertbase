@@ -11,7 +11,6 @@ function update_select(selector, data){
 function plant_setup(data) {
             var $unitselect = $('select#unit_select');
             var $plantname = $('input#plant_name');
-            var $unittags = $('select#unit_tags');
             var $tags = $('select#tags');
 
             try{
