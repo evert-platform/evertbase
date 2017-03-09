@@ -247,5 +247,20 @@ $(function () {
             update_select($unittags, data.unittags);
             update_select($freetags, data.freetags);
         })
+    });
+
+
+    $('input#deleteplant').on('click', function () {
+        $.getJSON('/_deleteplant', {
+            plant: $('select#plant_select').val()
+        },function (data) {
+            var $plantselect = $('select#plant_select');
+            update_select($plantselect, data.plants)
+
+            $.getJSON('/_plantchange', {
+            plant: cur_plant
+            }, plant_setup)
+        })
+
     })
 });
