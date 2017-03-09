@@ -209,12 +209,14 @@ $(function () {
     });
 
     $('select#unit_select').on('change', function () {
+        console.log( $(this).val());
         $.getJSON('/_unitchange',{
             unit: $(this).val(),
             plant: $('select#plant_select :selected').val()
         }, function (data) {
             var $unittags= $('select#unit_tags');
             update_select($unittags, data.unittags)
+
         })
     });
 
@@ -240,9 +242,10 @@ $(function () {
 
 
     $('input#removetags').on('click', function () {
+        console.log($('select#unit_select').val());
         $.getJSON('/_removeunittags', {
             plant: $('select#plant_select :selected').val(),
-            unit: $('select#unit_select :selected').val(),
+            unit: $('select#unit_select').val(),
             tags: $('select#unit_tags').val()
         }, function(data){
             var $unittags = $('select#unit_tags');
@@ -268,9 +271,11 @@ $(function () {
     });
 
     $('input#deleteunit').on('click', function () {
-        console.log($('select#unit_select').val());
+        console.log($($('select#unit_select')[1]).val());
+
+
         $.getJSON('/_deleteunit', {
-            unit: $('select#unit_select').val()
+            unit:$($('select#unit_select')[1]).val()
         },function (data) {
             var $unitselect = $('select#unit_select');
             update_select($unitselect, data.units);
@@ -278,5 +283,5 @@ $(function () {
             $('select#plant_select').trigger('change');
 
         })
-    })
+    });
 });
