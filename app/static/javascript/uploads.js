@@ -14,7 +14,12 @@ function plant_setup(data) {
             var $unittags = $('select#unit_tags');
             var $tags = $('select#tags');
 
-            $plantname.val(data.plant_name[1]);
+            try{
+                $plantname.val(data.plant_name[1]);
+            } catch(err) {
+                $plantname.val('');
+            }
+
 
             // updating the unit select field
             update_select($unitselect, data.sections);
@@ -24,6 +29,7 @@ function plant_setup(data) {
             .each(function() { this.selected = (this.text == data.cursection); });
 
             //updating the tags select field
+            console.log(data.tags);
             update_select($tags, data.tags);
 
 
@@ -255,11 +261,10 @@ $(function () {
             plant: $('select#plant_select').val()
         },function (data) {
             var $plantselect = $('select#plant_select');
-            update_select($plantselect, data.plants)
+            update_select($plantselect, data.plants);
 
-            $.getJSON('/_plantchange', {
-            plant: cur_plant
-            }, plant_setup)
+            $('select#plant_select').trigger('change');
+
         })
 
     })

@@ -6,6 +6,8 @@ from flask import jsonify, request, current_app
 import pandas as pd
 from . import main
 from . import models
+import logging as log
+log.basicConfig(level=log.DEBUG)
 
 
 # this retrieves the data that needs to be plotted and returns the data that will be rendered as a figure by
@@ -111,19 +113,25 @@ def _data_handle():
 @main.route('/_plantchange', methods=['GET', 'POST'])
 def _plantchange(json=True):
 
-    cur_plant = request.args.get('plant', 0, type=int)
-    plant_name = models.Plants.get_filtered_names(id=cur_plant)[0]
-    sections = models.Sections.get_filtered_names(plant=cur_plant)
-    tags = models.Tags.get_unassigned_tags(plant=cur_plant)
+    cur_plant = request.args.get('plant', None, type=int)
+    if cur_plant:
 
-    if sections:
-        unit_tags = models.Tags.get_filtered_names(section=sections[0][0])
-        data = dict(plant_name=plant_name, sections=dict(sections),
-                    tags=dict(tags), unittags=dict(unit_tags))
+        plant_name = models.Plants.get_filtered_names(id=cur_plant)[0]
+        sections = models.Sections.get_filtered_names(plant=cur_plant)
+        tags = models.Tags.get_unassigned_tags(plant=cur_plant)
 
+        if sections:
+            unit_tags = models.Tags.get_filtered_names(section=sections[0][0])
+            data = dict(plant_name=plant_name, sections=dict(sections),
+                        tags=dict(tags), unittags=dict(unit_tags))
+
+        else:
+            data = dict(plant_name=plant_name, sections=dict(sections),
+                        tags=dict(tags))
     else:
-        data = dict(plant_name=plant_name, sections=dict(sections),
-                    tags=dict(tags))
+        data = dict()
+
+    log.debug('PLANTCHANGE: {}'.format(data))
     if not json:
         return data
 
@@ -204,7 +212,7 @@ def _deletedata():
     plant = request.args.get('plant', None, type=int)
     models.Plants.delete(id=plant)
     new_plants = models.Plants.get_names()
+    log.debug('PLANTDELETE{}'.format(new_plants))
 
-
-    return jsonify(plants=new_plants)
+    return jsonify(plants=dict(new_plants))
 
