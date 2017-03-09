@@ -209,7 +209,6 @@ $(function () {
     });
 
     $('select#unit_select').on('change', function () {
-        console.log( $(this).val());
         $.getJSON('/_unitchange',{
             unit: $(this).val(),
             plant: $('select#plant_select :selected').val()
@@ -242,7 +241,6 @@ $(function () {
 
 
     $('input#removetags').on('click', function () {
-        console.log($('select#unit_select').val());
         $.getJSON('/_removeunittags', {
             plant: $('select#plant_select :selected').val(),
             unit: $('select#unit_select').val(),
@@ -270,9 +268,8 @@ $(function () {
 
     });
 
+    // TODO: bind methods to multiple jquery selector to make all elements unique
     $('input#deleteunit').on('click', function () {
-        console.log($($('select#unit_select')[1]).val());
-
 
         $.getJSON('/_deleteunit', {
             unit:$($('select#unit_select')[1]).val()
