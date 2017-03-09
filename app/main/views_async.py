@@ -161,7 +161,6 @@ def _unitschange():
         data = _plantchange(False)
         data['cursection'] = unit_name
 
-
     else:
         cur_unit = request.args.get('unit', 0, type=int)
         models.Sections.query.filter_by(id=cur_unit).update(dict(name=unit_name))
