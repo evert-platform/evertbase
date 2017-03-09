@@ -97,6 +97,12 @@ $(document).ready(function () {
         $('div#plant_setup').hide();
         $('div#datamanage').show();
 
+        $.getJSON('/_plantchange',{
+            plant: $('select#plant_select').val()
+        }, plant_setup);
+
+        $(this).trigger('chosen:updated');
+
     })
 });
 
