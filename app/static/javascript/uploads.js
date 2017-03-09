@@ -35,9 +35,9 @@ function plant_setup(data) {
 
 
 $(document).ready(function () {
-    var $uploadtab = $('li#upload');
     var $plantsetuptab = $('li#setup');
     var $opentab = $('li#open');
+    var $datamanagetab = $('li#manage');
 
 
     $('select#plant_select').chosen({width: '100%'});
@@ -56,29 +56,28 @@ $(document).ready(function () {
 
     $opentab.on('click', function () {
         $(this).addClass('active');
-
-        $uploadtab.removeClass('active');
         $plantsetuptab.removeClass('active');
+        $datamanagetab.removeClass('active');
 
-        $('fieldset#datafileform').show();
-        $('input#open_file').show();
-        $('div#uploaddesc').show();
-        $('input#upload_file').hide();
-        $('fieldset#plantsetup').hide();
+
+        $('div#dataopen').show();
+        $('div#plant_setup').hide();
+        $('div#datamanage').hide();
+
     });
 
 
 
     $plantsetuptab.on('click', function () {
         $(this).addClass('active');
-        $uploadtab.removeClass('active');
         $opentab.removeClass('active');
+        $datamanagetab.removeClass('active');
 
-        $('input#open_file').hide();
-        $('input#upload_file').hide();
-        $('fieldset#plantsetup').show();
-        $('fieldset#datafileform').hide();
-        $('div#uploaddesc').hide();
+        $('div#dataopen').hide();
+        $('div#plant_setup').show();
+        $('div#datamanage').hide();
+
+
 
 
         $.getJSON('/_plantchange',{
@@ -87,6 +86,18 @@ $(document).ready(function () {
 
         $(this).trigger('chosen:updated');
     });
+
+    $datamanagetab.on('click', function () {
+        $(this).addClass('active');
+        $opentab.removeClass('active');
+        $plantsetuptab.removeClass('active');
+
+
+        $('div#dataopen').hide();
+        $('div#plant_setup').hide();
+        $('div#datamanage').show();
+
+    })
 });
 
 
