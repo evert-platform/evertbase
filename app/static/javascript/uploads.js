@@ -28,7 +28,6 @@ function plant_setup(data) {
             .each(function() { this.selected = (this.text == data.cursection); });
 
             //updating the tags select field
-            console.log(data.tags);
             update_select($tags, data.tags);
 
 
@@ -266,5 +265,18 @@ $(function () {
 
         })
 
+    });
+
+    $('input#deleteunit').on('click', function () {
+        console.log($('select#unit_select').val());
+        $.getJSON('/_deleteunit', {
+            unit: $('select#unit_select').val()
+        },function (data) {
+            var $unitselect = $('select#unit_select');
+            update_select($unitselect, data.units);
+
+            $('select#plant_select').trigger('change');
+
+        })
     })
 });
