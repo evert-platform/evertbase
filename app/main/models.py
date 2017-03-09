@@ -32,6 +32,13 @@ class BaseMixin:
         cls.query.filter_by(**kwargs).delete()
         db.session.commit()
 
+    @classmethod
+    def delete_multiple_by_id(cls, lst):
+        for listi in lst:
+            cls.query.filter_by(id=int(listi)).delete()
+            db.session.commit()
+
+
 
     @classmethod
     def query_columns_all(cls, *args):
