@@ -6,9 +6,6 @@ from flask import jsonify, request, current_app
 import pandas as pd
 from . import main
 from . import models
-import logging as log
-log.basicConfig(level=log.DEBUG)
-
 
 # this retrieves the data that needs to be plotted and returns the data that will be rendered as a figure by
 # mpld3.js
