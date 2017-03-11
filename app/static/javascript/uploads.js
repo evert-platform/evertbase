@@ -134,7 +134,11 @@ $(function() {
 
                 }, function (data) {
                     var $plantselect = $('select#plant_select');
-                    update_select($plantselect, data.plants)
+                    update_select($plantselect, data.plants);
+                    $.notify('File opened and ready for use', {
+                        position: "top center",
+                        className: 'success'
+                    })
                 })
 
                 }
@@ -161,7 +165,11 @@ $(function() {
 
                 }, function (data) {
                     var $plantselect = $('select#plant_select');
-                    update_select($plantselect, data.plants)
+                    update_select($plantselect, data.plants);
+                    $.notify('File uploaded to Evert', {
+                        position: "top center",
+                        className: 'success'
+                    })
                 })
 
                 }
