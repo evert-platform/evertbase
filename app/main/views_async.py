@@ -124,7 +124,6 @@ def _plantchange(json=True):
     else:
         data = dict()
 
-    log.debug('PLANTCHANGE: {}'.format(data))
     if not json:
         return data
 
