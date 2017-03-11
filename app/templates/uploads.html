@@ -59,11 +59,11 @@
                     {{ form2.hidden_tag() }}
                     <div class="col-sm-6 col-md-6 col-lg-6">
                         {{ form2.plant_select.label(class='form-select-label') }} {{ form2.plant_select
-                        (class='form-control') }}<br>
+                        (class='form-control plant_setup') }}<br>
                         {{ form2.plant_name.label(class='form-text-label') }} {{ form2.plant_name(class='form-control') }}
                         <input type="button" value="Update" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px"
                                id="updateplantname"><br>
-                        {{ form2.unit_name.label(class='form-select-label') }}{{ form2.unit_name(class='form-control') }}
+                        {{ form2.unit_name.label(class='form-select-label') }}{{ form2.unit_name(class='form-control plant_setup') }}
                         <input type="button" value="Update" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px" id="updateunit">
                         <input type="button" value="Add" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px" id="addunit">
                     </div>
@@ -73,16 +73,16 @@
                     <br>
 
                     <div class="col-sm-5 col-md-4 col-lg-5">
-                        {{ form2.unit_select.label(class='form-select-label') }}<br>{{ form2.unit_select(class='form-control') }}
+                        {{ form2.unit_select.label(class='form-select-label') }}<br>{{ form2.unit_select(class='form-control plant_setup') }}
                     </div>
                     <div class="col-sm-4 col-md-4 col-lg-4">
-                        {{ form2.tags.label(class='form-select-label') }}{{ form2.tags(class='form-control') }}
+                        {{ form2.tags.label(class='form-select-label') }}{{ form2.tags(class='form-control plant_setup') }}
                         <input type="button" value="Set" class="btn btn-primary" style="margin-top: 10px" id="settags"><br>
                     </div>
                     <div class="col-sm-12 col-md-12 col-lg-12"></div>
 
                     <div class="col-sm-4 col-md-4 col-lg-4" style="display: inline">
-                        {{ form2.unit_tags.label(class='form-select-label') }}{{ form2.unit_tags(class='form-control') }}
+                        {{ form2.unit_tags.label(class='form-select-label') }}{{ form2.unit_tags(class='form-control plant_setup') }}
                         <input type="button" value="Delete" class="btn btn-primary" style="margin-top: 10px;" id="removetags">
                     </div>
 
@@ -104,7 +104,7 @@
                 {{ form2.unit_tags.label(class='form-select-label') }}{{ form2.unit_tags(class='form-control datamanage') }}
                 <input type="button" value="Delete" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px" id="deleteunittags"><br>
                  {{ form2.tags.label(class='form-select-label') }}{{ form2.tags(class='form-control datamanage') }}
-                <input type="button" value="Delete" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px" id="settags"><br>
+                <input type="button" value="Delete" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px" id="deletetags"><br>
             </div>
         </form>
     </div>

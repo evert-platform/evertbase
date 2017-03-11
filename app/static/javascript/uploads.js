@@ -268,17 +268,34 @@ $(function () {
 
     });
 
-    // TODO: bind methods to multiple jquery selector to make all elements unique
-    $('input#deleteunit').on('click', function () {
 
+    $('input#deleteunit').on('click', function () {
         $.getJSON('/_deleteunit', {
-            unit:$($('select#unit_select')[1]).val()
+            unit:$('select#unit_select.datamanage').val()
         },function (data) {
             var $unitselect = $('select#unit_select');
             update_select($unitselect, data.units);
 
             $('select#plant_select').trigger('change');
-
+            $('select#unit_select').trigger('change');
         })
     });
+
+    $('input#deleteunittags').on('click', function () {
+        $.getJSON('/_deleteunittags',{
+            tags: $('select#unit_tags.datamanage').val()
+        }, function (data) {
+
+
+            $('select#unit_select').trigger('change')
+        })
+    });
+
+    $('input#deletetags').on('click', function () {
+        $.getJSON('/_deletetags', {
+            tags: $('select#tags.datamanage').val()
+        }, function (data) {
+            $('select#plant_select').trigger('change')
+        })
+    })
 });
