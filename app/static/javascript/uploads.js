@@ -150,14 +150,21 @@ $(function() {
 
 
         $.ajax({
-            url: '/_dataupload',
+            url: '/_dataopen',
             type: 'POST',
             processData: false,
             contentType: false,
             data: formdata,
             dataType: 'json',
             success: function(data) {
-            }
+                $.getJSON('/_plantupload',{
+
+                }, function (data) {
+                    var $plantselect = $('select#plant_select');
+                    update_select($plantselect, data.plants)
+                })
+
+                }
             });
 
       })
