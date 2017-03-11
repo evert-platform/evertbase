@@ -16,13 +16,9 @@ def _plotdata():
         filepath = request.args.get('plotdata', 0, type=str)
         plottype = request.args.get('type', 0, type=str)
 
-        # xset = request.args.getlist('xset[]')
-        # yset = request.args.getlist('yset[]')
-
         data_cols = ['Timestamp', filepath]
         data = pd.DataFrame(models.get_tag_data(filepath), columns=data_cols)
 
-        # for x, y in zip(xset, yset):
         if data['Timestamp'].dtype == 'O':
             data['Timestamp'] = pd.to_datetime(data['Timestamp'])
 
