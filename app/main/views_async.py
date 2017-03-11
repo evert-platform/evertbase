@@ -223,3 +223,15 @@ def _deleteunit():
     new_units = models.Sections.get_names()
 
     return jsonify(units=dict(new_units))
+
+
+@main.route('/_deleteunittags', methods=['GET'])
+@main.route('/_deletetags', methods=['GET'])
+def _deleteunittags():
+    tags = request.args.getlist('tags[]')
+    if request.path == '/_deleteunittags':
+        models.Tags.delete_multiple_by_id(tags)
+
+    else:
+        models.Tags.delete_multiple_by_id(tags)
+    return jsonify(success=True)
