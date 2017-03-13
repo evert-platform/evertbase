@@ -22,7 +22,7 @@ install:
   - source activate Evert
 
 script:
-  - py.test --cov=app --cov-config app/tests
+  - py.test --cov-config .coveragerc --cov=app  app/tests
 
 after_success:
   - coveralls
