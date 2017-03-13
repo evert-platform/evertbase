@@ -115,14 +115,14 @@ def _plantchange(json=True):
 
         if sections:
             unit_tags = models.Tags.get_filtered_names(section=sections[0][0])
-            data = dict(plant_name=plant_name, sections=dict(sections),
+            data = dict(succes=True, plant_name=plant_name, sections=dict(sections),
                         tags=dict(tags), unittags=dict(unit_tags))
 
         else:
-            data = dict(plant_name=plant_name, sections=dict(sections),
+            data = dict(success=True, plant_name=plant_name, sections=dict(sections),
                         tags=dict(tags))
     else:
-        data = dict()
+        data = dict(success=False)
 
     if not json:
         return data
@@ -135,7 +135,7 @@ def _plantchange(json=True):
 def _updateplantlist():
     plant = models.Plants.get_names()
 
-    return jsonify(plants=dict(plant))
+    return jsonify(success=True, plants=dict(plant))
 
 
 @main.route('/_plantnamechange', methods=['GET','POST'])
@@ -205,7 +205,7 @@ def _deleteplant():
     models.Plants.delete(id=plant)
     new_plants = models.Plants.get_names()
 
-    return jsonify(plants=dict(new_plants))
+    return jsonify(success=True, plants=dict(new_plants))
 
 
 @main.route('/_deleteunit', methods=['GET'])
@@ -214,7 +214,7 @@ def _deleteunit():
     models.Sections.delete_multiple_by_id(unit)
     new_units = models.Sections.get_names()
 
-    return jsonify(units=dict(new_units))
+    return jsonify(success=True, units=dict(new_units))
 
 
 @main.route('/_deleteunittags', methods=['GET'])
@@ -226,4 +226,5 @@ def _deleteunittags():
 
     else:
         models.Tags.delete_multiple_by_id(tags)
-    return jsonify(success=True)
+        request_path = request.path
+    return jsonify(success=True, path=request_path)
