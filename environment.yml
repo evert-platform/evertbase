@@ -1,18 +1,38 @@
 name: Evert
+channels:
+- defaults
 dependencies:
- - flask==0.12
- - matplotlib==2.0.0
- - Pandas==0.19.2
- - pytables
- - flask-uploads=0.2.1
- - Jinja2==2.8
- - mpld3==0.2
- - pytest==2.8.5
- - WTForms==2.1
- - pip:
-    - Flask-Bootstrap==3.3.5.7
-    - Flask-Plugins==1.6.1
-    - pytest-flask==0.10.0
-    - service-identity==16.0.0
-    - WTForms-Components==0.10.0
-    - flask-wtf==0.14.2
+- coverage=4.3.4
+- cycler=0.10.0
+- flask=0.12
+- gevent=1.2.1
+- greenlet=0.4.12
+- hdf5=1.8.15.1
+- jinja2=2.9.5
+- matplotlib=2.0.0
+- pandas=0.19.2
+- pip=9.0.1
+- pytables=3.2.2
+- setuptools=27.2.0
+- sqlalchemy=1.1.6
+- pip:
+  - coveralls
+  - cryptography==1.7.2
+  - eventlet==0.17.4
+  - flask-bootstrap==3.3.5.7
+  - flask-plugins==1.6.1
+  - flask-socketio==2.8.4
+  - flask-sqlalchemy==2.2
+  - flask-testing==0.6.1
+  - flask-uploads==0.2.1
+  - flask-wtf==0.14.2
+  - mock==2.0.0
+  - mpld3==0.2
+  - pytest==2.8.5
+  - pytest-cov==2.4.0
+  - pytest-flask==0.10.0
+  - pytest-mock==1.5.0
+  - service-identity==16.0.0
+  - wtforms==2.1
+  - wtforms-components==0.10.0
+

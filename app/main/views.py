@@ -6,6 +6,7 @@ from . import functions as funcs
 from . import models
 
 
+
 # Renders the main index template
 @main.route('/', methods=['GET', 'POST'])
 def index():
