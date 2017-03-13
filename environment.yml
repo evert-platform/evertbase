@@ -16,6 +16,7 @@ dependencies:
 - setuptools=27.2.0
 - sqlalchemy=1.1.6
 - pip:
+  - coveralls
   - cryptography==1.7.2
   - eventlet==0.17.4
   - flask-bootstrap==3.3.5.7
