@@ -35,9 +35,6 @@ class TestViews:
     def test_dataviewer(self):
         assert self.client.get(url_for('main.dataview')).status_code == 200
 
-    def test_shutdown(self):
-        assert self.client.get(url_for('main.shutdown')).status_code == 200
-
 
 @pytest.mark.parametrize("fixture, app_config, debug, testing", [
     (conf_app, 'default', False, False),
