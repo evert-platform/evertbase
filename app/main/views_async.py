@@ -150,28 +150,31 @@ def _plantnamechange():
 
 
 @main.route('/_unitadd', methods=['GET'])
-@main.route('/_unitnamechange', methods=['GET'])
-def _unitschange():
+def _unitsadd():
 
     unit_name = request.args.get('unitname', 0, type=str)
-
-    if request.path =='/_unitadd':
-        cur_plant = request.args.get('plant', 0, type=int)
-        models.Sections.create(name=unit_name, plant=cur_plant)
-        data = _plantchange(False)
-        data['cursection'] = unit_name
-
-    else:
-        cur_unit = request.args.get('unit', 0, type=int)
-        models.Sections.query.filter_by(id=cur_unit).update(dict(name=unit_name))
-        models.db.session.commit()
-        data = _plantchange(False)
-        data['cursection'] = unit_name
+    cur_plant = request.args.get('plant', 0, type=int)
+    models.Sections.create(name=unit_name, plant=cur_plant)
+    data = _plantchange(False)
+    data['cursection'] = unit_name
 
     return jsonify(data)
 
+@main.route('/_unitnamechange', methods=['GET'])
+def _unitchangename():
+    unit_name = request.args.get('unitname', 0, type=str)
+    cur_unit = request.args.get('unit', 0, type=int)
+    models.Sections.query.filter_by(id=cur_unit).update(dict(name=unit_name))
+    models.db.session.commit()
+    data = _plantchange(False)
+    data['cursection'] = unit_name
+    data['success'] = True
+    return jsonify(data)
+
+
+
 @main.route('/_unitchange', methods=['GET'])
-def _unit_change():
+def _unitselectchange():
     unit = request.args.getlist('unit[]')
     if unit:
         unittags = models.Tags.get_filtered_names(section=int(unit[0]))
