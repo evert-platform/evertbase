@@ -9,7 +9,8 @@ def app():
     return app
 
 
-# Class based test for testing the initial rendering of views
+# Class based test for
+#  testing the initial rendering of views
 @pytest.mark.usefixtures('client_class')
 class TestViews:
 
