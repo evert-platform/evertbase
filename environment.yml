@@ -17,7 +17,6 @@ dependencies:
 - sqlalchemy=1.1.6
 - pip:
   - cryptography==1.7.2
-  - cov
   - eventlet==0.17.4
   - flask-bootstrap==3.3.5.7
   - flask-plugins==1.6.1
