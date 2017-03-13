@@ -1,18 +1,80 @@
 name: Evert
+channels:
+- defaults
 dependencies:
- - flask==0.12
- - matplotlib==2.0.0
- - Pandas==0.19.2
- - pytables
- - flask-uploads=0.2.1
- - Jinja2==2.8
- - mpld3==0.2
- - pytest==2.8.5
- - WTForms==2.1
- - pip:
-    - Flask-Bootstrap==3.3.5.7
-    - Flask-Plugins==1.6.1
-    - pytest-flask==0.10.0
-    - service-identity==16.0.0
-    - WTForms-Components==0.10.0
-    - flask-wtf==0.14.2
+- bzip2=1.0.6=vc14_3
+- click=6.7=py35_0
+- coverage=4.3.4=py35_0
+- cycler=0.10.0=py35_0
+- flask=0.12=py35_0
+- gevent=1.2.1=py35_0
+- greenlet=0.4.12=py35_0
+- hdf5=1.8.15.1=vc14_4
+- icu=57.1=vc14_0
+- itsdangerous=0.24=py35_0
+- jinja2=2.9.5=py35_0
+- jpeg=9b=vc14_0
+- libpng=1.6.27=vc14_0
+- markupsafe=0.23=py35_2
+- matplotlib=2.0.0=np112py35_0
+- mkl=2017.0.1=0
+- numexpr=2.6.2=np112py35_0
+- numpy=1.12.0=py35_0
+- openssl=1.0.2k=vc14_0
+- pandas=0.19.2=np112py35_1
+- pip=9.0.1=py35_1
+- pyparsing=2.1.4=py35_0
+- pyqt=5.6.0=py35_2
+- pytables=3.2.2=np112py35_4
+- python=3.5.3=0
+- python-dateutil=2.6.0=py35_0
+- pytz=2016.10=py35_0
+- qt=5.6.2=vc14_3
+- setuptools=27.2.0=py35_1
+- sip=4.18=py35_0
+- six=1.10.0=py35_0
+- sqlalchemy=1.1.6=py35_0
+- tk=8.5.18=vc14_0
+- vs2015_runtime=14.0.25123=0
+- werkzeug=0.11.15=py35_0
+- wheel=0.29.0=py35_0
+- zlib=1.2.8=vc14_3
+- pip:
+  - attrs==16.3.0
+  - cffi==1.9.1
+  - colorama==0.3.7
+  - cryptography==1.7.2
+  - decorator==4.0.11
+  - dominate==2.3.1
+  - eventlet==0.17.4
+  - flask-bootstrap==3.3.5.7
+  - flask-plugins==1.6.1
+  - flask-socketio==2.8.4
+  - flask-sqlalchemy==2.2
+  - flask-testing==0.6.1
+  - flask-uploads==0.2.1
+  - flask-wtf==0.14.2
+  - idna==2.2
+  - infinity==1.4
+  - intervals==0.8.0
+  - mock==2.0.0
+  - mpld3==0.2
+  - pbr==2.0.0
+  - py==1.4.32
+  - pyasn1==0.2.2
+  - pyasn1-modules==0.0.8
+  - pycparser==2.17
+  - pyopenssl==16.2.0
+  - pytest==2.8.5
+  - pytest-cov==2.4.0
+  - pytest-flask==0.10.0
+  - pytest-mock==1.5.0
+  - python-engineio==1.2.3
+  - python-socketio==1.7.1
+  - service-identity==16.0.0
+  - tables==3.2.2
+  - validators==0.11.2
+  - visitor==0.1.3
+  - wtforms==2.1
+  - wtforms-components==0.10.0
+
