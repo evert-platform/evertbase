@@ -33,10 +33,6 @@ class TestViews:
     def test_dataviewer(self):
         assert self.client.get(url_for('main.dataview')).status_code == 200
 
-    # def test_ajax(self):
-    #     res = self.client.get('/_plotdetails')
-    #     assert res.json['success'] == True
-
 
 @pytest.mark.parametrize("fixture, app_config, debug, testing", [
     (conf_app, 'default', False, False),
