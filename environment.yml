@@ -5,7 +5,6 @@ dependencies:
  - Pandas==0.19.2
  - pytables
  - flask-uploads=0.2.1
- - flask-wtf==0.14.2
  - Jinja2==2.8
  - mpld3==0.2
  - pytest==2.8.5
@@ -16,3 +15,4 @@ dependencies:
     - pytest-flask==0.10.0
     - service-identity==16.0.0
     - WTForms-Components==0.10.0
+    - flask-wtf==0.14.2

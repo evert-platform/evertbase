@@ -1,6 +1,5 @@
 from flask_plugins import get_enabled_plugins, get_all_plugins
-from flask import current_app
-import pandas as pd
+from flask import request
 import shutil
 import os
 import glob
@@ -36,58 +35,6 @@ def checkplugins(enabled=True):
         p = None
 
     return p
-
-
-def uploaded_files():
-    """
-    This function is used to populate select fields. It checks which files are uploaded
-    and generates the output required for the DOM element.
-    :return: Output required by DOM element
-    """
-
-    # opening,  retrieving and closing of hdf5 store.
-    store = pd.HDFStore(current_app.config["HDF5_STORE"])
-    keys = store.keys()
-    store.close()
-
-    # formatting to populate select elements
-    if not keys:
-        columns = [('No files uploaded', 'No files uploaded')]
-
-    else:
-        columns = [(key, key.split('/')[1]) for key in keys]
-
-    return columns
-
-
-def unique_headers(table_key, initial=False):
-    """
-    Get the headers of an uploaded file from HDF5 store
-    :param initial: Only set to True when elements must be populated on initial page rendering
-    :param table_key: key pointing to table in HDF5 store
-    :return: list of headers
-    # """
-
-    try:
-        store = pd.HDFStore(current_app.config["HDF5_STORE"])
-        data = store.get(table_key)
-        store.close()
-
-        if initial:
-            fieldnames = [(fieldname, fieldname) for fieldname in data.columns.values]
-
-        else:
-            fieldnames = [fieldname for fieldname in data.columns.values]
-
-    # KeyError will be raised when no files have been uploaded to central store
-    except KeyError:
-        if initial:
-            fieldnames = [('', '')]
-
-        else:
-            fieldnames = ['']
-
-    return fieldnames
 
 
 def copy_files(src, dst, check_mod_time=False):
@@ -145,3 +92,10 @@ def find_plugins(app):
         for plugin in src_folder:
             dst = os.path.join(baseplugindir, os.path.basename(plugin))
             copy_files(plugin, dst)
+
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
