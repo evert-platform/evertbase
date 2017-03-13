@@ -1,8 +1,10 @@
 import pandas as pd
 from flask import render_template, flash, request, current_app
 from . import main
-from .forms import FileUploadForm, DataViewerForm, PlotDataSelectForm, PluginsUploadForm, PluginsForm
+from .forms import FileUploadForm, DataViewerForm, PlotDataSelectForm, PluginsUploadForm, PluginsForm, PlantSetupForm
 from . import functions as funcs
+from . import models
+
 
 
 # Renders the main index template
@@ -12,37 +14,18 @@ def index():
 
 
 # Renders the file uploads template
-@main.route('/upload', methods=['GET', 'POST'])
+@main.route('/data', methods=['GET', 'POST'])
 def upload():
-    filename = None
     form = FileUploadForm()
-
-    if request.method == 'POST' and 'file' in request.files:
-        filename = request.files['file'].filename.split('.')[0]
-        data = pd.read_csv(request.files['file'])
-        store = pd.HDFStore(current_app.config['HDF5_STORE'])
-        store.put(filename, data)
-        flash('{} successfully uploaded to Evert.'.format(filename), category='success')
-
-    else:
-        filename = None
-
-    return render_template('uploads.html', form=form)
+    form2 = PlantSetupForm()
+    return render_template('uploads.html', form=form, form2=form2)
 
 
 # renders the plotting template
 @main.route('/plotting', methods=['GET', 'POST'])
 def plot():
     form = PlotDataSelectForm()
-    files = funcs.uploaded_files()
-    form.select.choices = files
-    try:
-        headers = funcs.unique_headers(files[0][0], initial=True)
-        form.selectX.choices = headers
-        form.selectY.choices = headers
-
-    except FileNotFoundError:
-        return render_template('plot.html', form=form)
+    form.select.choices = models.Tags.get_tags()
 
     return render_template('plot.html', form=form)
 
@@ -61,14 +44,11 @@ def plugins():
 @main.route('/dataviewer', methods=['GET', 'POST'])
 def dataview():
     form = DataViewerForm()
-    form.select.choices = funcs.uploaded_files()
+    form.select.choices = models.Tags.get_names()
 
     if form.validate_on_submit():
         filepath = form.select.data
-        hdf5store = current_app.config["HDF5_STORE"]
-        store = pd.HDFStore(hdf5store)
-        data = store.get(filepath)
-        store.close()
+        data = pd.DataFrame(models.MeasurementData.get_tag_data(id=int(filepath)))
         titles = [{'title': key} for key in data.columns.values]
         data = data.values.tolist()
 
@@ -77,3 +57,10 @@ def dataview():
         titles = ''
 
     return render_template('dataviewer.html', form=form, data=data, titles=titles)
+
+# renders page for page shutdown
+@main.route('/shutdown', methods=['GET'])
+def shutdown():
+    funcs.shutdown_server()
+    return render_template('shutdown.html')
+

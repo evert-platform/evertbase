@@ -1,12 +1,21 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, FileField, SelectField
-from wtforms.validators import DataRequired
+from wtforms import SubmitField, FileField, SelectField, StringField, SelectMultipleField
+from wtforms.validators import DataRequired, required, length
 
 
 # form for selecting files to upload
 class FileUploadForm(FlaskForm):
     file = FileField('CSV file', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+
+
+# from fro plant setup
+class PlantSetupForm(FlaskForm):
+    plant_select = SelectField('Current Plant: ', choices='')
+    plant_name = StringField('Plant Name: ', validators=[required, length(max=15)])
+    unit_name = StringField('Unit Name: ', validators=[required, length(max=15)])
+    unit_select = SelectMultipleField('Units:', choices='')
+    tags = SelectMultipleField('Tags:', choices='')
+    unit_tags = SelectMultipleField('Unit Tags:', choices='')
 
 
 # form for selecting data to plot

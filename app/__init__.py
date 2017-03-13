@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, g
 from flask_bootstrap import Bootstrap
 from flask_plugins import PluginManager
 from .main.functions import find_plugins
+from .main.models import db
 from config import config
 import os
 
@@ -37,6 +38,13 @@ def create_app(config_name):
     # registering main blueprint
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
+
+    # creating database
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
+        db.session.commit()
+
     return app
 
 
