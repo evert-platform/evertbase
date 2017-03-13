@@ -10,7 +10,6 @@ dependencies:
 - hdf5=1.8.15.1
 - jinja2=2.9.5
 - matplotlib=2.0.0
-- numpy=1.12.0
 - pandas=0.19.2
 - pip=9.0.1
 - pytables=3.2.2
