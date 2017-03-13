@@ -9,8 +9,12 @@ def app():
     return app
 
 
-# Class based test for
-#  testing the initial rendering of views
+@pytest.fixture
+def conf_app(config):
+    return create_app(config)
+
+
+# Class based test for testing the initial rendering of views
 @pytest.mark.usefixtures('client_class')
 class TestViews:
 
@@ -29,8 +33,29 @@ class TestViews:
     def test_dataviewer(self):
         assert self.client.get(url_for('main.dataview')).status_code == 200
 
+    # def test_ajax(self):
+    #     res = self.client.get('/_plotdetails')
+    #     assert res.json['success'] == True
 
 
+@pytest.mark.parametrize("fixture, app_config, debug, testing", [
+    (conf_app, 'default', False, False),
+    (conf_app, 'testing', False, True),
+    (conf_app, 'development', True, False)
+])
+def test_debug_testing_values_for_config(fixture, app_config, debug, testing):
+    test_app = fixture(app_config)
+    assert test_app.debug == debug
+    assert test_app.testing == testing
 
 
-
+@pytest.mark.parametrize('url', [
+    ('/_plotdetails'),
+    ('/_disable_plugin'),
+    ('/_enable_plugin'),
+    ('/_uploadp'),
+    ('/_plotdata')
+])
+def test_ajax(client, url):
+    res = client.get(url)
+    assert res.json['success']
