@@ -16,7 +16,6 @@ dependencies:
 - pytables=3.2.2
 - setuptools=27.2.0
 - sqlalchemy=1.1.6
-- vs2015_runtime=14.0.25123=0
 - pip:
   - cryptography==1.7.2
   - cov
