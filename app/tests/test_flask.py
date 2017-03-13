@@ -90,10 +90,15 @@ class TestAsync:
         res = main.views_async._deleteunittags()
         assert res.json['success']
 
+    def test_unitchange(self, mocker):
+        unit = mocker.patch('flask.request.args.getlist')
+        unit.return_value = ['0']
+        res = main.views_async._unitselectchange()
+        assert res.json['success']
 
-
-
-
+        unit.return_value = []
+        res = main.views_async._unitselectchange()
+        assert res.json['success']
 
 
 
