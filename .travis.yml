@@ -30,7 +30,6 @@ after_success:
 addons:
   - coveralls:
      repo_token: vJNg5mw9sSdyMaszVlsvGV9tfyAhDKNK1
-  - code_climate:
-     repo_token: f389ce887b2f26ac01acbb340f0ed7034f39686b
+
 
 
