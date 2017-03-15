@@ -25,7 +25,7 @@ def upload():
 @main.route('/plotting', methods=['GET', 'POST'])
 def plot():
     form = PlotDataSelectForm()
-    form.select.choices = models.Tags.get_tags()
+    form.select.choices = models.Tags.get_names()
 
     return render_template('plot.html', form=form)
 
