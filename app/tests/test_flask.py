@@ -23,8 +23,8 @@ class TestViews:
     def test_index(self):
         assert self.client.get(url_for('main.index')).status_code == 200
 
-    # def test_plot(self):
-    #     assert self.client.get(url_for('main.plot')).status_code == 200
+    def test_plot(self):
+        assert self.client.get(url_for('main.plot')).status_code == 200
 
     def test_plugins(self):
         assert self.client.get(url_for('main.plugins')).status_code == 200
