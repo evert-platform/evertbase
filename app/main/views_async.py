@@ -186,9 +186,8 @@ def _unitselectchange():
 
         else:
             units = list(map(int, unit))
-            unittags = models.db_session.query(models.Tags)\
-                .with_entities(models.Tags.id, models.Tags.name)\
-                .filter(models.Tags.section.in_(units)).all()
+            unittags = models.Tags.get_filtered_names_in('section', units)
+
         return jsonify(success=True, unittags=dict(unittags))
     else:
         all_tags = models.Tags.get_filtered_names(plant=cur_plant)
