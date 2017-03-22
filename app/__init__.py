@@ -1,4 +1,4 @@
-from flask import Flask, g
+from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_plugins import PluginManager
 from .main.functions import find_plugins

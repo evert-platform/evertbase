@@ -99,8 +99,8 @@ class Tags(BaseMixin, db.Model):
     units = db.Column('units', db.Text)
 
     @staticmethod
-    def create_multiple(list):
-        for plant, tag_name in list:
+    def create_multiple(lst):
+        for plant, tag_name in lst:
             Tags.create(name=tag_name, plant=plant)
 
     @staticmethod
@@ -157,7 +157,7 @@ class MeasurementData(db.Model):
             # adding data to tag_data table
             df.to_sql('measurement_data', db.engine, if_exists='append', index=False)
 
-        except IntegrityError or KeyError as e:
+        except IntegrityError or KeyError:
             # TODO: Add method of letting user know the write has failed
             db.session.rollback()
             Plants.delete(id=plant_id)
