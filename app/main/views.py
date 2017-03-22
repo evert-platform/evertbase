@@ -6,7 +6,6 @@ from . import functions as funcs
 from . import models
 
 
-
 # Renders the main index template
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -62,9 +61,9 @@ def dataview():
 
     return render_template('dataviewer.html', form=form, data=data, titles=titles)
 
+
 # renders page for page shutdown
 @main.route('/shutdown', methods=['GET'])
 def shutdown():
     funcs.shutdown_server()
     return render_template('shutdown.html')
-

@@ -9,6 +9,7 @@ from sqlalchemy.exc import IntegrityError
 db = SQLAlchemy()
 db_session = db.session
 
+
 # add event for enabling foreign keys on SQLite database
 @event.listens_for(Engine, "connect")
 def _set_sqlite_pragma(dbapi_connection, connection_record):
@@ -26,7 +27,6 @@ class BaseMixin:
         obj = cls(**kwargs)
         db.session.add(obj)
         db.session.commit()
-
 
     @classmethod
     def delete(cls, **kwargs):  # method for deleting data from table
@@ -62,6 +62,7 @@ class BaseMixin:
         names = db_session.query(cls).with_entities(cls.id, cls.name).filter(methods[key].in_(values)).all()
         return names
 
+
 # Model for plants table
 class Plants(BaseMixin, db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
@@ -75,8 +76,8 @@ class Plants(BaseMixin, db.Model):
 class Sections(BaseMixin, db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name', db.TEXT)
-    plant = db.Column('plant', db.Integer, db.ForeignKey('plants.id', ondelete='CASCADE',
-                                                               onupdate='CASCADE'))
+    plant = db.Column('plant', db.Integer, db.ForeignKey('plants.id', ondelete='CASCADE', onupdate='CASCADE'))
+
 
 # Model for equipment table
 class Equipment(BaseMixin, db.Model):
@@ -91,8 +92,7 @@ class Tags(BaseMixin, db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     plant = db.Column('plant', db.ForeignKey('plants.id', ondelete='CASCADE', onupdate="CASCADE"))
     section = db.Column('section', db.ForeignKey('sections.id', ondelete='CASCADE', onupdate="CASCADE"))
-    equipment = db.Column('equipment', db.ForeignKey('equipment.id', onupdate='CASCADE',
-                                                           ondelete="CASCADE"))
+    equipment = db.Column('equipment', db.ForeignKey('equipment.id', onupdate='CASCADE', ondelete="CASCADE"))
     name = db.Column('name', db.Text)
     upper_bound = db.Column('upper_bound', db.Float)
     lower_bound = db.Column('lower_bound', db.Float)

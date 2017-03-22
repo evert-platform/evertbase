@@ -102,7 +102,7 @@ def _data_handle():
             if request_path == '/_dataopen':
                 models.MeasurementData.write_data_to_db(file, filename, 1, 0)
 
-            elif request_path =='/_dataupload':
+            elif request_path == '/_dataupload':
                 models.MeasurementData.write_data_to_db(file, filename, 0, 1)
         else:
             pass
@@ -146,7 +146,7 @@ def _updateplantlist():
     return jsonify(success=True, plants=dict(plant))
 
 
-@main.route('/_plantnamechange', methods=['GET','POST'])
+@main.route('/_plantnamechange', methods=['GET', 'POST'])
 def _plantnamechange():
 
     new_name = request.args.get('newname', 0, type=str)
@@ -168,6 +168,7 @@ def _unitsadd():
 
     return jsonify(data)
 
+
 @main.route('/_unitnamechange', methods=['GET'])
 def _unitchangename():
     unit_name = request.args.get('unitname', 0, type=str)
@@ -178,7 +179,6 @@ def _unitchangename():
     data['cursection'] = unit_name
     data['success'] = True
     return jsonify(data)
-
 
 
 @main.route('/_unitchange', methods=['GET'])
@@ -216,6 +216,7 @@ def _settags():
     unittags = models.Tags.get_filtered_names(section=cur_unit)
 
     return jsonify(freetags=dict(freetags), unittags=dict(unittags))
+
 
 @main.route('/_deleteplant', methods=['GET'])
 def _deleteplant():

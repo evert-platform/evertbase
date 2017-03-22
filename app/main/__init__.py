@@ -5,6 +5,3 @@ main = Blueprint('main', __name__, static_folder='static', template_folder='temp
 
 # imported at bottom to prevent circular importing
 from . import views, views_async, models
-
-
-
