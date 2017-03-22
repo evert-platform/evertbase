@@ -157,7 +157,7 @@ class MeasurementData(db.Model):
             # adding data to tag_data table
             df.to_sql('measurement_data', db.engine, if_exists='append', index=False)
 
-        except IntegrityError or KeyError:
+        except (IntegrityError, KeyError):
             # TODO: Add method of letting user know the write has failed
             db.session.rollback()
             Plants.delete(id=plant_id)
