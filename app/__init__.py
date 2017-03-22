@@ -46,6 +46,3 @@ def create_app(config_name):
         db.session.commit()
 
     return app
-
-
-
