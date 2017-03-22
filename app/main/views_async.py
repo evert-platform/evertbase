@@ -80,7 +80,9 @@ def _upload_plugins():
 
     return jsonify(success=success, msg=msg)
 
-
+# =============================================================================
+#                     Data Handling for data uploading and management
+# =============================================================================
 # open/upload data files
 @main.route('/_dataopen', methods=['GET', 'POST'])
 @main.route('/_dataupload', methods=['GET', 'POST'])
@@ -112,15 +114,16 @@ def _plantchange(json=True):
         plant_name = models.Plants.get_filtered_names(id=cur_plant)[0]
         sections = models.Sections.get_filtered_names(plant=cur_plant)
         tags = models.Tags.get_unassigned_tags(plant=cur_plant)
+        all_tags = models.Tags.get_filtered_names(plant=cur_plant)
 
         if sections:
             unit_tags = models.Tags.get_filtered_names(section=sections[0][0])
             data = dict(succes=True, plant_name=plant_name, sections=dict(sections),
-                        tags=dict(tags), unittags=dict(unit_tags))
+                        tags=dict(tags), unittags=dict(unit_tags), alltags=dict(all_tags))
 
         else:
             data = dict(success=True, plant_name=plant_name, sections=dict(sections),
-                        tags=dict(tags))
+                        tags=dict(tags), alltags=dict(all_tags))
     else:
         data = dict(success=False)
 
@@ -176,10 +179,19 @@ def _unitchangename():
 @main.route('/_unitchange', methods=['GET'])
 def _unitselectchange():
     unit = request.args.getlist('unit[]')
+    cur_plant = request.args.get('plant', 0, type=int)
     if unit:
-        unittags = models.Tags.get_filtered_names(section=int(unit[0]))
+        if len(unit) <= 1:
+            unittags = models.Tags.get_filtered_names(section=int(unit[0]))
+
+        else:
+            units = list(map(int, unit))
+            unittags = models.db_session.query(models.Tags)\
+                .with_entities(models.Tags.id, models.Tags.name)\
+                .filter(models.Tags.section.in_(units)).all()
         return jsonify(success=True, unittags=dict(unittags))
     else:
+        all_tags = models.Tags.get_filtered_names(plant=cur_plant)
         return jsonify(success=True)
 
 
