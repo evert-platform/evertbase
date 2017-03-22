@@ -28,5 +28,8 @@ after_success:
   - coveralls
 
 addons:
-  coveralls:
-    repo_token: vJNg5mw9sSdyMaszVlsvGV9tfyAhDKNK1
+  - coveralls:
+     repo_token: vJNg5mw9sSdyMaszVlsvGV9tfyAhDKNK1
+
+
+
