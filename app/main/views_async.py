@@ -7,31 +7,38 @@ import pandas as pd
 from . import main
 from . import models
 
+
 # this retrieves the data that needs to be plotted and returns the data that will be rendered as a figure by
 # mpld3.js
 @main.route('/_plotdata', methods=['GET'])
 def _plotdata():
     if not current_app.testing:
         fig, ax = plt.subplots()
-        filepath = request.args.get('plotdata', 0, type=str)
+        tags = request.args.getlist('tags[]')
         plottype = request.args.get('type', 0, type=str)
 
-        data_cols = ['Timestamp', filepath]
-        data = pd.DataFrame(models.get_tag_data(filepath), columns=data_cols)
+        tags_names = models.Tags.get_filtered_names_in('id', map(int, tags))
+        data = pd.DataFrame(models.MeasurementData.get_tag_data_in(tags))
 
-        if data['Timestamp'].dtype == 'O':
-            data['Timestamp'] = pd.to_datetime(data['Timestamp'])
+        if data['timestamp'].dtype == 'O':
+            data['timestamp'] = pd.to_datetime(data['timestamp'])
 
-        if plottype == 'Line':
-            data.plot.line(x='Timestamp', y=filepath, ax=ax)
+        for id, name in tags_names:
 
-        elif plottype == 'Scatter':
-            data.plot.line(x='Timestamp', y=filepath, lw=0, marker='.', ax=ax)
+            plot_data = data[data.tag == id]
+
+            if plottype == 'Line':
+                plot_data.plot.line(x='timestamp', y='tag_value', sharex=True, ax=ax, label=name)
+
+            elif plottype == 'Scatter':
+                plot_data.plot.line(x='timestamp', y='tag_value', lw=0, marker='.', sharex=True, ax=ax, label=name)
 
         ax.legend(loc=0)
+        ax.set_xlabel('Timestamp')
 
         fig.tight_layout()
         div = mpld3.fig_to_dict(fig)
+
     else:
         div = None
     return jsonify(success=True, plot=div)
@@ -80,9 +87,7 @@ def _upload_plugins():
 
     return jsonify(success=success, msg=msg)
 
-# =============================================================================
-#                     Data Handling for data uploading and management
-# =============================================================================
+
 # open/upload data files
 @main.route('/_dataopen', methods=['GET', 'POST'])
 @main.route('/_dataupload', methods=['GET', 'POST'])
