@@ -191,7 +191,7 @@ def _unitselectchange():
         return jsonify(success=True, unittags=dict(unittags))
     else:
         all_tags = models.Tags.get_filtered_names(plant=cur_plant)
-        return jsonify(success=True)
+        return jsonify(success=True, unittags=dict(all_tags))
 
 
 @main.route('/_settags')

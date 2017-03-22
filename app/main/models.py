@@ -7,6 +7,7 @@ from sqlite3 import Connection as SQLite3Connection
 from sqlalchemy.exc import IntegrityError
 
 db = SQLAlchemy()
+db_session = db.session
 
 # add event for enabling foreign keys on SQLite database
 @event.listens_for(Engine, "connect")
@@ -38,8 +39,6 @@ class BaseMixin:
             cls.query.filter_by(id=int(listi)).delete()
             db.session.commit()
 
-
-
     @classmethod
     def query_columns_all(cls, *args):
         return cls.query.with_entities(*args).all()
@@ -54,6 +53,14 @@ class BaseMixin:
         names = cls.query.with_entities(cls.id, cls.name).filter_by(**kwargs).all()
         return [(str(_id), _name) for _id, _name in names]
 
+    @classmethod
+    def get_filtered_names_in(cls, key, values):
+        methods = {'section': cls.section,
+                   'plant': cls.plant,
+                   'id': cls.id,
+                   'name': cls.name}
+        names = db_session.query(cls).with_entities(cls.id, cls.name).filter(methods[key].in_(values)).all()
+        return names
 
 # Model for plants table
 class Plants(BaseMixin, db.Model):
