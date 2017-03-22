@@ -20,9 +20,9 @@ class PlantSetupForm(FlaskForm):
 
 # form for selecting data to plot
 class PlotDataSelectForm(FlaskForm):
-    select = SelectField('Please select file to plot.', choices='', id='text')
-    selectX = SelectField('', choices='', id='plotX')
-    selectY = SelectField('', choices='', id='plotY')
+    selectPlant = SelectField('Please select file to plot.', choices='', id='plotPlant')
+    selectUnits = SelectMultipleField('', choices='', id='plotUnits')
+    selectTags = SelectMultipleField('', choices='', id='plotTags')
     selectType = SelectField('', choices=[('Scatter', 'Scatter'), ('Line', 'Line')], id='plotType')
 
 
