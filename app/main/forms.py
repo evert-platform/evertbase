@@ -41,5 +41,3 @@ class DataViewerForm(FlaskForm):
 # form for selecting plugin zip file upload
 class PluginsUploadForm(FlaskForm):
     file = FileField('Select plugin to upload', validators=[DataRequired()])
-
-
