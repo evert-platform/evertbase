@@ -23,9 +23,9 @@ def _plotdata():
         if data['timestamp'].dtype == 'O':
             data['timestamp'] = pd.to_datetime(data['timestamp'])
 
-        for id, name in tags_names:
+        for tag_id, name in tags_names:
 
-            plot_data = data[data.tag == id]
+            plot_data = data[data.tag == tag_id]
 
             if plottype == 'Line':
                 plot_data.plot.line(x='timestamp', y='tag_value', sharex=True, ax=ax, label=name)
