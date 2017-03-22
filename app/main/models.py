@@ -167,3 +167,9 @@ class MeasurementData(db.Model):
 
         return MeasurementData.query.with_entities(MeasurementData.timestamp, MeasurementData.tag_value).\
                 filter_by(**kwargs).all()
+
+    @staticmethod
+    def get_tag_data_in(ids):
+        return db_session.query(MeasurementData).with_entities(MeasurementData.timestamp, MeasurementData.tag_value,
+                                                              MeasurementData.tag).filter(MeasurementData.tag.in_(
+                                                                ids)).all()
