@@ -57,7 +57,19 @@ $(function () {
         })
 
     });
-
+    
+    $('input#Submit').on('click', function () {
+        $.getJSON('/_plotdata', {
+            tags: $('select#plotTags').val(),
+            type: $('select#plotType').val(),
+        }, function (data) {
+            var $plotarea = $('#plotarea');
+            $plotarea.empty();
+            $plotarea.append('<hr><br>');
+            $plotarea.append(mpld3.draw_figure('plotarea', data.plot));
+        })
+    });
+    
 
     $('button#deleteplot').on('click', function(){
         $('#plotarea').empty()
