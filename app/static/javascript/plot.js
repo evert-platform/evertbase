@@ -1,84 +1,128 @@
 $(document).ready(function () {
-    $('select#plotPlant').chosen({width: '100%'});
-    $('select#plotUnits').chosen({width: '100%'});
-    $('select#plotTags').chosen({width: '100%'});
-    $('select#plotType').chosen({width: '100%'});
-
+    controller.init();
 });
 
-function update_select(selector, data){
-    selector.empty();
-    $.each(data, function (value, key) {
+// Data controller for plotting page
+var dataController = (function () {
+    var data, DOMStrings;
+
+    // jQuery selectors for DOM objects
+    DOMStrings = {
+        plant: 'select#plotPlant',
+        units: 'select#plotUnits',
+        tags: 'select#plotTags',
+        type: 'select#plotType',
+        submitBtn: 'input#Submit',
+        deleteBtn: 'button#deleteplot',
+        plotArea: '#plotarea'
+    };
+
+    return {
+        // executes the $.getJSON method for asynchronous data handling
+        getJSONData: function (route, callback) {
+            // required plotting data
+            data = {
+                plant: $(DOMStrings.plant).val(),
+                unit: $(DOMStrings.units).val(),
+                tags: $(DOMStrings.tags).val(),
+                type: $(DOMStrings.type).val()
+            };
+            $.getJSON(route, data, callback)
+        },
+        // return the DOMStrings object
+        getDOMStrings: function () {
+            return DOMStrings
+        }
+    }
+})();
+// user interface controller
+var UIController = (function () {
+    var DOMStrings;
+    // DOM object strings
+    DOMStrings = dataController.getDOMStrings();
+    // update any select field
+    var updateSelect = function (selector, data) {
+            selector.empty();
+            $.each(data, function (value, key) {
                 selector.append($("<option class='active-result'></option>")
                     .attr("value", value).text(key))
-    });
-    selector.trigger('chosen:updated');
-}
+            });
+            selector.trigger('chosen:updated');
+        };
 
-
-function plant_setup(data) {
-            var $unitselect = $('select#plotUnits');
-            var $plant = $('select#plotPlant');
-            var $tags = $('select#plotTags');
-
-            console.log(true);
-            console.log(data);
+    return {
+        // initialises the chosen jQuery plugin elements
+        init: function () {
+            $(DOMStrings.plant).chosen({width: '100%'});
+            $(DOMStrings.units).chosen({width: '100%'});
+            $(DOMStrings.tags).chosen({width: '100%'});
+            $(DOMStrings.type).chosen({width: '100%'});
+        },
+        // setup of all select elements when plant is changed
+        plantSetup: function (data) {
+            var $unitselect = $(DOMStrings.units);
+            var $tags = $(DOMStrings.tags);
 
             // updating the unit select field
-            update_select($unitselect, data.sections);
-
+            updateSelect($unitselect, data.sections);
 
             //updating the tags select field
-            update_select($tags, data.alltags);
+            updateSelect($tags, data.alltags);
 
             $unitselect.trigger('chosen:updated');
             $tags.trigger('chosen:updated');
-
-
-        }
-
-
-// function for deleting current plot element (might be removed when switching to bokeh)
-$(function () {
-    $('select#plotPlant').on('change', function () {
-        $.getJSON('/_plantchange', {
-            plant: $('select#plotPlant').val()
-        }, plant_setup)
-    });
-
-    $('select#plotUnits').on('change', function () {
-        $.getJSON('/_unitchange', {
-            plant: $('select#plotPlant').val(),
-            unit: $('select#plotUnits').val()
-        }, function(data){
-            var $plotTags = $('select#plotTags');
-
-            update_select($plotTags, data.unittags)
-        })
-
-    });
-    
-    $('input#Submit').on('click', function () {
-        $.getJSON('/_plotdata', {
-            tags: $('select#plotTags').val(),
-            type: $('select#plotType').val(),
-        }, function (data) {
-            var $plotarea = $('#plotarea');
+        },
+        // rendering of plot data
+        updatePlot: function (data) {
+            var $plotarea = $(DOMStrings.plotArea);
             $plotarea.empty();
             $plotarea.append('<hr><br>');
             $plotarea.append(mpld3.draw_figure('plotarea', data.plot));
-        })
-    });
-    
+        },
+        // update tags select element
+        updateTags: function(data) {
+            var $plotTags = $(DOMStrings.tags);
+            updateSelect($plotTags, data.unittags)
+        },
+        // delete plot from plot area
+        deletePlot: function(){
+        $(DOMStrings.plotArea).empty()
+        }
+    }
+})();
 
-    $('button#deleteplot').on('click', function(){
-        $('#plotarea').empty()
+// general plot page controller
+var controller = (function () {
+    var DOMStrings;
 
-    })
-});
+    DOMStrings = dataController.getDOMStrings();
 
+    // setting up event listeners
+    var setupEventListners = function(){
+        // Event listener for plot button
+        $(DOMStrings.submitBtn).on('click', function () {
+            dataController.getJSONData('/_plotdata', UIController.updatePlot)
+        });
 
+        // Event listener for when units are selected (updates tags)
+        $(DOMStrings.units).on('change', function () {
+            dataController.getJSONData('/_unitchange', UIController.updateTags)
+        });
 
+        // Event listner for when the plant is changed (updates units and tags)
+        $(DOMStrings.plant).on('change', function () {
+            dataController.getJSONData('/_plantchange', UIController.plantSetup);
+        });
 
+        // Event listener for delete button
+        $(DOMStrings.deleteBtn).on('click', UIController.deletePlot)
 
+    };
 
+    return {
+        init: function () {
+            UIController.init();
+            setupEventListners();
+        }
+    }
+})();
