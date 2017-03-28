@@ -27,7 +27,6 @@ var controller = (function () {
     // Setting up EventListeners
     var setupEventListners = function () {
         // Event handlers for plant setup tab
-
         // Event listener for when a plant name is changed
         $('input#updateplantname').on('click', function () {
             dataController.get('/_plantnamechange', function (data) {
@@ -35,9 +34,8 @@ var controller = (function () {
                 UIController.updateSelect($plantselect, data.plants);
             });
         });
-
         // Event listener for when a selected plant is changed
-        $('select#plant_select').on('change', function () {
+        $(DOMStrings.plant).on('change', function () {
             dataController.get('/_plantchangesetup', UIController.updatePlantSetup);
             $(this).trigger('chosen:updated');
         });
@@ -51,24 +49,13 @@ var controller = (function () {
             dataController.get('/_unitnamechange', UIController.updatePlantSetup);
 
         });
-        // Event listener for selecting units
-        $('select#unit_select').on('change', function () {
+        // Event listener for selecting units in plant setup view
+        $(DOMStrings.units).on('change', function () {
             dataController.get('/_unitchange', function (data) {
-                console.log(data);
                 var $unittags = $(DOMStrings.unitTags);
                 UIController.updateSelect($unittags, data.unittags);
                 $(this).trigger('chosen:updated');
-
             });
-        });
-
-        $(DOMStrings.unitDataManage).on('change', function () {
-            dataController.get('/_unitchangedatamanage', function (data) {
-                console.log(data)
-                var $unittags = $(DOMStrings.unitTagsDataManage);
-                UIController.updateSelect($unittags, data.unittags);
-                $(this).trigger('chosen:updated');
-            })
         });
         // Event listener for assigning tags to units
         $('input#settags').on('click', function () {
@@ -90,13 +77,19 @@ var controller = (function () {
                 UIController.updateSelect($freetags, data.freetags);
             })
         });
-
         // Event listeners for data management
         //Event listener for changing a plant
-        $('select#plant_select.datamanage').on('change', function () {
+        $(DOMStrings.plantDataManage).on('change', function () {
             dataController.get('/_plantchangemanage', UIController.updateDataManagement)
         });
-
+        // Event listener for selecting units in data management view
+        $(DOMStrings.unitDataManage).on('change', function () {
+            dataController.get('/_unitchangedatamanage', function (data) {
+                var $unittags = $(DOMStrings.unitTagsDataManage);
+                UIController.updateSelect($unittags, data.unittags);
+                $(this).trigger('chosen:updated');
+            })
+        });
         // Event listener for deleting a plant
         $('input#deleteplant').on('click', function () {
             dataController.get('/_deleteplant', function (data) {
@@ -105,7 +98,6 @@ var controller = (function () {
                 $(DOMStrings.plantDataManage).trigger('change');
             })
         });
-
         // Event listener for deleting unit data
         $('input#deleteunit').on('click', function () {
             dataController.get('/_deleteunit', function (data) {
@@ -143,6 +135,7 @@ var controller = (function () {
             dataController.postForm('/_dataupload', formdata, 'File uploaded to Evert');
         });
         // Event listeners for UI interfacing
+        //Event listener for open tab
         $(DOMStrings.dataOpenTab).on('click', function () {
             $(this).addClass('active');
             $(DOMStrings.dataManageTab).removeClass('active');
@@ -152,7 +145,7 @@ var controller = (function () {
             $(DOMStrings.dataSetupView).hide();
 
         });
-
+        // Event listener for plant setup tab
         $(DOMStrings.dataSetupTab).on('click', function () {
             $(this).addClass('active');
             $(DOMStrings.dataManageTab).removeClass('active');
@@ -162,9 +155,8 @@ var controller = (function () {
             $(DOMStrings.dataSetupView).show();
 
             dataController.get('/_plantchangesetup', UIController.updatePlantSetup);
-            // $(this).trigger('chosen:updated');
         });
-
+        // Event listener for data management tab
         $(DOMStrings.dataManageTab).on('click', function () {
             $(this).addClass('active');
             $(DOMStrings.dataOpenTab).removeClass('active');
@@ -174,12 +166,8 @@ var controller = (function () {
             $(DOMStrings.dataSetupView).hide();
 
             dataController.get('/_plantchangemanage', UIController.updateDataManagement);
-
-            // $(this).trigger('chosen:updated');
-
         })
     };
-
 
     return {
         getDOMStrings: function () {
@@ -194,12 +182,10 @@ var controller = (function () {
             setupEventListners();
         }
     }
-
 })();
 
 var dataController = (function () {
     var DOMStrings;
-
     DOMStrings = controller.getDOMStrings();
 
     return {
@@ -218,7 +204,6 @@ var dataController = (function () {
                 unitTagsDataManage: $(DOMStrings.unitTagsDataManage).val()
             };
             $.getJSON(url, data, callback);
-            console.log(data)
         },
         postForm: function (url, formData, successMessage) {
             $.ajax({
@@ -229,21 +214,17 @@ var dataController = (function () {
             data: formData,
             dataType: 'json',
             success: function(data) {
-                $.getJSON('/_plantupload',{
-
-                }, function (data) {
-                    var $plantselect = $('select#plant_select');
-                    update_select($plantselect, data.plants);
-                    $.notify(successMessage, {
-                        position: "top center",
-                        className: 'success'
+                    $.getJSON('/_plantupload',{}, function (data) {
+                        var $plantselect = $('select#plant_select');
+                        update_select($plantselect, data.plants);
+                        $.notify(successMessage, {
+                            position: "top center",
+                            className: 'success'
+                        })
                     })
-                })
-
                 }
             });
         }
-
     }
 })();
 
@@ -282,46 +263,36 @@ var UIController = (function () {
             } catch(err) {
                 $plantname.val('');
             }
-
             // updating the unit select field
            updateSelect($unitselect, data.sections);
-
             // reselecting users selected plant
             $(DOMStrings.units + " option")
             .each(function() { this.selected = (this.text == data.cursection); });
-
             //updating the tags select field
             updateSelect($tags, data.tags);
-
             // clearing unit tags field
             updateSelect($unitTags, null);
-
 
             $(DOMStrings.plant).trigger('chosen:updated');
             $(DOMStrings.tags).trigger('chosen:updated');
             $(DOMStrings.units).trigger('chosen:updated');
             $(DOMStrings.unitTags).trigger('chosen:updated');
+            $(DOMStrings.unitDataManage).trigger('chosen:updated')
         },
-
         updateDataManagement: function (data) {
-            console.log(data);
             var $unitselect = $(DOMStrings.unitDataManage);
             var $tags = $(DOMStrings.tagsDataManage);
             var $unitTags = $(DOMStrings.unitTagsDataManage);
 
             // updating the unit select field
            updateSelect($unitselect, data.sections);
-
             // reselecting users selected plant
             $(DOMStrings.unitDataManage + " option")
             .each(function() { this.selected = (this.text == data.cursection); });
-
             //updating the tags select field
             updateSelect($tags, data.tags);
-
             // clearing unit tags field
             updateSelect($unitTags, null);
-
 
             $(DOMStrings.plant).trigger('chosen:updated');
             $(DOMStrings.tagsDataManage).trigger('chosen:updated');
@@ -329,5 +300,4 @@ var UIController = (function () {
             $(DOMStrings.unitTagsDataManage).trigger('chosen:updated');
         }
     }
-
 })();
