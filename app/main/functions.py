@@ -32,7 +32,7 @@ def checkplugins(enabled=True):
                 p = [('', 'All plugins enabled')]
 
     else:
-        p = None
+        p = [('', 'No plugins detected')]
 
     return p
 
