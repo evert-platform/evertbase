@@ -196,9 +196,7 @@ def _unitsadd():
 @main.route('/_unitnamechange', methods=['GET'])
 def _unitchangename():
     unit_name = request.args.get('unitName', 0, type=str)
-    print(unit_name)
     cur_unit = request.args.getlist('units[]')
-    print(cur_unit)
     models.Sections.query.filter_by(id=int(cur_unit[0])).update(dict(name=unit_name))
     models.db.session.commit()
     data = _plantchange(False)
@@ -220,10 +218,10 @@ def _unitselectchange():
         else:
             units = list(map(int, unit))
             unittags = models.Tags.get_filtered_names_in('section', units)
-
         return jsonify(success=True, unittags=dict(unittags))
     else:
-        return jsonify(success=True, unittags=None)
+        all_tags = models.Tags.get_filtered_names(plant=cur_plant)
+        return jsonify(success=True, unittags=None, alltags=dict(all_tags))
 
 @main.route('/_unitchangedatamanage', methods=['GET'])
 def _unitdatamanagechange():
@@ -296,3 +294,55 @@ def _deleteunittags():
         data = models.Tags.get_filtered_names(section=None)
 
     return jsonify(success=True, data=dict(data))
+
+@main.route('/_viewdata')
+def _viewdata():
+
+    tags = request.args.getlist('tags[]')
+    tag_data = pd.DataFrame(models.MeasurementData.get_tag_data_in(tags))
+    tag_names = dict(models.Tags.get_filtered_names_in('id', map(int, tags)))
+    tag_data.tag = [tag_names[key] for key in tag_data['tag'].values]
+    tag_data = tag_data.pivot_table(index='timestamp', columns='tag')
+    tag_data.columns = tag_data.columns.droplevel().rename(None)
+    tag_data = tag_data.reset_index()
+    data = tag_data.values.tolist()
+    columns = [{'title': key} for key in tag_data.columns]
+    print(len(data))
+
+
+    return jsonify(success=True, data=data, headers=columns)
+
+
+
+
+def _plotdata():
+    if not current_app.testing:
+        fig, ax = plt.subplots()
+        tags = request.args.getlist('tags[]')
+        plottype = request.args.get('type', 0, type=str)
+
+        tags_names = models.Tags.get_filtered_names_in('id', map(int, tags))
+        data = pd.DataFrame(models.MeasurementData.get_tag_data_in(tags))
+
+        if data['timestamp'].dtype == 'O':
+            data['timestamp'] = pd.to_datetime(data['timestamp'])
+
+        for tag_id, name in tags_names:
+
+            plot_data = data[data.tag == tag_id]
+
+            if plottype == 'Line':
+                plot_data.plot.line(x='timestamp', y='tag_value', sharex=True, ax=ax, label=name)
+
+            elif plottype == 'Scatter':
+                plot_data.plot.line(x='timestamp', y='tag_value', lw=0, marker='.', sharex=True, ax=ax, label=name)
+
+        ax.legend(loc=0)
+        ax.set_xlabel('Timestamp')
+
+        fig.tight_layout()
+        div = mpld3.fig_to_dict(fig)
+
+    else:
+        div = None
+    return jsonify(success=True, plot=div)
