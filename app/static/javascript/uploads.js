@@ -3,7 +3,7 @@ $(document).ready(function () {
 });
 
 var controller = (function () {
-    var DOMStrings;
+    var DOMStrings, DOMButtons;
 
     DOMStrings = {
         plant: 'select#plant_select',
@@ -24,11 +24,25 @@ var controller = (function () {
         dataManageView: 'div#datamanage'
     };
 
+    DOMButtons = {
+        updatePlantName: 'input#updateplantname',
+        addUnit: 'input#addunit',
+        updateUnitName: 'input#updateunit',
+        assignTags: 'input#settags',
+        removeTags: 'input#removetags',
+        deletePlant: 'input#deleteplant',
+        deleteUnit: 'input#deleteunit',
+        deleteUnitTags: 'input#deleteunittags',
+        deleteTags: 'input#deletetags',
+        openFile: 'input#open_file',
+        uploadFile: 'input#upload_file'
+    };
+
     // Setting up EventListeners
     var setupEventListners = function () {
         // Event handlers for plant setup tab
         // Event listener for when a plant name is changed
-        $('input#updateplantname').on('click', function () {
+        $(DOMButtons.updatePlantName).on('click', function () {
             dataController.get('/_plantnamechange', function (data) {
                 var $plantselect = $(DOMStrings.plant);
                 UIController.updateSelect($plantselect, data.plants);
@@ -40,12 +54,12 @@ var controller = (function () {
             $(this).trigger('chosen:updated');
         });
         // Event listener for adding a unit
-        $('input#addunit').on('click', function () {
+        $(DOMButtons.addUnit).on('click', function () {
             dataController.get('/_unitadd', UIController.updatePlantSetup);
             $(this).trigger('chosen:updated')
         });
         // Event listener form updating a unit's name
-        $('input#updateunit').on('click', function () {
+        $(DOMButtons.updateUnitName).on('click', function () {
             dataController.get('/_unitnamechange', UIController.updatePlantSetup);
 
         });
@@ -58,7 +72,7 @@ var controller = (function () {
             });
         });
         // Event listener for assigning tags to units
-        $('input#settags').on('click', function () {
+        $(DOMButtons.assignTags).on('click', function () {
             dataController.get('/_settags', function (data) {
                 var $unittags = $(DOMStrings.unitTags);
                 var $freetags = $(DOMStrings.tags);
@@ -69,7 +83,7 @@ var controller = (function () {
             $(this).trigger('chosen:updated')
         });
         // Event listener for removing tags from units
-        $('input#removetags').on('click', function () {
+        $(DOMButtons.removeTags).on('click', function () {
             dataController.get('/_removeunittags', function (data) {
                 var $unittags = $(DOMStrings.unitTags);
                 var $freetags = $(DOMStrings.tags);
@@ -91,7 +105,7 @@ var controller = (function () {
             })
         });
         // Event listener for deleting a plant
-        $('input#deleteplant').on('click', function () {
+        $(DOMButtons.deletePlant).on('click', function () {
             dataController.get('/_deleteplant', function (data) {
                 var $plantselect = $(DOMStrings.plant);
                 UIController.updateSelect($plantselect, data.plants);
@@ -99,7 +113,7 @@ var controller = (function () {
             })
         });
         // Event listener for deleting unit data
-        $('input#deleteunit').on('click', function () {
+        $(DOMButtons.deleteUnit).on('click', function () {
             dataController.get('/_deleteunit', function (data) {
                 var $unitselect = $(DOMStrings.unit);
                 UIController.updateSelect($unitselect, data.units);
@@ -107,28 +121,28 @@ var controller = (function () {
             })
         });
         // Event listener for deleting unit tags data
-        $('input#deleteunittags').on('click', function () {
+        $(DOMButtons.deleteUnitTags).on('click', function () {
             dataController.get('/_deleteunittags', function (data) {
                 var $unitTagsDataManage = $(DOMStrings.unitTagsDataManage);
                 UIController.updateSelect($unitTagsDataManage, data.data)
             })
         });
         // Event listener for deleting unassigned tags
-        $('input#deletetags').on('click', function () {
+        $(DOMButtons.deleteTags).on('click', function () {
             dataController.get('/_deletetags', function (data) {
                 var $tagsDataManage = $(DOMStrings.tagsDataManage);
                 UIController.updateSelect($tagsDataManage, data.data)
             })
         });
         // Event listener for opening a file
-        $('input#open_file').on('click', function () {
+        $(DOMButtons.openFile).on('click', function () {
             event.preventDefault();
             event.stopPropagation();
             var formdata = new FormData($('#datafile')[0]);
             dataController.postForm('/_dataopen', formdata, 'File uploaded and ready to use')
         });
         // Event listener for uploading file
-        $('input#upload_file').on('click', function () {
+        $(DOMButtons.uploadFile).on('click', function () {
             event.preventDefault();
             event.stopPropagation();
             var formdata = new FormData($('#datafile')[0]);
