@@ -110,7 +110,7 @@ def _data_handle():
     return jsonify(success=True)
 
 
-@main.route('/_plantchange', methods=['GET', 'POST'])
+@main.route('/_plantchangesetup', methods=['GET', 'POST'])
 def _plantchange(json=True):
 
     cur_plant = request.args.get('plant', None, type=int)
@@ -123,7 +123,7 @@ def _plantchange(json=True):
 
         if sections:
             unit_tags = models.Tags.get_filtered_names(section=sections[0][0])
-            data = dict(succes=True, plant_name=plant_name, sections=dict(sections),
+            data = dict(success=True, plant_name=plant_name, sections=dict(sections),
                         tags=dict(tags), unittags=dict(unit_tags), alltags=dict(all_tags))
 
         else:
@@ -138,6 +138,30 @@ def _plantchange(json=True):
     else:
         return jsonify(data)
 
+@main.route('/_plantchangemanage')
+def _plantchangemanage():
+    cur_plant = request.args.get('plantDataManage', None, type=int)
+    if cur_plant:
+
+        plant_name = models.Plants.get_filtered_names(id=cur_plant)[0]
+        sections = models.Sections.get_filtered_names(plant=cur_plant)
+        tags = models.Tags.get_unassigned_tags(plant=cur_plant)
+        all_tags = models.Tags.get_filtered_names(plant=cur_plant)
+
+        if sections:
+            unit_tags = models.Tags.get_filtered_names(section=sections[0][0])
+            data = dict(success=True, plant_name=plant_name, sections=dict(sections),
+                        tags=dict(tags), unittags=dict(unit_tags), alltags=dict(all_tags))
+
+        else:
+            data = dict(success=True, plant_name=plant_name, sections=dict(sections),
+                        tags=dict(tags), alltags=dict(all_tags))
+    else:
+        data = dict(success=False)
+
+    return jsonify(data)
+
+
 
 @main.route('/_plantupload', methods=['GET', 'POST'])
 def _updateplantlist():
@@ -149,7 +173,7 @@ def _updateplantlist():
 @main.route('/_plantnamechange', methods=['GET', 'POST'])
 def _plantnamechange():
 
-    new_name = request.args.get('newname', 0, type=str)
+    new_name = request.args.get('plantName', 0, type=str)
     cur_plant = request.args.get('plant', 0, type=int)
     models.Plants.query.filter_by(id=cur_plant).update(dict(name=new_name))
     models.db.session.commit()
@@ -160,7 +184,7 @@ def _plantnamechange():
 @main.route('/_unitadd', methods=['GET'])
 def _unitsadd():
 
-    unit_name = request.args.get('unitname', 0, type=str)
+    unit_name = request.args.get('unitName', 0, type=str)
     cur_plant = request.args.get('plant', 0, type=int)
     models.Sections.create(name=unit_name, plant=cur_plant)
     data = _plantchange(False)
@@ -171,9 +195,11 @@ def _unitsadd():
 
 @main.route('/_unitnamechange', methods=['GET'])
 def _unitchangename():
-    unit_name = request.args.get('unitname', 0, type=str)
-    cur_unit = request.args.get('unit', 0, type=int)
-    models.Sections.query.filter_by(id=cur_unit).update(dict(name=unit_name))
+    unit_name = request.args.get('unitName', 0, type=str)
+    print(unit_name)
+    cur_unit = request.args.getlist('units[]')
+    print(cur_unit)
+    models.Sections.query.filter_by(id=int(cur_unit[0])).update(dict(name=unit_name))
     models.db.session.commit()
     data = _plantchange(False)
     data['cursection'] = unit_name
@@ -183,7 +209,7 @@ def _unitchangename():
 
 @main.route('/_unitchange', methods=['GET'])
 def _unitselectchange():
-    unit = request.args.getlist('unit[]')
+    unit = request.args.getlist('units[]')
     cur_plant = request.args.get('plant', 0, type=int)
     if unit:
         if len(unit) <= 1:
@@ -203,14 +229,14 @@ def _unitselectchange():
 @main.route('/_removeunittags', methods=['GET'])
 def _settags():
     plant = request.args.get('plant', 0, type=int)
-    cur_unit = request.args.get('unit', 0, type=int)
+    cur_unit = int(request.args.getlist('units[]')[0])
     tags = [int(tag) for tag in request.args.getlist('tags[]')]
-
+    selected_unittags = map(int, request.args.getlist('unitTags[]'))
     if request.path == '/_settags':
         models.Tags.assign_tag_sections(cur_unit, tags)
 
     else:
-        models.Tags.assign_tag_sections(None, tags)
+        models.Tags.assign_tag_sections(None, selected_unittags)
 
     freetags = models.Tags.get_unassigned_tags(plant=plant)
     unittags = models.Tags.get_filtered_names(section=cur_unit)
@@ -230,7 +256,7 @@ def _deleteplant():
 
 @main.route('/_deleteunit', methods=['GET'])
 def _deleteunit():
-    unit = request.args.getlist('unit[]')
+    unit = request.args.getlist('unitDataManage[]')
     models.Sections.delete_multiple_by_id(unit)
     new_units = models.Sections.get_names()
 
@@ -240,11 +266,16 @@ def _deleteunit():
 @main.route('/_deleteunittags', methods=['GET'])
 @main.route('/_deletetags', methods=['GET'])
 def _deleteunittags():
-    tags = request.args.getlist('tags[]')
+
     if request.path == '/_deleteunittags':
-        models.Tags.delete_multiple_by_id(tags)
+        unit = int(request.args.getlist('unitDataManage[]')[0])
+        unit_tags = request.args.getlist('unitTagsDataManage[]')
+        models.Tags.delete_multiple_by_id(unit_tags)
+        data = models.Tags.get_filtered_names(section=unit)
 
     else:
-        models.Tags.delete_multiple_by_id(tags)
-        request_path = request.path
-    return jsonify(success=True, path=request_path)
+        tags_data_manage = request.args.getlist('tagsDataManage[]')
+        models.Tags.delete_multiple_by_id(tags_data_manage)
+        data = models.Tags.get_filtered_names(section=None)
+
+    return jsonify(success=True, data=dict(data))

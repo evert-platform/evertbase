@@ -19,7 +19,6 @@ function plant_setup(data) {
                 $plantname.val('');
             }
 
-
             // updating the unit select field
             update_select($unitselect, data.sections);
 
@@ -39,15 +38,15 @@ function plant_setup(data) {
 
 
 $(document).ready(function () {
+    controller.init();
+
+
     var $plantsetuptab = $('li#setup');
     var $opentab = $('li#open');
     var $datamanagetab = $('li#manage');
 
 
-    $('select#plant_select').chosen({width: '100%'});
-    $('select#tags').chosen({width: '100%'});
-    $('select#unit_select').chosen({width: '100%'});
-    $('select#unit_tags').chosen({width: '100%'});
+
 
     $.getJSON('/_plantupload',{
 
@@ -84,7 +83,7 @@ $(document).ready(function () {
 
 
 
-        $.getJSON('/_plantchange',{
+        $.getJSON('/_plantchangesetup',{
             plant: $('select#plant_select').val()
         }, plant_setup);
 
@@ -101,9 +100,9 @@ $(document).ready(function () {
         $('div#plant_setup').hide();
         $('div#datamanage').show();
 
-        $.getJSON('/_plantchange',{
+        $.getJSON('/_plantchangesetup',{
             plant: $('select#plant_select').val()
-        }, plant_setup);
+        }, UIController.updatePlantSetup);
 
         $(this).trigger('chosen:updated');
 
@@ -178,139 +177,232 @@ $(function() {
       })
 });
 
+var controller = (function () {
+    var DOMStrings;
 
+    DOMStrings = {
+        plant: 'select#plant_select',
+        plantDataManage: 'select#plant_select.datamanage',
+        plantName: 'input#plant_name',
+        tags: 'select#tags',
+        tagsDataManage: 'select#tags.datamanage',
+        units: 'select#unit_select',
+        unitTags: 'select#unit_tags',
+        unitName: 'input#unit_name',
+        unitDataManage: 'select#unit_select.datamanage',
+        unitTagsDataManage: 'select#unit_tags.datamanage'
+    };
 
+    // Setting up EventListeners
+    var setupEventListners = function () {
+        // Event handlers for plant setup tab
 
-$(function () {
-    $('select#plant_select').on('change', function () {
-        var cur_plant = $(this).val();
-
-        $.getJSON('/_plantchange', {
-            plant: cur_plant
-        }, plant_setup);
-        $(this).trigger('chosen:updated');
-    });
-
-
-    $('input#updateplantname').on('click', function(){
-        $.getJSON('/_plantnamechange',{
-            newname: $('input#plant_name').val(),
-            plant: $('select#plant_select :selected').val()
-        }, function (data) {
-            var $plantselect = $('select#plant_select');
-            update_select($plantselect, data.plants)
+        // Event listener for when a plant name is changed
+        $('input#updateplantname').on('click', function(){
+            dataController.get('/_plantnamechange', function (data) {
+                var $plantselect = $(DOMStrings.plant);
+                UIController.updateSelect($plantselect, data.plants);
+            });
         });
-    });
+        // Event listener for when a selected plant is changed
+        $('select#plant_select').on('change', function () {
+            dataController.get('/_plantchangesetup', UIController.updatePlantSetup);
+            $(this).trigger('chosen:updated');
+        });
+        // Event listener for adding a unit
+        $('input#addunit').on('click', function () {
+            dataController.get('/_unitadd', UIController.updatePlantSetup);
+            $(this).trigger('chosen:updated')
+        });
+        // Event listener form updating a unit's name
+        $('input#updateunit').on('click', function () {
+            dataController.get('/_unitnamechange', UIController.updatePlantSetup);
 
+        });
+        // Event listener for selecting units
+        $('select#unit_select').on('change', function () {
+            dataController.get('/_unitchange', function (data) {
+                var $unittags = $(DOMStrings.unitTags);
+                UIController.updateSelect($unittags, data.unittags);
+                $(this).trigger('chosen:updated');
+            })
+        });
+        // Event listener for assigning tags to units
+        $('input#settags').on('click', function () {
+        dataController.get('/_settags',function(data){
+                var $unittags = $(DOMStrings.unitTags);
+                var $freetags = $(DOMStrings.tags);
+                UIController.updateSelect($unittags, data.unittags);
+                UIController.updateSelect($freetags, data.freetags);
 
-    $('input#addunit').on('click', function () {
-        $.getJSON('/_unitadd',{
-            plant: $('select#plant_select :selected').val(),
-            unit: $('select#unit_select :selected').val(),
-            unitname: $('input#unit_name').val()
-        }, plant_setup);
-
-        $(this).trigger('chosen:updated')
-    });
-
-    $('input#updateunit').on('click', function () {
-        $.getJSON('/_unitnamechange',{
-            plant: $('select#plant_select :selected').val(),
-            unit: $('select#unit_select :selected').val(),
-            unitname: $('input#unit_name').val()
-        }, plant_setup);
-
-        $(this).trigger('chosen:updated')
-    });
-
-    $('select#unit_select').on('change', function () {
-        $.getJSON('/_unitchange',{
-            unit: $(this).val(),
-            plant: $('select#plant_select :selected').val()
-        }, function (data) {
-            var $unittags= $('select#unit_tags');
-            update_select($unittags, data.unittags)
-
-        })
-    });
-
-
-
-    $('input#settags').on('click', function () {
-        $.getJSON('/_settags',{
-            plant: $('select#plant_select :selected').val(),
-            unit: $('select#unit_select :selected').val(),
-            unitname: $('select#unit_select :selected').text(),
-            tags: $('select#tags').val()
-
-        }, function(data){
-            var $unittags = $('select#unit_tags');
-            var $freetags = $('select#tags');
-
-            update_select($unittags, data.unittags);
-            update_select($freetags, data.freetags);
+            });
+            $(this).trigger('chosen:updated')
+        });
+        // Event listener for removing tags from units
+         $('input#removetags').on('click', function () {
+            dataController.get('/_removeunittags', function(data){
+                var $unittags = $(DOMStrings.unitTags);
+                var $freetags = $(DOMStrings.tags);
+                UIController.updateSelect($unittags, data.unittags);
+                UIController.updateSelect($freetags, data.freetags);
+            })
         });
 
-        $(this).trigger('chosen:updated')
-    });
+         // Event listeners for data management
+        //Event listener for changing a plant
+        $('select#plant_select.datamanage').on('change', function () {
+            dataController.get('/_plantchangemanage', UIController.updateDataManagement)
+        });
+
+        // Event listener for deleting a plant
+        $('input#deleteplant').on('click', function () {
+            dataController.get('/_deleteplant',function (data) {
+                var $plantselect = $(DOMStrings.plant);
+                UIController.updateSelect($plantselect, data.plants);
+                $(DOMStrings.plantDataManage).trigger('change');
+            })
+        });
+
+        // Event listener for deleting unit data
+        $('input#deleteunit').on('click', function () {
+            dataController.get('/_deleteunit', function (data) {
+                var $unitselect = $(DOMStrings.unit);
+                UIController.updateSelect($unitselect, data.units);
+                $(DOMStrings.plant).trigger('change');
+            })
+        });
+        // Event listener for deleting unit tags data
+        $('input#deleteunittags').on('click', function () {
+            dataController.get('/_deleteunittags', function (data) {
+                var $unitTagsDataManage = $(DOMStrings.unitTagsDataManage);
+                UIController.updateSelect($unitTagsDataManage, data.data)
+            })
+        });
+        // Event listener for deleting unassigned tags
+        $('input#deletetags').on('click', function () {
+            dataController.get('/_deletetags', function (data) {
+                console.log(data)
+                var $tagsDataManage = $(DOMStrings.tagsDataManage);
+                UIController.updateSelect($tagsDataManage, data.data)
+            })
+        });
+
+    };
+
+    return {
+        getDOMStrings: function () {
+            return DOMStrings;
+        },
+        init: function () {
+            UIController.init();
+            setupEventListners();
+        }
+    }
+
+})();
+
+var dataController = (function () {
+    var DOMStrings;
+
+    DOMStrings = controller.getDOMStrings();
+
+    return {
+        get: function (url, callback) {
+            var data;
+            data = {
+                plant: $(DOMStrings.plant).val(),
+                plantDataManage: $(DOMStrings.plantDataManage).val(),
+                plantName: $(DOMStrings.plantName).val(),
+                unitName: $(DOMStrings.unitName).val(),
+                units: $(DOMStrings.units).val(),
+                tags: $(DOMStrings.tags).val(),
+                tagsDataManage: $(DOMStrings.tagsDataManage).val(),
+                unitTags: $(DOMStrings.unitTags).val(),
+                unitDataManage:$(DOMStrings.unitDataManage).val(),
+                unitTagsDataManage: $(DOMStrings.unitTagsDataManage).val()
+            };
+            $.getJSON(url, data, callback);
+            console.log(data)
+        }
+    }
+})();
+
+var UIController = (function () {
+    var DOMStrings = controller.getDOMStrings();
+
+    var updateSelect = function (selector, data) {
+            selector.empty();
+            $.each(data, function (value, key) {
+                selector.append($("<option class='active-result'></option>")
+                    .attr("value", value).text(key))
+            });
+            selector.trigger('chosen:updated');
+        };
 
 
-    $('input#removetags').on('click', function () {
-        $.getJSON('/_removeunittags', {
-            plant: $('select#plant_select :selected').val(),
-            unit: $('select#unit_select').val(),
-            tags: $('select#unit_tags').val()
-        }, function(data){
-            var $unittags = $('select#unit_tags');
-            var $freetags = $('select#tags');
+    return {
+        init: function () {
+            $(DOMStrings.plant).chosen({width: '100%'});
+            $(DOMStrings.tags).chosen({width: '100%'});
+            $(DOMStrings.units).chosen({width: '100%'});
+            $(DOMStrings.unitTags).chosen({width: '100%'});
+        },
+        updateSelect: function (selector, data) {
+            updateSelect(selector, data)
 
-            update_select($unittags, data.unittags);
-            update_select($freetags, data.freetags);
-        })
-    });
+        },
+        updatePlantSetup: function (data) {
+            var $unitselect = $(DOMStrings.units);
+            var $plantname = $(DOMStrings.plantName);
+            var $tags = $(DOMStrings.tags);
 
+            try {
+                $plantname.val(data.plant_name[1]);
+            } catch(err) {
+                $plantname.val('');
+            }
 
-    $('input#deleteplant').on('click', function () {
-        $.getJSON('/_deleteplant', {
-            plant: $('select#plant_select').val()
-        },function (data) {
-            var $plantselect = $('select#plant_select');
-            update_select($plantselect, data.plants);
+            // updating the unit select field
+           updateSelect($unitselect, data.sections);
 
-            $('select#plant_select').trigger('change');
+            // reselecting users selected plant
+            $(DOMStrings.units + " option")
+            .each(function() { this.selected = (this.text == data.cursection); });
 
-        })
-
-    });
-
-
-    $('input#deleteunit').on('click', function () {
-        $.getJSON('/_deleteunit', {
-            unit:$('select#unit_select.datamanage').val()
-        },function (data) {
-            var $unitselect = $('select#unit_select');
-            update_select($unitselect, data.units);
-
-            $('select#plant_select').trigger('change');
-            $('select#unit_select').trigger('change');
-        })
-    });
-
-    $('input#deleteunittags').on('click', function () {
-        $.getJSON('/_deleteunittags',{
-            tags: $('select#unit_tags.datamanage').val()
-        }, function (data) {
+            //updating the tags select field
+            updateSelect($tags, data.tags);
 
 
-            $('select#unit_select').trigger('change')
-        })
-    });
+            $(DOMStrings.plant).trigger('chosen:updated');
+            $(DOMStrings.tags).trigger('chosen:updated');
+            $(DOMStrings.units).trigger('chosen:updated');
+            $(DOMStrings.unitTags).trigger('chosen:updated');
+        },
 
-    $('input#deletetags').on('click', function () {
-        $.getJSON('/_deletetags', {
-            tags: $('select#tags.datamanage').val()
-        }, function (data) {
-            $('select#plant_select').trigger('change')
-        })
-    })
-});
+        updateDataManagement: function (data) {
+            console.log(data);
+            var $unitselect = $(DOMStrings.unitTagsDataManage);
+            var $tags = $(DOMStrings.tagsDataManage);
+
+            // updating the unit select field
+           updateSelect($unitselect, data.sections);
+
+            // reselecting users selected plant
+            $(DOMStrings.unitDataManage + " option")
+            .each(function() { this.selected = (this.text == data.cursection); });
+
+            //updating the tags select field
+            updateSelect($tags, data.tags);
+
+
+            $(DOMStrings.plant).trigger('chosen:updated');
+            $(DOMStrings.tagsDataManage).trigger('chosen:updated');
+            $(DOMStrings.unitDataManage).trigger('chosen:updated');
+            $(DOMStrings.unitTagsDataManage).trigger('chosen:updated');
+        }
+    }
+
+})();
+
+
+
