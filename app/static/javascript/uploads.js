@@ -230,7 +230,7 @@ var dataController = (function () {
             success: function(data) {
                     $.getJSON('/_plantupload',{}, function (data) {
                         var $plantselect = $('select#plant_select');
-                        update_select($plantselect, data.plants);
+                        UIController.updateSelect($plantselect, data.plants);
                         $.notify(successMessage, {
                             position: "top center",
                             className: 'success'

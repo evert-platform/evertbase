@@ -82,7 +82,12 @@ var UIController = (function () {
         // update tags select element
         updateTags: function(data) {
             var $plotTags = $(DOMStrings.tags);
-            updateSelect($plotTags, data.unittags)
+            if (data.unittags){
+                updateSelect($plotTags, data.unittags)
+            } else {
+                updateSelect($plotTags, data.alltags)
+            }
+
         },
         // delete plot from plot area
         deletePlot: function(){
@@ -111,7 +116,7 @@ var controller = (function () {
 
         // Event listner for when the plant is changed (updates units and tags)
         $(DOMStrings.plant).on('change', function () {
-            dataController.getJSONData('/_plantchange', UIController.plantSetup);
+            dataController.getJSONData('/_plantchangesetup', UIController.plantSetup);
         });
 
         // Event listener for delete button
