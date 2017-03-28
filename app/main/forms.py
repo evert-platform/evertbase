@@ -34,8 +34,9 @@ class PluginsForm(FlaskForm):
 
 # form for selecting data for dataviewer
 class DataViewerForm(FlaskForm):
-    select = SelectField('Select file to view.', choices='', id='text')
-    submit = SubmitField('View')
+    selectPlant = SelectField('Select file to view.', choices='', id='dataPlant')
+    selectUnits = SelectMultipleField('', choices='', id='dataUnits')
+    selectTags = SelectMultipleField('', choices='', id='dataTags')
 
 
 # form for selecting plugin zip file upload
