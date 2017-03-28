@@ -47,19 +47,13 @@ def plugins():
 @main.route('/dataviewer', methods=['GET', 'POST'])
 def dataview():
     form = DataViewerForm()
-    form.select.choices = models.Tags.get_names()
+    plants = models.Plants.get_names()
+    if plants:
+        form.selectPlant.choices = plants
+        form.selectUnits.choices = models.Sections.get_filtered_names(plant=plants[0][0])
+        form.selectTags.choices = models.Tags.get_filtered_names(plant=plants[0][0])
 
-    if form.validate_on_submit():
-        filepath = form.select.data
-        data = pd.DataFrame(models.MeasurementData.get_tag_data(id=int(filepath)))
-        titles = [{'title': key} for key in data.columns.values]
-        data = data.values.tolist()
-
-    else:
-        data = None
-        titles = ''
-
-    return render_template('dataviewer.html', form=form, data=data, titles=titles)
+    return render_template('dataviewer.html', form=form)
 
 
 # renders page for page shutdown
