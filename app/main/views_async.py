@@ -209,8 +209,10 @@ def _unitchangename():
 
 @main.route('/_unitchange', methods=['GET'])
 def _unitselectchange():
-    unit = request.args.getlist('units[]')
+
     cur_plant = request.args.get('plant', 0, type=int)
+    unit = request.args.getlist('units[]')
+
     if unit:
         if len(unit) <= 1:
             unittags = models.Tags.get_filtered_names(section=int(unit[0]))
@@ -221,9 +223,24 @@ def _unitselectchange():
 
         return jsonify(success=True, unittags=dict(unittags))
     else:
-        all_tags = models.Tags.get_filtered_names(plant=cur_plant)
-        return jsonify(success=True, unittags=dict(all_tags))
+        return jsonify(success=True, unittags=None)
 
+@main.route('/_unitchangedatamanage', methods=['GET'])
+def _unitdatamanagechange():
+    cur_plant = request.args.get('plant', 0, type=int)
+    unit = request.args.getlist('unitDataManage[]')
+    print(unit)
+    if unit:
+        if len(unit) <= 1:
+            unittags = models.Tags.get_filtered_names(section=int(unit[0]))
+
+        else:
+            units = list(map(int, unit))
+            unittags = models.Tags.get_filtered_names_in('section', units)
+
+        return jsonify(success=True, unittags=dict(unittags))
+    else:
+        return jsonify(success=True, unittags=None)
 
 @main.route('/_settags')
 @main.route('/_removeunittags', methods=['GET'])
