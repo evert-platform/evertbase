@@ -112,7 +112,7 @@ def _data_handle():
 
 @main.route('/_plantchangesetup', methods=['GET', 'POST'])
 def _plantchange(json=True):
-
+    print(True)
     cur_plant = request.args.get('plant', None, type=int)
     if cur_plant:
 
@@ -311,38 +311,3 @@ def _viewdata():
 
 
     return jsonify(success=True, data=data, headers=columns)
-
-
-
-
-def _plotdata():
-    if not current_app.testing:
-        fig, ax = plt.subplots()
-        tags = request.args.getlist('tags[]')
-        plottype = request.args.get('type', 0, type=str)
-
-        tags_names = models.Tags.get_filtered_names_in('id', map(int, tags))
-        data = pd.DataFrame(models.MeasurementData.get_tag_data_in(tags))
-
-        if data['timestamp'].dtype == 'O':
-            data['timestamp'] = pd.to_datetime(data['timestamp'])
-
-        for tag_id, name in tags_names:
-
-            plot_data = data[data.tag == tag_id]
-
-            if plottype == 'Line':
-                plot_data.plot.line(x='timestamp', y='tag_value', sharex=True, ax=ax, label=name)
-
-            elif plottype == 'Scatter':
-                plot_data.plot.line(x='timestamp', y='tag_value', lw=0, marker='.', sharex=True, ax=ax, label=name)
-
-        ax.legend(loc=0)
-        ax.set_xlabel('Timestamp')
-
-        fig.tight_layout()
-        div = mpld3.fig_to_dict(fig)
-
-    else:
-        div = None
-    return jsonify(success=True, plot=div)
