@@ -124,14 +124,7 @@ class MeasurementData(db.Model):
 
     @staticmethod
     def upload_file(file_name, plant_name, opened, upload):
-        """
-        Upload files to the evert database
-        :param file_name: Name of the file to be uploaded
-        :param plant_name: The name of the plant the file will be linked to.
-        :param opened: Indicates if a data set is opened or uploaded into the application
-        :param upload: Indicates if a data set is opened or uploaded into the application
-        :returns success: Boolean, indicates if upload was a success.
-        """
+
         # using global variable for rollback of data
         global plant_id
         plant_id = None
