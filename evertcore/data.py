@@ -47,7 +47,6 @@ def create_unit(name, plant_id):
     Sections.create(name=name, plant=plant_id)
 
 
-
 def delete_plant(plant_id):
     """
     Delete plant and all of its data.
@@ -133,7 +132,11 @@ def get_tag_names(**kwargs):
     """
 
     if kwargs:
-        names = Tags.get_filtered_names(**kwargs)
+        if 'key' and 'values' in kwargs:
+            names = Tags.get_filtered_names_in(kwargs['key'], kwargs['values'])
+
+        else:
+            names = Tags.get_filtered_names(**kwargs)
 
     else:
         names = Tags.get_names()
@@ -156,12 +159,37 @@ def get_plant_names(**kwargs):
     """
 
     if kwargs:
-        plants = Plants.get_filtered_names(**kwargs)
+
+            plants = Plants.get_filtered_names(**kwargs)
 
     else:
         plants = Plants.get_names()
 
     return plants
+
+
+def get_section_names(**kwargs):
+    """
+
+    Parameters
+    ----------
+    kwargs
+          Filters for section names
+
+    Returns
+    -------
+    list
+        Names of section in a list of tuples, ie. [(id, name),..]
+
+    """
+
+    if kwargs:
+        sections = Sections.get_filtered_names(**kwargs)
+
+    else:
+        sections = Sections.get_names()
+
+    return sections
 
 
 def get_unassigned_tags(**kwargs):
@@ -223,6 +251,25 @@ def update_plant_name(plant_id, name):
     Plants.query.filter_by(id=plant_id).update(dict(name=name))
     db.session.commit()
     return Plants.get_names()
+
+
+def update_section_name(section_id, name):
+    """
+    Updates section name.
+
+    Parameters
+    ----------
+    section_id : int
+                 ID for the section to be updated
+    name : str
+           Name of plant
+
+    Returns
+    -------
+
+    """
+    Sections.query.filter_by(id=section_id).update(dict(name=name))
+    db.session.commit()
 
 
 def upload_file(file_name, plant_name, opened, upload):
