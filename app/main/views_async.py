@@ -5,7 +5,6 @@ import mpld3
 from flask import jsonify, request, current_app
 import pandas as pd
 from . import main
-from . import models
 import evertcore as evert
 
 
@@ -18,7 +17,7 @@ def _plotdata():
         tags = request.args.getlist('tags[]')
         plottype = request.args.get('type', 0, type=str)
 
-        tags_names = models.Tags.get_filtered_names_in('id', map(int, tags))
+        tags_names = evert.data.get_tag_names(key='id', values=map(int, tags))
         data = pd.DataFrame(evert.data.tag_data(tags))
 
         if data['timestamp'].dtype == 'O':
@@ -93,18 +92,18 @@ def _upload_plugins():
 @main.route('/_dataopen', methods=['GET', 'POST'])
 @main.route('/_dataupload', methods=['GET', 'POST'])
 def _data_handle():
-
+    success = None
     if request.method == 'POST' and 'file' in request.files:
         file = request.files['file']
-        filename = file.filename.split('.')[0]
+        plant_name = file.filename.split('.')[0]
         request_path = request.path
 
-        if filename:
+        if plant_name:
             if request_path == '/_dataopen':
-                success = evert.data.upload_file(file, filename, True, False)
+                success = evert.data.upload_file(file, plant_name, True, False)
 
             elif request_path == '/_dataupload':
-                success = evert.data.upload_file(file, filename, False, True)
+                success = evert.data.upload_file(file, plant_name, False, True)
         else:
             pass
 
@@ -116,13 +115,13 @@ def _plantchange(json=True):
     cur_plant = request.args.get('plant', None, type=int)
     if cur_plant:
 
-        plant_name = models.Plants.get_filtered_names(id=cur_plant)[0]
-        sections = models.Sections.get_filtered_names(plant=cur_plant)
-        tags = models.Tags.get_unassigned_tags(plant=cur_plant)
-        all_tags = models.Tags.get_filtered_names(plant=cur_plant)
+        plant_name = evert.data.get_plant_names(id=cur_plant)[0]
+        sections = evert.data.get_section_names(plant=cur_plant)
+        tags = evert.data.get_unassigned_tags(plant=cur_plant)
+        all_tags = evert.data.get_tag_names(plant=cur_plant)
 
         if sections:
-            unit_tags = models.Tags.get_filtered_names(section=sections[0][0])
+            unit_tags = evert.data.get_tag_names(section=sections[0][0])
             data = dict(success=True, plant_name=plant_name, sections=dict(sections),
                         tags=dict(tags), unittags=dict(unit_tags), alltags=dict(all_tags))
 
@@ -144,12 +143,12 @@ def _plantchangemanage():
     if cur_plant:
 
         plant_name = evert.data.get_plant_names(id=cur_plant)
-        sections = models.Sections.get_filtered_names(plant=cur_plant)
+        sections = evert.data.get_section_names(plant=cur_plant)
         tags = evert.data.get_unassigned_tags(plant=cur_plant)
         all_tags = evert.data.get_tag_names(plant=cur_plant)
 
         if sections:
-            unit_tags = models.Tags.get_filtered_names(section=sections[0][0])
+            unit_tags = evert.data.get_tag_names(section=sections[0][0])
             data = dict(success=True, plant_name=plant_name[0], sections=dict(sections),
                         tags=dict(tags), unittags=dict(unit_tags), alltags=dict(all_tags))
 
@@ -195,9 +194,8 @@ def _unitsadd():
 @main.route('/_unitnamechange', methods=['GET'])
 def _unitchangename():
     unit_name = request.args.get('unitName', 0, type=str)
-    cur_unit = request.args.getlist('units[]')
-    models.Sections.query.filter_by(id=int(cur_unit[0])).update(dict(name=unit_name))
-    models.db.session.commit()
+    cur_unit = request.args.getlist('units[]')[0]
+    evert.data.update_section_name(int(cur_unit), unit_name)
     data = _plantchange(False)
     data['cursection'] = unit_name
     data['success'] = True
@@ -216,10 +214,10 @@ def _unitselectchange():
 
         else:
             units = list(map(int, unit))
-            unittags = models.Tags.get_filtered_names_in('section', units)
+            unittags = evert.data.get_tag_names(key='section', values=units)
         return jsonify(success=True, unittags=dict(unittags))
     else:
-        all_tags = models.Tags.get_filtered_names(plant=cur_plant)
+        all_tags = evert.data.get_tag_names(plant=cur_plant)
         return jsonify(success=True, unittags=None, alltags=dict(all_tags))
 
 @main.route('/_unitchangedatamanage', methods=['GET'])
@@ -232,7 +230,7 @@ def _unitdatamanagechange():
 
         else:
             units = list(map(int, unit))
-            unittags = models.Tags.get_filtered_names_in('section', units)
+            unittags = evert.data.get_tag_names(key='section', values=units)
 
         return jsonify(success=True, unittags=dict(unittags))
     else:
@@ -297,19 +295,18 @@ def _deleteunittags():
 
     return jsonify(success=True, data=dict(data))
 
+
 @main.route('/_viewdata')
 def _viewdata():
 
     tags = request.args.getlist('tags[]')
     tag_data = pd.DataFrame(evert.data.tag_data(tags))
-    tag_names = dict(models.Tags.get_filtered_names_in('id', map(int, tags)))
+    tag_names = dict(evert.data.get_tag_names(key='id', values=map(int, tags)))
     tag_data.tag = [tag_names[key] for key in tag_data['tag'].values]
     tag_data = tag_data.pivot_table(index='timestamp', columns='tag')
     tag_data.columns = tag_data.columns.droplevel().rename(None)
     tag_data = tag_data.reset_index()
     data = tag_data.values.tolist()
     columns = [{'title': key} for key in tag_data.columns]
-    print(len(data))
-
 
     return jsonify(success=True, data=data, headers=columns)

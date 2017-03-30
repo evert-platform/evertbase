@@ -1,9 +1,8 @@
-import pandas as pd
 from flask import render_template
 from . import main
 from .forms import FileUploadForm, DataViewerForm, PlotDataSelectForm, PluginsUploadForm, PluginsForm, PlantSetupForm
 from . import functions as funcs
-from . import models
+import evertcore as evert
 
 
 # Renders the main index template
@@ -24,11 +23,11 @@ def upload():
 @main.route('/plotting', methods=['GET', 'POST'])
 def plot():
     form = PlotDataSelectForm()
-    plants = models.Plants.get_names()
+    plants = evert.data.get_plant_names()
     if plants:
         form.selectPlant.choices = plants
-        form.selectUnits.choices = models.Sections.get_filtered_names(plant=plants[0][0])
-        form.selectTags.choices = models.Tags.get_filtered_names(plant=plants[0][0])
+        form.selectUnits.choices = evert.data.get_section_names(plant=plants[0][0])
+        form.selectTags.choices = evert.data.get_tag_names(plant=plants[0][0])
 
     return render_template('plot.html', form=form)
 
@@ -47,11 +46,11 @@ def plugins():
 @main.route('/dataviewer', methods=['GET', 'POST'])
 def dataview():
     form = DataViewerForm()
-    plants = models.Plants.get_names()
+    plants = evert.data.get_plant_names()
     if plants:
         form.selectPlant.choices = plants
-        form.selectUnits.choices = models.Sections.get_filtered_names(plant=plants[0][0])
-        form.selectTags.choices = models.Tags.get_filtered_names(plant=plants[0][0])
+        form.selectUnits.choices = evert.data.get_section_names(plant=plants[0][0])
+        form.selectTags.choices = evert.data.get_tag_names(plant=plants[0][0])
 
     return render_template('dataviewer.html', form=form)
 
