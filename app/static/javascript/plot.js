@@ -148,6 +148,7 @@ var UIController = (function () {
         },
         // rendering of plot data
         updatePlot: function (data) {
+            // TODO: Not working for all types of time formats
             var plot_data = data.data;
             var headers = plot_data.shift();
 
