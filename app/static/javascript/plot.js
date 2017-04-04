@@ -175,12 +175,17 @@ var UIController = (function () {
                 axis: {
                     x: {
                         type: 'timeseries',
-                        localtime: true
+                        localtime: true,
+                        tick:{
+                            count: 15,
+                            format: '%Y-%m-%d\n %H:%M'
+
+                        }
                     },
                     y: {
                         tick:{
                             format: function (d) {
-                                return Math.round(d, 1)
+                                return Math.round(d)
                             }
                         }
                     }
