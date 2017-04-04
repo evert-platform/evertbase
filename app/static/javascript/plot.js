@@ -105,7 +105,7 @@ var dataController = (function () {
 
             sampled[ sampled_index++ ] = data[ data_length - 1 ]; // Always add last
 
-            return [headers].concat(sampled);
+            return sampled;
         }
     }
 })();
@@ -148,10 +148,44 @@ var UIController = (function () {
         },
         // rendering of plot data
         updatePlot: function (data) {
-            var $plotarea = $(DOMStrings.plotArea);
-            $plotarea.empty();
-            $plotarea.append('<hr><br>');
-            $plotarea.append(mpld3.draw_figure('plotarea', data.plot));
+            var plot_data = data.data;
+            var headers = plot_data.shift();
+
+            plot_data.map(function (d) {
+                d[0] = new Date(d[0]);
+
+                return d
+            });
+
+
+            var new_data = dataController.downsample(plot_data, 900);
+            new_data = [headers].concat(new_data);
+
+            var chart = c3.generate({
+                bindto: '#plot',
+                data: {
+                    x: 'timestamp',
+                    rows: new_data,
+                    selection:{
+                        enabled: true,
+                        multiple: true,
+                        draggable:true
+                    }
+                },
+                axis: {
+                    x: {
+                        type: 'timeseries',
+                        localtime: true
+                    }
+                },
+                zoom:{
+                    enabled:true
+                },
+                point: {
+                    r:1
+                }
+
+            });
         },
         // update tags select element
         updateTags: function(data) {
@@ -180,48 +214,8 @@ var controller = (function () {
     var setupEventListners = function(){
         // Event listener for plot button
         $(DOMStrings.submitBtn).on('click', function () {
-            dataController.getJSONData('/_plotdata', function(data){
-                var plot_data = data.data;
-                var headers = plot_data.shift();
-                
-                plot_data.map(function (d) {
-                    d[0] = new Date(d[0]);
+            dataController.getJSONData('/_plotdata', UIController.updatePlot)});
 
-                    return d
-                });
-
-
-                var new_data = dataController.downsample(plot_data, 900);
-                new_data = [headers].concat(new_data);
-
-                var chart = c3.generate({
-                    bindto: '#plot',
-                    data: {
-                        x: 'timestamp',
-                        rows: new_data,
-                        selection:{
-                            enabled: true,
-                            multiple: true,
-                            draggable:true
-                        }
-                    },
-                    axis: {
-                        x: {
-                            type: 'timeseries',
-                            localtime: true
-                        }
-                    },
-                    zoom:{
-                        enabled:true
-                    },
-                    point: {
-                        r:1
-                    }
-
-            });
-
-            })
-        });
 
         // Event listener for when units are selected (updates tags)
         $(DOMStrings.units).on('change', function () {
