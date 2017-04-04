@@ -176,6 +176,13 @@ var UIController = (function () {
                     x: {
                         type: 'timeseries',
                         localtime: true
+                    },
+                    y: {
+                        tick:{
+                            format: function (d) {
+                                return Math.round(d, 1)
+                            }
+                        }
                     }
                 },
                 zoom:{
