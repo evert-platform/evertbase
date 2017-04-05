@@ -106,6 +106,26 @@ var dataController = (function () {
             sampled[ sampled_index++ ] = data[ data_length - 1 ]; // Always add last
 
             return sampled;
+        },
+        timeFormat: function(domain){
+            var min = domain[0], max = domain[1];
+            var diff = max - min;
+            var format;
+
+
+           if (diff <= 3.6e6){
+               format = '%H:%M:%S';
+           }else if(diff <= 3.6e6*24 && diff > 3.6e6){
+               format = '%H:%M'
+           }else if(diff <= 3.6e6*24*30 && diff > 3.6e6*24){
+               format = '%d-%b  %H:00'
+           }else if(diff <=3.6e6*24*365 && diff > 3.6e6*24*30) {
+               format = '%M-%d'
+           } else {
+               format = '%Y-%m-%d %H:%M'
+           }
+
+           return format
         }
     }
 })();
@@ -160,6 +180,7 @@ var UIController = (function () {
 
 
             var new_data = dataController.downsample(plot_data, 900);
+            var timeFormat = dataController.timeFormat([new_data[0][0], new_data.slice(-1)[0][0]]);
             new_data = [headers].concat(new_data);
 
             var chart = c3.generate({
@@ -179,25 +200,52 @@ var UIController = (function () {
                         localtime: true,
                         tick:{
                             count: 15,
-                            format: '%Y-%m-%d\n %H:%M'
+                            format: timeFormat,
+                            fit: false
 
                         }
                     },
                     y: {
                         tick:{
-                            format: function (d) {
-                                return Math.round(d)
+                            format: d3.format('.2f')
                             }
                         }
-                    }
-                },
+                    },
                 zoom:{
-                    enabled:true
+                    enabled:true,
+                    onzoom: function(domain){
+                        var format = dataController.timeFormat(domain);
+                        var config = {
+                            axis: {
+                                x: {
+                                    type: 'timeseries',
+                                    localtime: true,
+                                    tick:{
+                                        count: 15,
+                                        format: format
+                                    }
+                                }
+                            }
+                        };
+                        chart.internal.loadConfig(config);
+
+
+                    }
                 },
                 point: {
                     r:1
+                },
+                tooltip:{
+                    format: {
+                        title: function(d){
+                            var parse = d3.time.format('%Y-%m-%d %H:%M');
+                            return parse(d)}
+                    }
+                },
+                padding:{
+                    left: 50,
+                    right: 50
                 }
-
             });
         },
         // update tags select element
