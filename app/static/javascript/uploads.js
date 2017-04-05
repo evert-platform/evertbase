@@ -229,13 +229,21 @@ var dataController = (function () {
             dataType: 'json',
             success: function(data) {
                     $.getJSON('/_plantupload',{}, function (data) {
-                        var $plantselect = $('select#plant_select');
+                        var $plantselect = $(DOMStrings.plant);
                         UIController.updateSelect($plantselect, data.plants);
-                        $.notify(successMessage, {
+                    });
+                    if (data.success){
+                        $.notify('File ready to be used', {
                             position: "top center",
                             className: 'success'
                         })
-                    })
+                    } else {
+                        $.notify('File upload failed', {
+                            position: "top center",
+                            className: 'error'
+                        })
+                    }
+
                 }
             });
         }
@@ -294,6 +302,7 @@ var UIController = (function () {
             $(DOMStrings.unitDataManage).trigger('chosen:updated')
         },
         updateDataManagement: function (data) {
+
             var $unitselect = $(DOMStrings.unitDataManage);
             var $tags = $(DOMStrings.tagsDataManage);
             var $unitTags = $(DOMStrings.unitTagsDataManage);
@@ -304,7 +313,7 @@ var UIController = (function () {
             $(DOMStrings.unitDataManage + " option")
             .each(function() { this.selected = (this.text == data.cursection); });
             //updating the tags select field
-            updateSelect($tags, data.tags);
+            updateSelect($tags, data.alltags);
             // clearing unit tags field
             updateSelect($unitTags, null);
 

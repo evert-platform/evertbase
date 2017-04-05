@@ -2,7 +2,7 @@ from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_plugins import PluginManager
 from .main.functions import find_plugins
-from .main.models import db
+from evertcore.data import db
 from config import config
 import os
 
