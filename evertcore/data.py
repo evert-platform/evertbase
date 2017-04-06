@@ -210,7 +210,7 @@ def get_unassigned_tags(**kwargs):
     return Tags.get_unassigned_tags(**kwargs)
 
 
-def tag_data(tag_ids):
+def tag_data(tag_ids, start=None, end=None):
     """
     Retrieve tag data based on the given tag ids.
 
@@ -218,6 +218,10 @@ def tag_data(tag_ids):
     ----------
     tag_ids : list
             A list containing the ids of the tags to be queried from database
+    start :
+            If given the data will start at the given timestamp
+    end:
+         If given data will end at given timestamp.
 
     Returns
     -------
@@ -226,7 +230,12 @@ def tag_data(tag_ids):
 
     """
     tag_ids = map(int, tag_ids)
-    data = MeasurementData.get_tag_data_in(tag_ids)
+
+    if start is not None and end is not None:
+        data = MeasurementData.filter_between_timestamps(tag_ids, start, end)
+
+    else:
+        data = MeasurementData.get_tag_data_in(tag_ids)
 
     return data
 
