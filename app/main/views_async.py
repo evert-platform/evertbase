@@ -1,11 +1,10 @@
-import matplotlib.pyplot as plt
 from flask_plugins import PluginManager, get_plugin_from_all
 from zipfile import ZipFile, BadZipFile
-import mpld3
 from flask import jsonify, request, current_app
 import pandas as pd
 from . import main
 import evertcore as evert
+from datetime import datetime
 
 
 # this retrieves the data that needs to be plotted and returns the data that will be rendered as a figure by
@@ -21,9 +20,7 @@ def _plotdata():
     tag_data = tag_data.reset_index()
     data = tag_data.values.tolist()
     columns = tag_data.columns.values
-
     plot_data = [list(columns)] + data
-    print(plot_data)
 
     return jsonify(success=True, data=plot_data)
 
@@ -294,3 +291,21 @@ def _viewdata():
     columns = [{'title': key} for key in tag_data.columns]
 
     return jsonify(success=True, data=data, headers=columns)
+
+@main.route('/_daterange')
+def _daterange():
+    domain = request.args.getlist('domain[]')
+    tags = request.args.getlist('ids[]')
+    domain = [float(d)/1000 for d in domain]
+
+    tag_data = pd.DataFrame(evert.data.tag_data(tags, datetime.fromtimestamp(domain[0]), datetime.fromtimestamp(domain[1])))
+    tag_names = dict(evert.data.get_tag_names(key='id', values=map(int, tags)))
+    tag_data.tag = [tag_names[key] for key in tag_data['tag'].values]
+    tag_data = tag_data.pivot_table(index='timestamp', columns='tag')
+    tag_data.columns = tag_data.columns.droplevel().rename(None)
+    tag_data = tag_data.reset_index()
+    data = tag_data.values.tolist()
+    columns = tag_data.columns.values
+    plot_data = [list(columns)] + data
+
+    return jsonify(success=True)
