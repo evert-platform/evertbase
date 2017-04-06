@@ -308,4 +308,4 @@ def _daterange():
     columns = tag_data.columns.values
     plot_data = [list(columns)] + data
 
-    return jsonify(success=True)
+    return jsonify(success=True, data=plot_data)

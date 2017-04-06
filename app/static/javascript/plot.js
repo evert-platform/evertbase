@@ -213,12 +213,30 @@ var UIController = (function () {
                     },
                 zoom:{
                     enabled:true,
-                    onzoom: function(domain){
+                    onzoomend: function(domain){
                         var d = domain;
                         $.getJSON('/_daterange',{
                             ids: $(DOMStrings.tags).val(),
                             domain: [d[0].getTime(), d[1].getTime()]
-                        }, function () {
+                        }, function (data) {
+
+                            var plot_data = data.data;
+                            var headers = plot_data.shift();
+
+                            plot_data.map(function (d) {
+                                d[0] = new Date(d[0]);
+
+                                return d
+                            });
+
+
+                            var new_data = dataController.downsample(plot_data, 900);
+                            new_data = [headers].concat(new_data);
+
+
+                            chart.load({
+                                columns: new_data
+                            })
 
                         });
                         var format = dataController.timeFormat(d);
@@ -230,7 +248,8 @@ var UIController = (function () {
                                     tick:{
                                         count: 15,
                                         format: format
-                                    }
+                                    },
+                                    extent: [domain[0], domain[1]]
                                 }
                             }
                         };
