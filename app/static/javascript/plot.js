@@ -214,7 +214,14 @@ var UIController = (function () {
                 zoom:{
                     enabled:true,
                     onzoom: function(domain){
-                        var format = dataController.timeFormat(domain);
+                        var d = domain;
+                        $.getJSON('/_daterange',{
+                            ids: $(DOMStrings.tags).val(),
+                            domain: [d[0].getTime(), d[1].getTime()]
+                        }, function () {
+
+                        });
+                        var format = dataController.timeFormat(d);
                         var config = {
                             axis: {
                                 x: {
