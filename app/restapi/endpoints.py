@@ -292,7 +292,8 @@ def _viewdata():
 
     return jsonify(success=True, data=data, headers=columns)
 
-@main.route('/_daterange')
+
+@restapi.route('/_daterange')
 def _daterange():
     domain = request.args.getlist('domain[]')
     tags = request.args.getlist('ids[]')
