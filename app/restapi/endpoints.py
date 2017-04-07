@@ -4,13 +4,13 @@ from zipfile import ZipFile, BadZipFile
 import mpld3
 from flask import jsonify, request, current_app
 import pandas as pd
-from . import main
+from . import restapi
 import evertcore as evert
 
 
 # this retrieves the data that needs to be plotted and returns the data that will be rendered as a figure by
 # mpld3.js
-@main.route('/_plotdata', methods=['GET'])
+@restapi.route('/_plotdata', methods=['GET'])
 def _plotdata():
     if not current_app.testing:
         fig, ax = plt.subplots()
@@ -45,7 +45,7 @@ def _plotdata():
 
 
 # this functions enables the plugin selected in the enable plugin select element on the plugins page
-@main.route('/_enable_plugin', methods=['GET', 'POST'])
+@restapi.route('/_enable_plugin', methods=['GET', 'POST'])
 def _enable_plugins():
     plugin = request.args.get('enableplugins', 0, type=str)
     pluginsmanager = PluginManager()
@@ -57,7 +57,7 @@ def _enable_plugins():
 
 
 # this functions disables the plugin selected in the disable plugin select element on the plugins page
-@main.route('/_disable_plugin', methods=['GET', 'POST'])
+@restapi.route('/_disable_plugin', methods=['GET', 'POST'])
 def _disable_plugins():
     plugin = request.args.get('disableplugins', 0, type=str)
     pluginsmanager = PluginManager()
@@ -69,7 +69,7 @@ def _disable_plugins():
 
 
 # this function handles the ajax upload of plugin zip files
-@main.route('/_uploadp', methods=['GET', 'POST'])
+@restapi.route('/_uploadp', methods=['GET', 'POST'])
 def _upload_plugins():
     success = True
     msg = None
@@ -89,8 +89,8 @@ def _upload_plugins():
 
 
 # open/upload data files
-@main.route('/_dataopen', methods=['GET', 'POST'])
-@main.route('/_dataupload', methods=['GET', 'POST'])
+@restapi.route('/_dataopen', methods=['GET', 'POST'])
+@restapi.route('/_dataupload', methods=['GET', 'POST'])
 def _data_handle():
     success = None
     if request.method == 'POST' and 'file' in request.files:
@@ -110,7 +110,7 @@ def _data_handle():
     return jsonify(success=success)
 
 
-@main.route('/_plantchangesetup', methods=['GET', 'POST'])
+@restapi.route('/_plantchangesetup', methods=['GET', 'POST'])
 def _plantchange(json=True):
     cur_plant = request.args.get('plant', None, type=int)
     if cur_plant:
@@ -137,7 +137,7 @@ def _plantchange(json=True):
     else:
         return jsonify(data)
 
-@main.route('/_plantchangemanage')
+@restapi.route('/_plantchangemanage')
 def _plantchangemanage():
     cur_plant = request.args.get('plantDataManage', None, type=int)
     if cur_plant:
@@ -162,14 +162,14 @@ def _plantchangemanage():
 
 
 
-@main.route('/_plantupload', methods=['GET', 'POST'])
+@restapi.route('/_plantupload', methods=['GET', 'POST'])
 def _updateplantlist():
     plant = evert.data.get_plant_names()
 
     return jsonify(success=True, plants=dict(plant))
 
 
-@main.route('/_plantnamechange', methods=['GET', 'POST'])
+@restapi.route('/_plantnamechange', methods=['GET', 'POST'])
 def _plantnamechange():
     # getting request args
     new_name = request.args.get('plantName', 0, type=str)
@@ -179,7 +179,7 @@ def _plantnamechange():
     return jsonify(success=True, plants=dict(plants))
 
 
-@main.route('/_unitadd', methods=['GET'])
+@restapi.route('/_unitadd', methods=['GET'])
 def _unitsadd():
 
     unit_name = request.args.get('unitName', 0, type=str)
@@ -191,7 +191,7 @@ def _unitsadd():
     return jsonify(data)
 
 
-@main.route('/_unitnamechange', methods=['GET'])
+@restapi.route('/_unitnamechange', methods=['GET'])
 def _unitchangename():
     unit_name = request.args.get('unitName', 0, type=str)
     cur_unit = request.args.getlist('units[]')[0]
@@ -202,7 +202,7 @@ def _unitchangename():
     return jsonify(data)
 
 
-@main.route('/_unitchange', methods=['GET'])
+@restapi.route('/_unitchange', methods=['GET'])
 def _unitselectchange():
 
     cur_plant = request.args.get('plant', 0, type=int)
@@ -220,7 +220,7 @@ def _unitselectchange():
         all_tags = evert.data.get_tag_names(plant=cur_plant)
         return jsonify(success=True, unittags=None, alltags=dict(all_tags))
 
-@main.route('/_unitchangedatamanage', methods=['GET'])
+@restapi.route('/_unitchangedatamanage', methods=['GET'])
 def _unitdatamanagechange():
 
     unit = request.args.getlist('unitDataManage[]')
@@ -236,8 +236,8 @@ def _unitdatamanagechange():
     else:
         return jsonify(success=True, unittags=None)
 
-@main.route('/_settags')
-@main.route('/_removeunittags', methods=['GET'])
+@restapi.route('/_settags')
+@restapi.route('/_removeunittags', methods=['GET'])
 def _settags():
     # accessing request variables
     plant = request.args.get('plant', 0, type=int)
@@ -257,7 +257,7 @@ def _settags():
     return jsonify(freetags=dict(freetags), unittags=dict(unittags))
 
 
-@main.route('/_deleteplant', methods=['GET'])
+@restapi.route('/_deleteplant', methods=['GET'])
 def _deleteplant():
     # getting request args
     plant = request.args.get('plant', None, type=int)
@@ -267,7 +267,7 @@ def _deleteplant():
     return jsonify(success=True, plants=dict(remaining_plants))
 
 
-@main.route('/_deleteunit', methods=['GET'])
+@restapi.route('/_deleteunit', methods=['GET'])
 def _deleteunit():
     # getting request args
     units = request.args.getlist('unitDataManage[]')
@@ -277,8 +277,8 @@ def _deleteunit():
     return jsonify(success=True, units=dict(new_units))
 
 
-@main.route('/_deleteunittags', methods=['GET'])
-@main.route('/_deletetags', methods=['GET'])
+@restapi.route('/_deleteunittags', methods=['GET'])
+@restapi.route('/_deletetags', methods=['GET'])
 def _deleteunittags():
     # current plant
     plant = request.args.get('plant', None, type=int)
@@ -296,7 +296,7 @@ def _deleteunittags():
     return jsonify(success=True, data=dict(data))
 
 
-@main.route('/_viewdata')
+@restapi.route('/_viewdata')
 def _viewdata():
 
     tags = request.args.getlist('tags[]')

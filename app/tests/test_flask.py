@@ -2,6 +2,7 @@ from app import create_app
 import pytest
 from flask import url_for
 from .. import main
+from .. import restapi
 
 
 
@@ -68,36 +69,36 @@ class TestAsync:
         new_name.return_value = 'test_name'
         cur_plant.return_value = 0
 
-        res = main.views_async._plantnamechange()
+        res = restapi.endpoints._plantnamechange()
         assert res.json['success']
 
     def test_deleteumit(self, mocker):
         unit = mocker.patch('flask.request.args.getlist')
         unit.return_value = ['0']
-        res = main.views_async._deleteunit()
+        res = restapi.endpoints._deleteunit()
         assert res.json['success']
 
     def test_deleteplant(self, mocker):
         plant = mocker.patch('flask.request.args.get')
         plant.return_value = 0
-        res = main.views_async._deleteplant()
+        res = restapi.endpoints._deleteplant()
         assert res.json['success']
 
     def test_deleteunittags(self, mocker):
         tags = mocker.patch('flask.request.args.getlist')
         tags.return_value = ['0']
         # TODO: expand test to cover different paths
-        res = main.views_async._deleteunittags()
+        res = restapi.endpoints._deleteunittags()
         assert res.json['success']
 
     def test_unitchange(self, mocker):
         unit = mocker.patch('flask.request.args.getlist')
         unit.return_value = ['0']
-        res = main.views_async._unitselectchange()
+        res = restapi.endpoints._unitselectchange()
         assert res.json['success']
 
         unit.return_value = []
-        res = main.views_async._unitselectchange()
+        res = restapi.endpoints._unitselectchange()
         assert res.json['success']
 
 
