@@ -210,17 +210,18 @@ def get_unassigned_tags(**kwargs):
     """
     return Tags.get_unassigned_tags(**kwargs)
 
+
 def prefetch_cache_band(start, end):
 
     diff = end - start
 
     if diff.days > 0:
-        padding = diff.days/2 * 10
+        padding = diff.days/2
         start = start - datetime.timedelta(days=padding)
         end = end + datetime.timedelta(days=padding)
 
     elif diff.days == 0:
-        padding = diff.seconds/2 * 10
+        padding = diff.seconds/2
         start = start - datetime.timedelta(seconds=padding)
         end = end + datetime.timedelta(seconds=padding)
 
