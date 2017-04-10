@@ -225,7 +225,7 @@ var UIController = (function () {
                     enabled:true,
                     onzoomend: function(domain){
                         var d = domain;
-                        console.log(d);
+
                         $.getJSON('/_daterange',{
                             ids: $(DOMStrings.tags).val(),
                             domain: [d[0].getTime(), d[1].getTime()]
@@ -243,7 +243,7 @@ var UIController = (function () {
                             var new_data = dataController.downsample(plot_data, threshold);
                             new_data = [headers].concat(new_data);
 
-                            console.log(new_data);
+
                             chart.load({
                                 xs: data.datamap,
                                 rows: new_data
