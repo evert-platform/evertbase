@@ -202,11 +202,16 @@ var UIController = (function () {
                         type: 'timeseries',
                         localtime: true,
                         tick:{
-                            count: 50,
+                            count: 40,
                             format: timeFormat,
                             fit: false,
                             culling: {
-                                max:20
+                                max: 20
+                            },
+                            multiline: true,
+                            width: 50,
+                            padding:{
+                                bottom: 20
                             }
                         }
                     },
@@ -220,6 +225,7 @@ var UIController = (function () {
                     enabled:true,
                     onzoomend: function(domain){
                         var d = domain;
+                        console.log(d);
                         $.getJSON('/_daterange',{
                             ids: $(DOMStrings.tags).val(),
                             domain: [d[0].getTime(), d[1].getTime()]
@@ -234,19 +240,15 @@ var UIController = (function () {
                                 return d
                             });
 
-
                             var new_data = dataController.downsample(plot_data, threshold);
                             new_data = [headers].concat(new_data);
 
-
+                            console.log(new_data);
                             chart.load({
                                 xs: data.datamap,
                                 rows: new_data
-
-
                             });
-
-                            chart.zoom([domain[0], domain[1]])
+                            chart.zoom([d[0], d[1]])
 
                         });
                         var format = dataController.timeFormat(d);
@@ -254,21 +256,17 @@ var UIController = (function () {
                             axis: {
                                 x: {
                                     type: 'timeseries',
-                                    localtime: true,
                                     tick:{
-                                        count: 50,
+                                        count: 40,
                                         format: format,
                                         culling:{
                                             max: 20
                                         }
-                                    },
-                                    extent: [domain[0], domain[1]]
+                                    }
                                 }
                             }
                         };
                         chart.internal.loadConfig(config);
-
-
                     }
                 },
                 point: {
