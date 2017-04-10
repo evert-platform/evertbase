@@ -178,13 +178,16 @@ var UIController = (function () {
                 return d
             });
 
-
-            var new_data = dataController.downsample(plot_data, 900);
+            var threshold = 500;
+            var new_data = dataController.downsample(plot_data, threshold);
             var timeFormat = dataController.timeFormat([new_data[0][0], new_data.slice(-1)[0][0]]);
             new_data = [headers].concat(new_data);
 
             var chart = c3.generate({
                 bindto: '#plot',
+                transition:{
+                    duration: null
+                },
                 data: {
                     x: 'timestamp',
                     rows: new_data,
@@ -199,10 +202,12 @@ var UIController = (function () {
                         type: 'timeseries',
                         localtime: true,
                         tick:{
-                            count: 15,
+                            count: 50,
                             format: timeFormat,
-                            fit: false
-
+                            fit: false,
+                            culling: {
+                                max:20
+                            }
                         }
                     },
                     y: {
@@ -230,13 +235,18 @@ var UIController = (function () {
                             });
 
 
-                            var new_data = dataController.downsample(plot_data, 900);
+                            var new_data = dataController.downsample(plot_data, threshold);
                             new_data = [headers].concat(new_data);
 
 
                             chart.load({
-                                columns: new_data
-                            })
+                                xs: data.datamap,
+                                rows: new_data
+
+
+                            });
+
+                            chart.zoom([domain[0], domain[1]])
 
                         });
                         var format = dataController.timeFormat(d);
@@ -246,8 +256,11 @@ var UIController = (function () {
                                     type: 'timeseries',
                                     localtime: true,
                                     tick:{
-                                        count: 15,
-                                        format: format
+                                        count: 50,
+                                        format: format,
+                                        culling:{
+                                            max: 20
+                                        }
                                     },
                                     extent: [domain[0], domain[1]]
                                 }

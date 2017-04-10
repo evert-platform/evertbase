@@ -552,6 +552,27 @@
                         break;
                     }
                 }
+                // var cullSetLength = tickValues.length;
+                // if (config.zoom_rescale && !options.flow && xDomainForZoom && xDomainForZoom.length===2){
+                //     cullSetLength = 0;
+                //     for (i = 1; i < tickValues.length; i++) {
+                //         if (tickValues[i]<xDomainForZoom[0] || tickValues[i]>xDomainForZoom[1]) {
+                //              continue;
+                //         }
+                //         cullSetLength++;
+                //
+                //     }
+                //
+                // }
+                // for (i = 1; i < cullSetLength; i++) {
+                //     if (cullSetLength / i < config.axis_x_tick_culling_max) {
+                //         intervalForCulling = i;
+                //         break;
+                //     }
+                // }
+
+
+
                 $$.svg.selectAll('.' + CLASS.axisX + ' .tick text').each(function (e) {
                     var index = tickValues.indexOf(e);
                     if (index >= 0) {

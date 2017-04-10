@@ -308,5 +308,9 @@ def _daterange():
     data = tag_data.values.tolist()
     columns = tag_data.columns.values
     plot_data = [list(columns)] + data
+    datamap = dict()
+    for t in columns:
+        if t != 'timestamp':
+            datamap[t] = 'timestamp'
 
-    return jsonify(success=True, data=plot_data)
+    return jsonify(success=True, data=plot_data, datamap=datamap)
