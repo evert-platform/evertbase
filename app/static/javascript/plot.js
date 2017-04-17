@@ -1,151 +1,133 @@
 $(document).ready(function () {
-    var $multiplot = $('input#multiplot');
-    var $setdata = $('div#setdata');
-
-
-    $multiplot.on('click', function () {
-
-        var multiplot = document.getElementById('multiplot').checked;
-        if (multiplot == true){
-            $setdata.show()
-        } else{
-            $setdata.hide()
-        }
-    })
-
+    controller.init();
 });
 
-$(function() {
-    var xset = [];
-    var yset = [];
-    var sets = [];
-    var $datasets = $('select#datasets');
-    var $plotxaxis = $('select#plotxaxis');
-    var $plotyaxis = $('select#plotyaxis');
+// Data controller for plotting page
+var dataController = (function () {
+    var data, DOMStrings;
 
+    // jQuery selectors for DOM objects
+    DOMStrings = {
+        plant: 'select#plotPlant',
+        units: 'select#plotUnits',
+        tags: 'select#plotTags',
+        type: 'select#plotType',
+        submitBtn: 'input#Submit',
+        deleteBtn: 'button#deleteplot',
+        plotArea: '#plotarea'
+    };
 
-
-    $('input#setdatabtn').on('click', function () {
-        var multiplot = document.getElementById('multiplot').checked;
-        var xaxis = $plotxaxis.val();
-        var yaxis = $plotyaxis.val();
-
-
-        $('button#cleardataset').attr('disabled', false);
-        $('button#deletedataset').attr('disabled', false);
-
-        if (multiplot == true){
-            xset.push(xaxis);
-            yset.push(yaxis);
-            sets.push([xaxis, yaxis]);
-
-        } else {
-            xset.push($plotxaxis.val());
-            yset.push($plotyaxis.val());
+    return {
+        // executes the $.getJSON method for asynchronous data handling
+        getJSONData: function (route, callback) {
+            // required plotting data
+            data = {
+                plant: $(DOMStrings.plant).val(),
+                unit: $(DOMStrings.units).val(),
+                tags: $(DOMStrings.tags).val(),
+                type: $(DOMStrings.type).val()
+            };
+            $.getJSON(route, data, callback)
+        },
+        // return the DOMStrings object
+        getDOMStrings: function () {
+            return DOMStrings
         }
+    }
+})();
+// user interface controller
+var UIController = (function () {
+    var DOMStrings;
+    // DOM object strings
+    DOMStrings = dataController.getDOMStrings();
+    // update any select field
+    var updateSelect = function (selector, data) {
+            selector.empty();
+            $.each(data, function (value, key) {
+                selector.append($("<option class='active-result'></option>")
+                    .attr("value", value).text(key))
+            });
+            selector.trigger('chosen:updated');
+        };
 
-        var optionsAsString = "";
+    return {
+        // initialises the chosen jQuery plugin elements
+        init: function () {
+            $(DOMStrings.plant).chosen({width: '100%'});
+            $(DOMStrings.units).chosen({width: '100%'});
+            $(DOMStrings.tags).chosen({width: '100%'});
+            $(DOMStrings.type).chosen({width: '100%'});
+        },
+        // setup of all select elements when plant is changed
+        plantSetup: function (data) {
+            var $unitselect = $(DOMStrings.units);
+            var $tags = $(DOMStrings.tags);
 
+            // updating the unit select field
+            updateSelect($unitselect, data.sections);
 
-        for(var i = 0; i < sets.length; i++) {
-            optionsAsString += "<option value='" + sets[i] + "'>" + sets[i] + "</option>";
-        }
-        $datasets.empty().append(optionsAsString).attr('disabled', false);
+            //updating the tags select field
+            updateSelect($tags, data.alltags);
 
-    });
-
-    $('button#cleardataset').on('click', function () {
-        $datasets.empty().append("<option></option>").attr('disabled', true);
-        $(this).attr('disabled', true);
-        $('button#deletedataset').attr('disabled', true);
-        xset = [];
-        yset = [];
-        sets = [];
-    });
-
-    $('button#deletedataset').on('click', function () {
-        var $selectedset = $('select#datasets :selected');
-        var removeindex = [];
-
-        $('select#datasets').children().each(function (index) {
-            if ($(this).prop('selected') == true){
-                removeindex.push(index);
-
-            }
-
-
-        });
-
-        xset.splice(removeindex, removeindex.length);
-        yset.splice(removeindex, removeindex.length);
-        sets.splice(removeindex, removeindex.length);
-        removeindex = [];
-
-        $selectedset.remove();
-
-    });
-
-
-    $('input#Submit').on('click', function() {
-        if (document.getElementById('multiplot').checked == false){
-            xset = [];
-            yset = [];
-            xset.push($('select#plotxaxis').val());
-            yset.push($('select#plotyaxis').val());
-
-
-        }
-
-        $.getJSON('/_plotdata', {
-          plotdata: $('select[name="select"]').val(),
-            type: $('select#plotType').val(),
-            xset: xset,
-            yset: yset,
-        }, function(data) {
-            var $plotarea = $('#plotarea');
+            $unitselect.trigger('chosen:updated');
+            $tags.trigger('chosen:updated');
+        },
+        // rendering of plot data
+        updatePlot: function (data) {
+            var $plotarea = $(DOMStrings.plotArea);
             $plotarea.empty();
             $plotarea.append('<hr><br>');
             $plotarea.append(mpld3.draw_figure('plotarea', data.plot));
-            if ($('#multiplot').prop('checked') == false){
-                xset = [];
-                yset = [];
+        },
+        // update tags select element
+        updateTags: function(data) {
+            var $plotTags = $(DOMStrings.tags);
+            if (data.unittags){
+                updateSelect($plotTags, data.unittags)
+            } else {
+                updateSelect($plotTags, data.alltags)
             }
 
+        },
+        // delete plot from plot area
+        deletePlot: function(){
+        $(DOMStrings.plotArea).empty()
+        }
+    }
+})();
+
+// general plot page controller
+var controller = (function () {
+    var DOMStrings;
+
+    DOMStrings = dataController.getDOMStrings();
+
+    // setting up event listeners
+    var setupEventListners = function(){
+        // Event listener for plot button
+        $(DOMStrings.submitBtn).on('click', function () {
+            dataController.getJSONData('/_plotdata', UIController.updatePlot)
         });
-        return false;
+
+        // Event listener for when units are selected (updates tags)
+        $(DOMStrings.units).on('change', function () {
+            dataController.getJSONData('/_unitchange', UIController.updateTags)
         });
-    });
 
-$(function () {
-    var $plotfile = $('select#plotfile');
+        // Event listner for when the plant is changed (updates units and tags)
+        $(DOMStrings.plant).on('change', function () {
+            dataController.getJSONData('/_plantchangesetup', UIController.plantSetup);
+        });
 
-    $plotfile.on('change', function(){
-        $.getJSON('/_plotdetails', {
-            plotfile: $(this).val()},
-            function(data){
-                var headers = data.headers;
-                var optionsAsString = "";
-                for(var i = 0; i < headers.length; i++) {
-                    optionsAsString += "<option value='" + headers[i] + "'>" + headers[i] + "</option>";
-                }
-                $( 'select#plotxaxis' ).empty().append(optionsAsString);
-                $('select#plotyaxis').empty().append(optionsAsString);
+        // Event listener for delete button
+        $(DOMStrings.deleteBtn).on('click', UIController.deletePlot)
 
-            })
-        })
-    });
+    };
 
-$(function () {
-
-});
-
-
-
-$(function () {
-    $('button#deleteplot').on('click', function(){
-        console.log(true);
-        $('#plotarea').empty()
-    })
-});
-
-
+    return {
+        init: function () {
+            UIController.init();
+            setupEventListners();
+        }
+    }
+})();
