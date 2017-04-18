@@ -131,7 +131,7 @@ var dataController = (function () {
 })();
 // user interface controller
 var UIController = (function () {
-    var DOMStrings;
+    var DOMStrings, chart;
     // DOM object strings
     DOMStrings = dataController.getDOMStrings();
     // update any select field
@@ -183,7 +183,7 @@ var UIController = (function () {
             var timeFormat = dataController.timeFormat([new_data[0][0], new_data.slice(-1)[0][0]]);
             new_data = [headers].concat(new_data);
 
-            var chart = c3.generate({
+            chart = c3.generate({
                 bindto: '#plot',
                 transition:{
                     duration: null
@@ -297,7 +297,7 @@ var UIController = (function () {
         },
         // delete plot from plot area
         deletePlot: function(){
-        $(DOMStrings.plotArea).empty()
+        chart = chart.destroy()
         }
     }
 })();
