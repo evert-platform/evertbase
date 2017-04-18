@@ -266,7 +266,7 @@ var UIController = (function () {
         init: function () {
             $(DOMStrings.plant).chosen({width: '100%'});
             $(DOMStrings.tags).chosen({width: '100%'});
-            $(DOMStrings.units).chosen({width: '100%'});
+            $(DOMStrings.units).chosen({width: '100%', max_selected_options:1});
             $(DOMStrings.unitTags).chosen({width: '100%'});
             $(DOMStrings.unitDataManage).chosen({width: '100%'})
         },
