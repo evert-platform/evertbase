@@ -181,3 +181,28 @@ class MeasurementData(db.Model):
                                                               MeasurementData.tag).filter(MeasurementData.tag.in_(
                                                                 ids)).all()
 
+
+class PluginIDs(db.Model):
+    plugin_id = db.Column('id', db.Integer, primary_key=True)
+    plugin_name = db.Column('name', db.Text)
+
+
+class PluginTimeSeries(db.Model):
+    data_id = db.Column('id', db.Integer, primary_key=True)
+    data_foreign_id = db.Column('id_foreign', db.Integer, db.ForeignKey('MeasurementData.id',
+                                                                        ondelete="CASCADE", onupdate="CASCADE"))
+    tag = db.Column('tag', db.ForeignKey('tags.id', ondelete="CASCADE", onupdate="CASCADE"))
+    tag_value = db.Column('tag_value', db.Float)
+
+
+class PluginFeatures(db.Model):
+    feature_id = db.Column('id', db.Integer, primary_key=True)
+    tag = db.Column('tag', db.ForeignKey('tags.id', ondelete="CASCADE", onupdate="CASCADE"))
+    tag_value = db.Column('tag_value', db.Float)
+    timestamp = db.Column('timestamp', db.Text)
+
+
+class PluginSettings(db.Model):
+    setting_id = db.Column('id', db.Integer, primary_key=True)
+    plugin_id = db.Column('plugin_id', db.ForeignKey('PluginIDs.plugin_id', ondelete="CASCADE", onupdate="CASCADE"))
+    setting_value = db.Column('value', db.Float)
