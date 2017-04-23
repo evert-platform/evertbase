@@ -1,6 +1,6 @@
 from flask import Blueprint
 from manage import AppPlugin
-from tsfresh_mini import extract_features
+from .tsfresh_mini import extract_features
 
 __plugin__ = "FeatureExtraction"
 
@@ -18,11 +18,10 @@ class FeatureExtraction(AppPlugin):
         self.register_blueprint(features)
         # There should be a connect event here, I'm unsure how Neill wants this.
         # connect_event("features", run_plugin)
-        with open("config.txt") as file:
-            for line in file:
-                pass  # I'd like to read the config here, and parse it to EvertStore.db.plugin_settings, so that
-                # it can be parsed back when the plugin is called. Alternatively, the plugin_settings table needs to be
-                # deleted and the files read each time the plugin is called (I think the latter
-                # method will be much slower)
 
-
+        # with open("config.txt") as file:
+        #     for line in file:
+        #         pass  # I'd like to read the config here, and parse it to EvertStore.db.plugin_settings, so that
+        #         # it can be parsed back when the plugin is called. Alternatively, the plugin_settings table needs to be
+        #         # deleted and the files read each time the plugin is called (I think the latter
+        #         # method will be much slower)
