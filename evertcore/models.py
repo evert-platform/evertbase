@@ -182,19 +182,22 @@ class MeasurementData(db.Model):
                                                                 ids)).all()
 
 
-class PluginIDs(db.Model):
-    plugin_id = db.Column('id', db.Integer, primary_key=True)
+# Model for the plugin ID table
+class PluginIds(db.Model):
+    plugin_id = db.Column('plugin_id', db.Integer, primary_key=True)
     plugin_name = db.Column('name', db.Text)
 
 
+# Model for the plugin time series data storage table
 class PluginTimeSeries(db.Model):
     data_id = db.Column('id', db.Integer, primary_key=True)
-    data_foreign_id = db.Column('id_foreign', db.Integer, db.ForeignKey('MeasurementData.id',
+    data_foreign_id = db.Column('id_foreign', db.Integer, db.ForeignKey('measurement_data.id',
                                                                         ondelete="CASCADE", onupdate="CASCADE"))
     tag = db.Column('tag', db.ForeignKey('tags.id', ondelete="CASCADE", onupdate="CASCADE"))
     tag_value = db.Column('tag_value', db.Float)
 
 
+# Model for the plugin features table
 class PluginFeatures(db.Model):
     feature_id = db.Column('id', db.Integer, primary_key=True)
     tag = db.Column('tag', db.ForeignKey('tags.id', ondelete="CASCADE", onupdate="CASCADE"))
@@ -202,7 +205,8 @@ class PluginFeatures(db.Model):
     timestamp = db.Column('timestamp', db.Text)
 
 
+# Model for the plugin settings table
 class PluginSettings(db.Model):
     setting_id = db.Column('id', db.Integer, primary_key=True)
-    plugin_id = db.Column('plugin_id', db.ForeignKey('PluginIDs.plugin_id', ondelete="CASCADE", onupdate="CASCADE"))
+    plugin_id = db.Column('plugin_id', db.ForeignKey('plugin_ids.plugin_id', ondelete="CASCADE", onupdate="CASCADE"))
     setting_value = db.Column('value', db.Float)
