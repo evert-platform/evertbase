@@ -5,3 +5,6 @@ div#plugins_toggle, div#plugins_upload{
 .col-form-label {
     padding-top: 10px;
 }
+.chosen-container {
+    padding-bottom: 10px;
+}

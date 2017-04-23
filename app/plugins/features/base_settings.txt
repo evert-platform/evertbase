@@ -1,0 +1,3 @@
+std_threshhold == 0.8
+peak_width == 3
+scope_width == 50
