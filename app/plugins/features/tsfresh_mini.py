@@ -4,7 +4,7 @@ import numpy as np
 import copy
 
 # TODO: Rename and refactor variables to use proper names
-# TODO: Move filtering of dataframe to savgol plugin
+# TODO: Remove commented functions after testing that this library still works as it must
 
 #
 # def _check_constant_(_lst):
