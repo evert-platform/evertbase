@@ -1,5 +1,5 @@
 from flask import Blueprint
-from ....manage import AppPlugin
+from manage import AppPlugin
 
 __plugin__ = "FeatureExtraction"
 
