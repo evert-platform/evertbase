@@ -10,10 +10,10 @@ def sg_filter(dataframe, settings):
 
 
 def _filter_df_(_dataframe, settings):
-    settings_1, settings_2 = settings
+    poly_width, padding_factor = settings
     __headers = list(_dataframe)
     arr_new__, _headers = _remove_constants_(_dataframe, __headers)
-    arr_new_ = savgol_filter(arr_new__, settings_1, settings_2, axis=0)
+    arr_new_ = savgol_filter(arr_new__, poly_width, padding_factor, axis=0)
     dataframe_new = _arr_to_df_(arr_new_, _headers)
     return dataframe_new, _headers
 
