@@ -97,7 +97,8 @@ def filter_peaks(_lst, peak_width, width):
     return features
 
 
-def moving_filter(__vals, _threshold, width, peak_width):
+def moving_filter(__vals, config):
+    _threshold, width, peak_width = config
     lst = []
 
     for i, v in enumerate(__vals):
@@ -139,7 +140,7 @@ def _mean_(_dataframe):
     return points
 
 
-def extract_features(__dataframe):
+def extract_features(__dataframe, config):
     tindex = [i for i in range(len(__dataframe))]
     features = []
     headers = list(__dataframe)
@@ -158,7 +159,7 @@ def extract_features(__dataframe):
     __dataframe_filtered, headers = _filter_df_(__dataframe)
 
     for i in headers:
-        minmax = moving_filter(__dataframe[i].as_matrix().tolist(), 2, 150, 3)
+        minmax = moving_filter(__dataframe[i].as_matrix().tolist(), config)
         for j in range(len(minmax)):
             minmax[j].insert(0, i)
         features += minmax
