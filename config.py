@@ -5,12 +5,11 @@ import os
 class BaseConfig:
     DEBUG = False
     TESTING = False
+    FIND_PLUGINS = True
     SECRET_KEY = 'hard to guess string'
     BASE_DIR = os.path.dirname(__file__)
     STATIC_DIR = os.path.join(BASE_DIR, 'app/static')
-    DB_PATH = os.path.join(STATIC_DIR, 'uploads/EvertStore.db')
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(DB_PATH)
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    HDF5_STORE = os.path.join(STATIC_DIR, 'uploads/EvertStore.h5')
     UPLOADED_PLUGIN_DEST = os.path.join(BASE_DIR, 'app/plugins')
     USER_PLUGINS = os.path.join(os.path.expanduser('~/Documents'), 'Evert Plugins')
 

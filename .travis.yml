@@ -21,15 +21,4 @@ install:
   - conda env create --file environment.yml python=$TRAVIS_PYTHON_VERSION
   - source activate Evert
 
-script:
-  - py.test --cov-config .coveragerc --cov=app  app/tests
-
-after_success:
-  - coveralls
-
-addons:
-  - coveralls:
-     repo_token: vJNg5mw9sSdyMaszVlsvGV9tfyAhDKNK1
-
-
-
+script: py.test tests.py
