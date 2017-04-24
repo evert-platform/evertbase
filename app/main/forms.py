@@ -1,19 +1,28 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, FileField, SelectField
-from wtforms.validators import DataRequired
+from wtforms import SubmitField, FileField, SelectField, StringField, SelectMultipleField
+from wtforms.validators import DataRequired, required, length
 
 
 # form for selecting files to upload
 class FileUploadForm(FlaskForm):
     file = FileField('CSV file', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+
+
+# from fro plant setup
+class PlantSetupForm(FlaskForm):
+    plant_select = SelectField('Current Plant: ', choices='')
+    plant_name = StringField('Plant Name: ', validators=[required, length(max=15)])
+    unit_name = StringField('Unit Name: ', validators=[required, length(max=15)])
+    unit_select = SelectMultipleField('Units:', choices='')
+    tags = SelectMultipleField('Tags:', choices='')
+    unit_tags = SelectMultipleField('Unit Tags:', choices='')
 
 
 # form for selecting data to plot
 class PlotDataSelectForm(FlaskForm):
-    select = SelectField('Please select file to plot.', choices='', id='text')
-    selectX = SelectField('', choices='', id='plotX')
-    selectY = SelectField('', choices='', id='plotY')
+    selectPlant = SelectField('Please select file to plot.', choices='', id='plotPlant')
+    selectUnits = SelectMultipleField('', choices='', id='plotUnits')
+    selectTags = SelectMultipleField('', choices='', id='plotTags')
     selectType = SelectField('', choices=[('Scatter', 'Scatter'), ('Line', 'Line')], id='plotType')
 
 
@@ -25,12 +34,11 @@ class PluginsForm(FlaskForm):
 
 # form for selecting data for dataviewer
 class DataViewerForm(FlaskForm):
-    select = SelectField('Select file to view.', choices='', id='text')
-    submit = SubmitField('View')
+    selectPlant = SelectField('Select file to view.', choices='', id='dataPlant')
+    selectUnits = SelectMultipleField('', choices='', id='dataUnits')
+    selectTags = SelectMultipleField('', choices='', id='dataTags')
 
 
 # form for selecting plugin zip file upload
 class PluginsUploadForm(FlaskForm):
     file = FileField('Select plugin to upload', validators=[DataRequired()])
-
-
