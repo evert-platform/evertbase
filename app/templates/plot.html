@@ -2,6 +2,9 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}Plot{% endblock %}
 {% block head %}
+    <link href="{{ url_for('static', filename='css/c3.min.css') }}" rel="stylesheet" type="text/css">
+
+    <script src="{{ url_for('static', filename='javascript/c3.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/plot.js') }}?v=989" type="text/javascript"></script>
 
 {% endblock %}
@@ -25,17 +28,18 @@
                  </button>
               </div>
          </fieldset>
-         <fieldset class="col-xs-7 col-sm-7 col-md-7 col-lg-7" style="display: inline">
-             <legend>Plot Options</legend>
-             <div style="display: block">
-                     Plot type: {{ form.selectType(class='form-control') }}
-             </div>
-         </fieldset>
+{#         <fieldset class="col-xs-7 col-sm-7 col-md-7 col-lg-7" style="display: inline">#}
+{#             <legend>Plot Options</legend>#}
+{#             <div style="display: block">#}
+{#                     Plot type: {{ form.selectType(class='form-control') }}#}
+{#             </div>#}
+{#         </fieldset>#}
 
 
      </form>
 </div>
 <div class="container col-md-12 col-sm-12 col-lg-12" id="plotarea">
+<div id="plot"></div>
 </div>
 
 

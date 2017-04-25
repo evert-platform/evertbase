@@ -1,4 +1,5 @@
 from .models import Plants, Sections, Equipment, Tags, MeasurementData, db
+import datetime
 
 
 def assign_tag_sections(section, tags):
@@ -210,7 +211,24 @@ def get_unassigned_tags(**kwargs):
     return Tags.get_unassigned_tags(**kwargs)
 
 
-def tag_data(tag_ids):
+def prefetch_cache_band(start, end):
+
+    diff = end - start
+
+    if diff.days > 0:
+        padding = diff.days/2
+        start = start - datetime.timedelta(days=padding)
+        end = end + datetime.timedelta(days=padding)
+
+    elif diff.days == 0:
+        padding = diff.seconds/2
+        start = start - datetime.timedelta(seconds=padding)
+        end = end + datetime.timedelta(seconds=padding)
+
+    return start, end
+
+
+def tag_data(tag_ids, start=None, end=None):
     """
     Retrieve tag data based on the given tag ids.
 
@@ -218,6 +236,10 @@ def tag_data(tag_ids):
     ----------
     tag_ids : list
             A list containing the ids of the tags to be queried from database
+    start :
+            If given the data will start at the given timestamp
+    end:
+         If given data will end at given timestamp.
 
     Returns
     -------
@@ -226,9 +248,17 @@ def tag_data(tag_ids):
 
     """
     tag_ids = map(int, tag_ids)
-    data = MeasurementData.get_tag_data_in(tag_ids)
+
+    if start is not None and end is not None:
+        start, end = prefetch_cache_band(start, end)
+        data = MeasurementData.filter_between_timestamps(tag_ids, start, end)
+
+    else:
+        data = MeasurementData.get_tag_data_in(tag_ids)
 
     return data
+
+
 
 
 def update_plant_name(plant_id, name):

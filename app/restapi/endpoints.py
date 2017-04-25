@@ -1,47 +1,28 @@
-import matplotlib.pyplot as plt
 from flask_plugins import PluginManager, get_plugin_from_all
 from zipfile import ZipFile, BadZipFile
-import mpld3
 from flask import jsonify, request, current_app
 import pandas as pd
 from . import restapi
 import evertcore as evert
+from datetime import datetime
 
 
 # this retrieves the data that needs to be plotted and returns the data that will be rendered as a figure by
 # mpld3.js
 @restapi.route('/_plotdata', methods=['GET'])
 def _plotdata():
-    if not current_app.testing:
-        fig, ax = plt.subplots()
-        tags = request.args.getlist('tags[]')
-        plottype = request.args.get('type', 0, type=str)
+    tags = request.args.getlist('tags[]')
+    tag_data = pd.DataFrame(evert.data.tag_data(tags))
+    tag_names = dict(evert.data.get_tag_names(key='id', values=map(int, tags)))
+    tag_data.tag = [tag_names[key] for key in tag_data['tag'].values]
+    tag_data = tag_data.pivot_table(index='timestamp', columns='tag')
+    tag_data.columns = tag_data.columns.droplevel().rename(None)
+    tag_data = tag_data.reset_index()
+    data = tag_data.values.tolist()
+    columns = tag_data.columns.values
+    plot_data = [list(columns)] + data
 
-        tags_names = evert.data.get_tag_names(key='id', values=map(int, tags))
-        data = pd.DataFrame(evert.data.tag_data(tags))
-
-        if data['timestamp'].dtype == 'O':
-            data['timestamp'] = pd.to_datetime(data['timestamp'])
-
-        for tag_id, name in tags_names:
-
-            plot_data = data[data.tag == tag_id]
-
-            if plottype == 'Line':
-                plot_data.plot.line(x='timestamp', y='tag_value', sharex=True, ax=ax, label=name)
-
-            elif plottype == 'Scatter':
-                plot_data.plot.line(x='timestamp', y='tag_value', lw=0, marker='.', sharex=True, ax=ax, label=name)
-
-        ax.legend(loc=0)
-        ax.set_xlabel('Timestamp')
-
-        fig.tight_layout()
-        div = mpld3.fig_to_dict(fig)
-
-    else:
-        div = None
-    return jsonify(success=True, plot=div)
+    return jsonify(success=True, data=plot_data)
 
 
 # this functions enables the plugin selected in the enable plugin select element on the plugins page
@@ -310,3 +291,26 @@ def _viewdata():
     columns = [{'title': key} for key in tag_data.columns]
 
     return jsonify(success=True, data=data, headers=columns)
+
+
+@restapi.route('/_daterange')
+def _daterange():
+    domain = request.args.getlist('domain[]')
+    tags = request.args.getlist('ids[]')
+    domain = [float(d)/1000 for d in domain]
+
+    tag_data = pd.DataFrame(evert.data.tag_data(tags, datetime.fromtimestamp(domain[0]), datetime.fromtimestamp(domain[1])))
+    tag_names = dict(evert.data.get_tag_names(key='id', values=map(int, tags)))
+    tag_data.tag = [tag_names[key] for key in tag_data['tag'].values]
+    tag_data = tag_data.pivot_table(index='timestamp', columns='tag')
+    tag_data.columns = tag_data.columns.droplevel().rename(None)
+    tag_data = tag_data.reset_index()
+    data = tag_data.values.tolist()
+    columns = tag_data.columns.values
+    plot_data = [list(columns)] + data
+    datamap = dict()
+    for t in columns:
+        if t != 'timestamp':
+            datamap[t] = 'timestamp'
+
+    return jsonify(success=True, data=plot_data, datamap=datamap)
