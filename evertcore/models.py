@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy, event
 from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
 from sqlalchemy.exc import IntegrityError
+# from flask_plugins import emit_event
+from .plugins import event_emit
 
 db = SQLAlchemy()
 db_session = db.session
@@ -129,6 +131,8 @@ class MeasurementData(db.Model):
         global plant_id
         plant_id = None
 
+        df_data = None
+
         try:
             time = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
 
@@ -140,6 +144,9 @@ class MeasurementData(db.Model):
 
             # handling csv file
             df = pd.read_csv(file_name)
+            df_data = df.copy()
+
+
             df = pd.melt(df, id_vars=df.columns.values[0])
             df.columns = ['timestamp', 'tag', 'tag_value']
             df_tags = np.unique(df['tag'].values)
@@ -166,8 +173,9 @@ class MeasurementData(db.Model):
             db.session.rollback()
             Plants.delete(id=plant_id)
             success = False
+            df_data = None
 
-        return success
+        return success, df_data
 
     @staticmethod
     def get_tag_data(**kwargs):
