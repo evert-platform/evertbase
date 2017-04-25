@@ -32,6 +32,8 @@ The application can be started in an IDE or in the command line using the follow
 
 `python manage.py`
 
+For an explanation of the install process please see the wiki page.
+
 
 
 
