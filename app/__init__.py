@@ -33,7 +33,7 @@ def create_app(config_name):
     PluginManager(app)
 
     # finding user plugins
-    find_plugins(app)
+    # find_plugins(app)
 
     # registering main blueprint
     from .main import main as main_blueprint
