@@ -10,21 +10,16 @@
     <h1>Data Plotting</h1>
 </div>
 <div class="container-fluid">
-     <form class='form form-horizontal' enctype="multipart/form-data" action="" method="post" role="form">
+     <form class='form form-horizontal' enctype="multipart/form-data" action="" role="form">
          <fieldset class="col-xs-5 col-sm-5 col-md-5 col-lg-5" style="display: inline;">
              <legend>Plot Data</legend>
               <div class="form-row row" style="display: block">
-                Select file to plot: {{ form.select(class='form-control', id='plotfile') }}
+                Select Plant: {{ form.selectPlant(class='form-control') }}
+                Select Units: {{ form.selectUnits(class='form-control') }}
+                Select Tags: {{ form.selectTags(class='form-control') }}
              </div>
-             <div class="form-row row" style="padding-top: 10px; display: block">
-                x-axis: {{ form.selectX(class='form-control', id='plotxaxis') }}
-             </div>
-             <div class="form-row row" style="padding-top: 10px;">
-                y-axis: {{ form.selectY(class='form-control', id='plotyaxis') }}
-             </div>
-
               <div class="form-group col-xs-12 col-md-12 col-sm-12 col-lg-12" style="padding-top: 20px">
-                 <input type="submit" class="btn btn-primary" id='Submit' value="Plot">
+                 <input type="button" class="btn btn-primary" id='Submit' value="Plot">
                  <button type="button" class="btn btn-default" id="deleteplot">
                     <span class="glyphicon glyphicon-trash"></span>&nbsp;
                  </button>
@@ -35,30 +30,6 @@
              <div style="display: block">
                      Plot type: {{ form.selectType(class='form-control') }}
              </div>
-             <div class='col-xs-5 col-sm-5 col-md-5 col-lg-5' style="display: inline">
-                 <div class=" checkbox">
-                 <label><input type="checkbox" name="" id="multiplot">Multiple Plots</label>
-                 </div>
-             </div>
-
-             <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7" style="padding-top: 10px; display: none" id="setdata">
-                 Data sets:
-                 <select multiple="multiple" class="form-control" disabled="disabled" id="datasets">
-                     <option></option>
-
-                 </select>
-                 <div style="padding: 10px">
-                     <input type="button" class="btn btn-primary" id="setdatabtn" value="Set">
-                      <button type="button" class="btn btn-default" id="cleardataset" disabled="disabled">
-                        <span class="glyphicon glyphicon-trash"></span>&nbsp;
-                      </button>
-                      <button type="button" class="btn btn-default" id="deletedataset" disabled="disabled">
-                        <span class="glyphicon glyphicon-remove"></span>&nbsp;
-                      </button>
-                 </div>
-
-             </div>
-
          </fieldset>
 
 
