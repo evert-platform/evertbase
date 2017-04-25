@@ -181,3 +181,10 @@ class MeasurementData(db.Model):
                                                               MeasurementData.tag).filter(MeasurementData.tag.in_(
                                                                 ids)).all()
 
+    @staticmethod
+    def filter_between_timestamps(ids, start, end):
+            return db_session.query(MeasurementData).with_entities(MeasurementData.timestamp, MeasurementData.tag_value,
+                                                                        MeasurementData.tag).filter(MeasurementData.tag.\
+                                                                                                    in_(ids)).\
+                filter(MeasurementData.timestamp.between(start, end)).all()
+
