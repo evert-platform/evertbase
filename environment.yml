@@ -8,7 +8,7 @@ dependencies:
 - flask=0.12
 - flask-migrate=2.0.3
 - flask-script=2.0.5
-- flask-socketio=2.8.4
+- flask-socketio=2.8.5
 - flask-sqlalchemy=2.2
 - flask-testing=0.6.1
 - flask-uploads=0.2.1

@@ -1,5 +1,7 @@
 from .models import Plants, Sections, Equipment, Tags, MeasurementData, db
 import datetime
+from .plugins import event_emit
+
 
 
 def assign_tag_sections(section, tags):
@@ -323,5 +325,8 @@ def upload_file(file_name, plant_name, opened, upload):
 
     """
 
-    success = MeasurementData.upload_file(file_name, plant_name, opened, upload)
+    success, data = MeasurementData.upload_file(file_name, plant_name, opened, upload)
+    if success:
+        event_emit("datauploaded", data, [10, 5, 3])
+        print('event emitted')
     return success

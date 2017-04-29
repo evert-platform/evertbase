@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy, event
 from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
 from sqlalchemy.exc import IntegrityError
+# from flask_plugins import emit_event
+from .plugins import event_emit
 
 db = SQLAlchemy()
 db_session = db.session
@@ -129,6 +131,8 @@ class MeasurementData(db.Model):
         global plant_id
         plant_id = None
 
+        df_data = None
+
         try:
             time = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
 
@@ -140,6 +144,9 @@ class MeasurementData(db.Model):
 
             # handling csv file
             df = pd.read_csv(file_name)
+            df_data = df.copy()
+
+
             df = pd.melt(df, id_vars=df.columns.values[0])
             df.columns = ['timestamp', 'tag', 'tag_value']
             df_tags = np.unique(df['tag'].values)
@@ -166,8 +173,9 @@ class MeasurementData(db.Model):
             db.session.rollback()
             Plants.delete(id=plant_id)
             success = False
+            df_data = None
 
-        return success
+        return success, df_data
 
     @staticmethod
     def get_tag_data(**kwargs):
@@ -181,10 +189,32 @@ class MeasurementData(db.Model):
                                                               MeasurementData.tag).filter(MeasurementData.tag.in_(
                                                                 ids)).all()
 
-    @staticmethod
-    def filter_between_timestamps(ids, start, end):
-            return db_session.query(MeasurementData).with_entities(MeasurementData.timestamp, MeasurementData.tag_value,
-                                                                        MeasurementData.tag).filter(MeasurementData.tag.\
-                                                                                                    in_(ids)).\
-                filter(MeasurementData.timestamp.between(start, end)).all()
 
+# Model for the plugin ID table
+class PluginIds(db.Model):
+    plugin_id = db.Column('plugin_id', db.Integer, primary_key=True)
+    plugin_name = db.Column('name', db.Text)
+
+
+# Model for the plugin time series data storage table
+class PluginTimeSeries(db.Model):
+    data_id = db.Column('id', db.Integer, primary_key=True)
+    data_foreign_id = db.Column('id_foreign', db.Integer, db.ForeignKey('measurement_data.id',
+                                                                        ondelete="CASCADE", onupdate="CASCADE"))
+    tag = db.Column('tag', db.ForeignKey('tags.id', ondelete="CASCADE", onupdate="CASCADE"))
+    tag_value = db.Column('tag_value', db.Float)
+
+
+# Model for the plugin features table
+class PluginFeatures(db.Model):
+    feature_id = db.Column('id', db.Integer, primary_key=True)
+    tag = db.Column('tag', db.ForeignKey('tags.id', ondelete="CASCADE", onupdate="CASCADE"))
+    tag_value = db.Column('tag_value', db.Float)
+    timestamp = db.Column('timestamp', db.Text)
+
+
+# Model for the plugin settings table
+class PluginSettings(db.Model):
+    setting_id = db.Column('id', db.Integer, primary_key=True)
+    plugin_id = db.Column('plugin_id', db.ForeignKey('plugin_ids.plugin_id', ondelete="CASCADE", onupdate="CASCADE"))
+    setting_value = db.Column('value', db.Float)
