@@ -2,3 +2,4 @@ app/static/uploads/
 .idea/
 .cache
 README.md
+migrations
