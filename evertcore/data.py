@@ -1,6 +1,7 @@
 from .models import Plants, Sections, Equipment, Tags, MeasurementData, db
 import datetime
 from .plugins import emit_event
+import pandas as pd
 
 
 
@@ -230,7 +231,7 @@ def prefetch_cache_band(start, end):
     return start, end
 
 
-def tag_data(tag_ids, start=None, end=None):
+def tag_data(tag_ids, start=None, end=None, dataframe=True, pivot=True):
     """
     Retrieve tag data based on the given tag ids.
 
@@ -245,18 +246,30 @@ def tag_data(tag_ids, start=None, end=None):
 
     Returns
     -------
-    list
+    list/pd.DataFrame
         List of row data tuples containing the tag data in the following format (timestamp, tag_value, tag_id).
 
+
     """
-    tag_ids = map(int, tag_ids)
+    # tag_ids = map(int, tag_ids)
 
     if start is not None and end is not None:
         start, end = prefetch_cache_band(start, end)
-        data = MeasurementData.filter_between_timestamps(tag_ids, start, end)
+        data = MeasurementData.filter_between_timestamps(map(int, tag_ids), start, end)
 
     else:
-        data = MeasurementData.get_tag_data_in(tag_ids)
+        data = MeasurementData.get_tag_data_in(map(int, tag_ids))
+
+    if dataframe:
+        data = pd.DataFrame(data)
+        tag_names = dict(get_tag_names(key='id', values=map(int, tag_ids)))
+        print(data.head())
+        data.tag = [tag_names[key] for key in data['tag'].values]
+
+        if pivot:
+            data = data.pivot_table(index='timestamp', columns='tag')
+            data.columns = data.columns.droplevel().rename(None)
+            data = data.reset_index()
 
     return data
 
