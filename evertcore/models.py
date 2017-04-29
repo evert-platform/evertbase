@@ -5,8 +5,6 @@ from flask_sqlalchemy import SQLAlchemy, event
 from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
 from sqlalchemy.exc import IntegrityError
-# from flask_plugins import emit_event
-from .plugins import event_emit
 
 db = SQLAlchemy()
 db_session = db.session
