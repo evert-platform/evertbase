@@ -1,8 +1,11 @@
 from flask_plugins import connect_event, iter_listeners
 from multiprocessing import Process
 
+_plugin_events = ['data_upload', 'zoom_event']
 
-address = ('localhost', 6000)
+
+class EvertPluginException(Exception):
+    pass
 
 
 def connect_listener(event_name, callback):
@@ -13,10 +16,19 @@ def connect_listener(event_name, callback):
     ----------
     event_name: str
                 Name of the event to bind to
-    callback:
+    callback: callable
             Function to be used when this event is triggered
 
     """
+
+    # check if event name is valid
+    if event_name not in _plugin_events:
+        raise EvertPluginException('Invalid event name.')
+
+    # check if callback is a callable function
+    if not callable(callback):
+        raise EvertPluginException('Callback argument not a function')
+
     connect_event(event_name, callback)
     return
 
@@ -34,6 +46,10 @@ def event_emit(event_name, *args, **kwargs):
             Keyword arguments to pass to callback function.
 
     """
+    # check if correct event is emitted
+    if event_name not in _plugin_events:
+        raise EvertPluginException('Invalid event name')
+
     listeners = iter_listeners(event_name)
 
     for process in listeners:
