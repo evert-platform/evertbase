@@ -4,7 +4,6 @@ from .plugins import emit_event
 import pandas as pd
 
 
-
 def assign_tag_sections(section, tags):
     """
     Assign tag numbers to plant sections. It can also be used to remove tags from sections by passing section as None.
@@ -272,8 +271,6 @@ def tag_data(tag_ids, start=None, end=None, dataframe=True, pivot=True):
             data = data.reset_index()
 
     return data
-
-
 
 
 def update_plant_name(plant_id, name):
