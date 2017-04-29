@@ -1,1 +1,1 @@
-from . import data, models, evertplot
+from . import data, models, plotting
