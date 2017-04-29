@@ -12,12 +12,7 @@ from datetime import datetime
 @restapi.route('/_plotdata', methods=['GET'])
 def _plotdata():
     tags = request.args.getlist('tags[]')
-    tag_data = pd.DataFrame(evert.data.tag_data(tags))
-    tag_names = dict(evert.data.get_tag_names(key='id', values=map(int, tags)))
-    tag_data.tag = [tag_names[key] for key in tag_data['tag'].values]
-    tag_data = tag_data.pivot_table(index='timestamp', columns='tag')
-    tag_data.columns = tag_data.columns.droplevel().rename(None)
-    tag_data = tag_data.reset_index()
+    tag_data = evert.data.tag_data(tags)
     data = tag_data.values.tolist()
     columns = tag_data.columns.values
     plot_data = [list(columns)] + data
