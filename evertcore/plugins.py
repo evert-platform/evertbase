@@ -1,11 +1,17 @@
-from flask_plugins import connect_event, iter_listeners
+from flask_plugins import connect_event as _connect_event, iter_listeners as _iter_listeners, Plugin
 from multiprocessing import Process
+from flask import current_app
 
 _plugin_events = ['data_upload', 'zoom_event']
 
 
 class EvertPluginException(Exception):
     pass
+
+class AppPlugin(Plugin):
+    def register_blueprint(self, blueprint, **kwargs):
+        """Registers a blueprint."""
+        current_app.register_blueprint(blueprint, **kwargs)
 
 
 def connect_listener(event_name, callback):
@@ -29,11 +35,11 @@ def connect_listener(event_name, callback):
     if not callable(callback):
         raise EvertPluginException('Callback argument not a function')
 
-    connect_event(event_name, callback)
+    _connect_event(event_name, callback)
     return
 
 
-def event_emit(event_name, *args, **kwargs):
+def emit_event(event_name, *args, **kwargs):
     """
     Emits an event and executes all the plugins subscribed to the event.
     Parameters
@@ -50,7 +56,7 @@ def event_emit(event_name, *args, **kwargs):
     if event_name not in _plugin_events:
         raise EvertPluginException('Invalid event name')
 
-    listeners = iter_listeners(event_name)
+    listeners = _iter_listeners(event_name)
 
     for process in listeners:
         p = Process(target=process, args=args, kwargs=kwargs)
