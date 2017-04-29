@@ -327,6 +327,6 @@ def upload_file(file_name, plant_name, opened, upload):
 
     success, data = MeasurementData.upload_file(file_name, plant_name, opened, upload)
     if success:
-        emit_event("datauploaded", data, [10, 5, 3])
+        emit_event("data_upload", data, [10, 5, 3])
         print('event emitted')
     return success
