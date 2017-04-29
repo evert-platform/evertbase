@@ -1,6 +1,6 @@
 from flask import Blueprint
-from manage import AppPlugin
 from .savgol import sg_filter
+from evertcore.plugins import connect_listener, AppPlugin
 
 __plugin__ = "SavgolFilter"
 
@@ -17,3 +17,4 @@ class SavgolFilter(AppPlugin):
     def setup(self):
         self.register_blueprint(savgol)
         # There should be a connect event here, I'm unsure how Neill wants this.
+        connect_listener('data_upload', run_plugin)
