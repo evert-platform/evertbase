@@ -1,6 +1,6 @@
 from .models import Plants, Sections, Equipment, Tags, MeasurementData, db
 import datetime
-from .plugins import event_emit
+from .plugins import emit_event
 
 
 
@@ -327,6 +327,6 @@ def upload_file(file_name, plant_name, opened, upload):
 
     success, data = MeasurementData.upload_file(file_name, plant_name, opened, upload)
     if success:
-        event_emit("datauploaded", data, [10, 5, 3])
+        emit_event("datauploaded", data, [10, 5, 3])
         print('event emitted')
     return success
