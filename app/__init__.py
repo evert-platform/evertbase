@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
-from flask_plugins import PluginManager
 from .main.functions import find_plugins
 from evertcore.data import db
+from evertcore.plugins import plugin_manager
 from config import config
 import os
 
@@ -30,7 +30,7 @@ def create_app(config_name):
         os.mkdir(app.config['USER_PLUGINS'])
 
     # Configuration of flask_plugins extension
-    PluginManager(app)
+    plugin_manager.init_app(app)
 
     # finding user plugins
     # find_plugins(app)
