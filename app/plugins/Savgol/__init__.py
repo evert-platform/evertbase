@@ -17,4 +17,4 @@ class SavgolFilter(AppPlugin):
     def setup(self):
         self.register_blueprint(savgol)
         # There should be a connect event here, I'm unsure how Neill wants this.
-        connect_listener('data_upload', run_plugin)
+        # connect_listener('data_upload', run_plugin)
