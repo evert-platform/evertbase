@@ -1,6 +1,7 @@
 name: Evert
 channels:
 - defaults
+- conda-forge
 dependencies:
 - coveralls
 - coverage=4.3.4
