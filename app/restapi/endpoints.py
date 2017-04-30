@@ -295,12 +295,8 @@ def _daterange():
     domain = [float(d)/1000 for d in domain]
 
     tag_data = evert.data.tag_data(tags, datetime.fromtimestamp(domain[0]), datetime.fromtimestamp(domain[1]))
-    data = tag_data.values.tolist()
-    columns = tag_data.columns.values
-    plot_data = [list(columns)] + data
-    datamap = dict()
-    for t in columns:
-        if t != 'timestamp':
-            datamap[t] = 'timestamp'
+    a = evert.plotting.Fig()
+    a.prepare_data(tag_data)
+    data, datamap = a.return_data()
 
-    return jsonify(success=True, data=plot_data, datamap=datamap)
+    return jsonify(success=True, data=data, datamap=datamap)
