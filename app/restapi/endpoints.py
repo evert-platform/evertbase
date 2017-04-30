@@ -13,11 +13,11 @@ from datetime import datetime
 def _plotdata():
     tags = request.args.getlist('tags[]')
     tag_data = evert.data.tag_data(tags)
-    data = tag_data.values.tolist()
-    columns = tag_data.columns.values
-    plot_data = [list(columns)] + data
+    fig = evert.plotting.Fig()
+    fig.prepare_data(tag_data)
+    data, _ = fig.return_data()
 
-    return jsonify(success=True, data=plot_data)
+    return jsonify(success=True, data=data)
 
 
 # this functions enables the plugin selected in the enable plugin select element on the plugins page
