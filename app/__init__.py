@@ -1,14 +1,10 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
-
 from evertcore.data import db
 from evertcore.plugins import plugin_manager
 from config import config
 import os
-from flask_socketio import SocketIO
-# from .main.functions import find_plugins
-
-socketio = SocketIO()
+from evertcore.websockets import socketio
 
 
 def create_app(config_name):
