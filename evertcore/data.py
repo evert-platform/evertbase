@@ -214,6 +214,24 @@ def get_unassigned_tags(**kwargs):
 
 
 def prefetch_cache_band(start, end):
+    """
+    Calculates extra band to be added for pre-fetching of data.
+    
+    Parameters
+    ----------
+    start: datetime.datetime
+            Timestamp for start of original band
+    end: datetime.datetime
+        Timestamp for end of original band.
+
+    Returns
+    -------
+    start: datetime.datetime
+            New start parameter
+    end: datetime.datetime
+            New end parameter
+
+    """
 
     diff = end - start
 
@@ -238,9 +256,9 @@ def tag_data(tag_ids, start=None, end=None, dataframe=True, pivot=True):
     ----------
     tag_ids : list
             A list containing the ids of the tags to be queried from database
-    start :
+    start : datetime.datetime
             If given the data will start at the given timestamp
-    end:
+    end: datetime.datetime
          If given data will end at given timestamp.
 
     Returns
@@ -255,7 +273,6 @@ def tag_data(tag_ids, start=None, end=None, dataframe=True, pivot=True):
     if start is not None and end is not None:
         start, end = prefetch_cache_band(start, end)
         data = MeasurementData.filter_between_timestamps(map(int, tag_ids), start, end)
-
     else:
         data = MeasurementData.get_tag_data_in(map(int, tag_ids))
 
