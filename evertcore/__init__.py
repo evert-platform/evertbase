@@ -1,1 +1,1 @@
-from . import data, models, plotting
+from . import data, models, plotting, plugins
