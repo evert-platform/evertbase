@@ -276,12 +276,7 @@ def _deleteunittags():
 def _viewdata():
 
     tags = request.args.getlist('tags[]')
-    tag_data = pd.DataFrame(evert.data.tag_data(tags))
-    tag_names = dict(evert.data.get_tag_names(key='id', values=map(int, tags)))
-    tag_data.tag = [tag_names[key] for key in tag_data['tag'].values]
-    tag_data = tag_data.pivot_table(index='timestamp', columns='tag')
-    tag_data.columns = tag_data.columns.droplevel().rename(None)
-    tag_data = tag_data.reset_index()
+    tag_data = evert.data.tag_data(tags)
     data = tag_data.values.tolist()
     columns = [{'title': key} for key in tag_data.columns]
 
@@ -295,8 +290,8 @@ def _daterange():
     domain = [float(d)/1000 for d in domain]
 
     tag_data = evert.data.tag_data(tags, datetime.fromtimestamp(domain[0]), datetime.fromtimestamp(domain[1]))
-    a = evert.plotting.Fig()
-    a.prepare_data(tag_data)
-    data, datamap = a.return_data()
+    fig = evert.plotting.Fig()
+    fig.prepare_data(tag_data)
+    data, datamap = fig.return_data()
 
     return jsonify(success=True, data=data, datamap=datamap)
