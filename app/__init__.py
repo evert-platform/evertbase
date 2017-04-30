@@ -1,10 +1,14 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
-from .main.functions import find_plugins
+
 from evertcore.data import db
 from evertcore.plugins import plugin_manager
 from config import config
 import os
+from flask_socketio import SocketIO
+# from .main.functions import find_plugins
+
+socketio = SocketIO()
 
 
 def create_app(config_name):
@@ -48,5 +52,8 @@ def create_app(config_name):
     with app.app_context():
         db.create_all()
         db.session.commit()
+
+    # creating socket
+    socketio.init_app(app)
 
     return app
