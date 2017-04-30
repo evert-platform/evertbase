@@ -279,7 +279,6 @@ def tag_data(tag_ids, start=None, end=None, dataframe=True, pivot=True):
     if dataframe:
         data = pd.DataFrame(data)
         tag_names = dict(get_tag_names(key='id', values=map(int, tag_ids)))
-        print(data.head())
         data.tag = [tag_names[key] for key in data['tag'].values]
 
         if pivot:
