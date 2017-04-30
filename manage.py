@@ -1,6 +1,4 @@
-from app import create_app
-from flask import current_app
-from flask_plugins import Plugin
+from app import create_app, socketio
 from flask_uploads import UploadSet, configure_uploads, ALL
 import os
 
@@ -12,4 +10,4 @@ plugin_upload = UploadSet('plugin', ALL)
 configure_uploads(app, plugin_upload)
 
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app, debug=True)
