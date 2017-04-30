@@ -1,6 +1,7 @@
-from flask import session
-from flask_socketio import emit, join_room, leave_room
-from app import socketio
+from flask_socketio import emit, SocketIO
+
+socketio = SocketIO()
+
 
 @socketio.on('connect', namespace='/test')
 def joined():
