@@ -4,7 +4,6 @@ from .forms import FileUploadForm, DataViewerForm, PlotDataSelectForm, PluginsUp
 from . import functions as funcs
 import evertcore as evert
 
-
 # Renders the main index template
 @main.route('/', methods=['GET', 'POST'])
 def index():

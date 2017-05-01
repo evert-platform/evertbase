@@ -1,7 +1,7 @@
 from .models import Plants, Sections, Equipment, Tags, MeasurementData, db
 import datetime
-from .plugins import event_emit
-
+from .plugins import emit_event
+import pandas as pd
 
 def assign_tag_sections(section, tags):
     """
@@ -256,6 +256,24 @@ def get_unassigned_tags(**kwargs):
 
 
 def prefetch_cache_band(start, end):
+    """
+    Calculates extra band to be added for pre-fetching of data.
+    
+    Parameters
+    ----------
+    start: datetime.datetime
+            Timestamp for start of original band
+    end: datetime.datetime
+        Timestamp for end of original band.
+
+    Returns
+    -------
+    start: datetime.datetime
+            New start parameter
+    end: datetime.datetime
+            New end parameter
+
+    """
 
     if not isinstance(start, datetime.datetime):
         raise TypeError('Expecting input of type: datetime.datetime for argument: start')
@@ -277,7 +295,7 @@ def prefetch_cache_band(start, end):
     return start, end
 
 
-def tag_data(tag_ids, start=None, end=None):
+def tag_data(tag_ids, start=None, end=None, dataframe=True, pivot=True):
     """
     Retrieve tag data based on the given tag ids.
 
@@ -285,29 +303,37 @@ def tag_data(tag_ids, start=None, end=None):
     ----------
     tag_ids : list
             A list containing the ids of the tags to be queried from database
-    start :
+    start : datetime.datetime
             If given the data will start at the given timestamp
-    end:
+    end: datetime.datetime
          If given data will end at given timestamp.
 
     Returns
     -------
-    list
+    list/pd.DataFrame
         List of row data tuples containing the tag data in the following format (timestamp, tag_value, tag_id).
 
+
     """
-    tag_ids = map(int, tag_ids)
+    # tag_ids = map(int, tag_ids)
 
     if start is not None and end is not None:
         start, end = prefetch_cache_band(start, end)
-        data = MeasurementData.filter_between_timestamps(tag_ids, start, end)
-
+        data = MeasurementData.filter_between_timestamps(map(int, tag_ids), start, end)
     else:
-        data = MeasurementData.get_tag_data_in(tag_ids)
+        data = MeasurementData.get_tag_data_in(map(int, tag_ids))
+
+    if dataframe:
+        data = pd.DataFrame(data)
+        tag_names = dict(get_tag_names(key='id', values=map(int, tag_ids)))
+        data.tag = [tag_names[key] for key in data['tag'].values]
+
+        if pivot:
+            data = data.pivot_table(index='timestamp', columns='tag')
+            data.columns = data.columns.droplevel().rename(None)
+            data = data.reset_index()
 
     return data
-
-
 
 
 def update_plant_name(plant_id, name):
@@ -374,6 +400,6 @@ def upload_file(file_name, plant_name, opened, upload):
 
     success, data = MeasurementData.upload_file(file_name, plant_name, opened, upload)
     if success:
-        event_emit("datauploaded", data, [10, 5, 3])
+        emit_event("data_upload", data, [10, 5, 3])
         print('event emitted')
     return success

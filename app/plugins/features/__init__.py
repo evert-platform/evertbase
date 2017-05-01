@@ -1,10 +1,6 @@
 from flask import Blueprint
-from manage import AppPlugin
 from .tsfresh_mini import extract_features
-from evertcore.plugins import connect_listener
-import time
-
-address = ('localhost', 6000)
+from evertcore.plugins import connect_listener, AppPlugin
 
 __plugin__ = "FeatureExtraction"
 
@@ -13,9 +9,6 @@ features = Blueprint('features', __name__)
 
 def run_plugin(data_before, settings):
     data_after = extract_features(data_before, settings)
-    print(data_after)
-    time.sleep(6)
-
     return data_after
 
 
@@ -24,7 +17,7 @@ class FeatureExtraction(AppPlugin):
     def setup(self):
         self.register_blueprint(features)
         # There should be a connect event here, I'm unsure how Neill wants this.
-        connect_listener("datauploaded", run_plugin)
+        connect_listener("data_upload", run_plugin)
 
         # with open("config.txt") as file:
         #     for line in file:

@@ -1,5 +1,18 @@
 $(document).ready(function () {
     controller.init();
+
+    var namespace = '/test';
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+
+    socket.on('connect', function() {
+                // socket.emit('my_event', {data: 'I\'m connected!'});
+                console.log('connected');
+                socket.emit('connected', {msg: 'next'})
+            });
+
+    socket.on('connected', function(msg){
+        console.log(msg)
+    })
 });
 
 // Data controller for plotting page
