@@ -61,19 +61,14 @@ def test_ajax(client, url):
 
 @pytest.mark.usefixtures('client_class', 'app')
 class TestAsync:
-    # TODO: fix testing with better mocking
 
-    # def test_plantupdatename(self, mocker):
-    #     name = mocker.patch('flask.request.args.get')
-    #     cur_plant = mocker.patch('flask.request.args.get')
-    #
-    #     name.return_value = 'test_name'
-    #     cur_plant.return_value = 0
-    #
-    #     res = restapi.endpoints._plantnamechange()
-    #     assert res.json['success']
+    def test_plantupdatename(self, mocker):
+        m = mocker.patch('flask.request.args.get')
+        m.side_effect = ['test_name', 0]
+        res = restapi.endpoints._plantnamechange()
+        assert res.json['success']
 
-    def test_deleteumit(self, mocker):
+    def test_deleteunit(self, mocker):
         unit = mocker.patch('flask.request.args.getlist')
         unit.return_value = ['0']
         res = restapi.endpoints._deleteunit()
@@ -104,8 +99,3 @@ class TestAsync:
         unit.return_value = []
         res = restapi.endpoints._unitselectchange()
         assert res.json['success']
-
-
-
-
-
