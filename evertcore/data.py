@@ -3,19 +3,26 @@ import datetime
 from .plugins import event_emit
 
 
-
 def assign_tag_sections(section, tags):
     """
     Assign tag numbers to plant sections. It can also be used to remove tags from sections by passing section as None.
 
     Parameters
     ----------
-    section:
+    section: int
              ID of section tag must be assigned to.
     tags: list
          IDs of the tag which section must be assigned.
     """
+
+    # input type checking
+    if not isinstance(section, int):
+        raise TypeError('Expecting input of type: int for variable: section')
+    if not isinstance(tags, list):
+        raise TypeError('Expecting input of type: list for argument: tags')
+
     Tags.assign_tag_sections(section, tags)
+    return
 
 
 def create_tags(tags_list):
@@ -28,6 +35,9 @@ def create_tags(tags_list):
                 A list of tuples containing the plant id and tag name, eg. [(plant_id, tag_name),..]
 
     """
+    # input type checking
+    if not isinstance(tags_list, list):
+        raise TypeError('Expecting input of type: list for argument: tags_list')
 
     Tags.create_multiple(tags_list)
 
@@ -47,6 +57,12 @@ def create_unit(name, plant_id):
     -------
 
     """
+
+    # type checking
+    if not isinstance(name, str):
+        raise TypeError('Expecting input of type: str for argument: name')
+    if not isinstance(plant_id, int):
+        raise TypeError('Expecting input of type: int for argument: plant_id')
     Sections.create(name=name, plant=plant_id)
 
 
@@ -65,6 +81,9 @@ def delete_plant(plant_id):
         List of the remaining plants and ids, eg. [(id, plant_name),..]
 
     """
+
+    if not isinstance(plant_id, int):
+        raise TypeError('Expecting input of type: int for argument: plant_id')
     Plants.delete(id=plant_id)
     return Plants.get_names()
 
@@ -84,6 +103,9 @@ def delete_sections(ids):
         List of the remaining section and ids, eg. [(id, section_name),..]
 
     """
+    if not isinstance(ids, list):
+        raise TypeError('Expecting input of type: list for argument: ids')
+
     Sections.delete_multiple_by_id(ids)
     return Sections.get_names()
 
@@ -106,10 +128,18 @@ def delete_tags(ids, plant, section=None):
         List containing the remaining tag ids and names, eg. [(id, name),..]
 
     """
+    if not isinstance(ids, list):
+        raise TypeError('Expecting input of type: list for argument: ids')
+    if not isinstance(plant, int):
+        raise TypeError('Expecting input of type: int for argument: plant')
 
     Tags.delete_multiple_by_id(ids)
 
     if section:
+
+        if not isinstance(section, int):
+            raise TypeError('Expecting input of type: int for argument: section')
+
         tags = Tags.get_filtered_names(plant=plant, section=section)
 
     else:
@@ -133,6 +163,9 @@ def get_tag_names(**kwargs):
     list
         List of tuples int the following order (id, name)
     """
+
+    if not isinstance(kwargs, dict):
+        raise TypeError('Expecting input of type: dict for argument: kwargs')
 
     if kwargs:
         if 'key' and 'values' in kwargs:
@@ -160,6 +193,8 @@ def get_plant_names(**kwargs):
         List of tuples with plant ids and names, eg. [(id, name),..]
 
     """
+    if not isinstance(kwargs, dict):
+        raise TypeError('Expecting input of type: dict for argument: kwargs')
 
     if kwargs:
 
@@ -187,6 +222,9 @@ def get_section_names(**kwargs):
     """
 
     if kwargs:
+        if not isinstance(kwargs, dict):
+            raise TypeError('Expecting input of type: dict for argument: kwargs')
+
         sections = Sections.get_filtered_names(**kwargs)
 
     else:
@@ -210,10 +248,19 @@ def get_unassigned_tags(**kwargs):
     list
         List of tuples containing the tag_id and name.
     """
+
+    if not isinstance(kwargs, dict):
+        raise TypeError('Expecting input of type: dict for argument: kwargs')
+
     return Tags.get_unassigned_tags(**kwargs)
 
 
 def prefetch_cache_band(start, end):
+
+    if not isinstance(start, datetime.datetime):
+        raise TypeError('Expecting input of type: datetime.datetime for argument: start')
+    if not isinstance(start, datetime.datetime):
+        raise TypeError('Expecting input of type: datetime.datetime for argument: end')
 
     diff = end - start
 
