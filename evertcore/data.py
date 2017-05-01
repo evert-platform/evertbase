@@ -3,6 +3,7 @@ import datetime
 from .plugins import emit_event
 import pandas as pd
 
+
 def assign_tag_sections(section, tags):
     """
     Assign tag numbers to plant sections. It can also be used to remove tags from sections by passing section as None.
@@ -208,7 +209,7 @@ def get_plant_names(**kwargs):
 
 def get_section_names(**kwargs):
     """
-
+    Gets the names of the sections assigned to an id
     Parameters
     ----------
     kwargs
@@ -317,9 +318,6 @@ def tag_data(tag_ids, start=None, end=None, dataframe=True, pivot=True):
     """
     if not isinstance(tag_ids, list):
         raise TypeError('Expecting input of type: list for argument: tag_ids')
-
-
-
 
     tag_ids = list(map(int, tag_ids))
 
