@@ -303,9 +303,9 @@ def tag_data(tag_ids, start=None, end=None, dataframe=True, pivot=True):
     ----------
     tag_ids : list
             A list containing the ids of the tags to be queried from database
-    start : datetime.datetime
+    start : datetime.datetime, default None
             If given the data will start at the given timestamp
-    end: datetime.datetime
+    end: datetime.datetime, default None
          If given data will end at given timestamp.
 
     Returns
@@ -315,17 +315,28 @@ def tag_data(tag_ids, start=None, end=None, dataframe=True, pivot=True):
 
 
     """
-    # tag_ids = map(int, tag_ids)
+    if not isinstance(tag_ids, list):
+        raise TypeError('Expecting input of type: list for argument: tag_ids')
+
+
+
+
+    tag_ids = list(map(int, tag_ids))
 
     if start is not None and end is not None:
+        if not isinstance(start, datetime.datetime):
+            raise TypeError('Expecting input of type: datetime.datetime for argument: start')
+        if not isinstance(end, datetime.datetime):
+            raise TypeError('Expecting input of type: datetime.datetime for argument: end')
+
         start, end = prefetch_cache_band(start, end)
-        data = MeasurementData.filter_between_timestamps(map(int, tag_ids), start, end)
+        data = MeasurementData.filter_between_timestamps(tag_ids, start, end)
     else:
-        data = MeasurementData.get_tag_data_in(map(int, tag_ids))
+        data = MeasurementData.get_tag_data_in(tag_ids)
 
     if dataframe:
         data = pd.DataFrame(data)
-        tag_names = dict(get_tag_names(key='id', values=map(int, tag_ids)))
+        tag_names = dict(get_tag_names(key='id', values=tag_ids))
         data.tag = [tag_names[key] for key in data['tag'].values]
 
         if pivot:
@@ -352,6 +363,10 @@ def update_plant_name(plant_id, name):
         List of new plant names
 
     """
+    if not isinstance(plant_id, int):
+        raise TypeError('Expecting input of type: int for argument: plant_id')
+    if not isinstance(name, str):
+        raise TypeError('Expecting input of type: str for argument: name')
 
     Plants.query.filter_by(id=plant_id).update(dict(name=name))
     db.session.commit()
@@ -373,6 +388,12 @@ def update_section_name(section_id, name):
     -------
 
     """
+
+    if not isinstance(section_id, int):
+        raise TypeError('Expecting input of type: int for argument: section_id')
+    if not isinstance(name, str):
+        raise TypeError('Expecting input of type: str for argument: name')
+
     Sections.query.filter_by(id=section_id).update(dict(name=name))
     db.session.commit()
 
@@ -397,6 +418,15 @@ def upload_file(file_name, plant_name, opened, upload):
         indicates the success status of the upload
 
     """
+
+    if not isinstance(file_name, str):
+        raise TypeError('Expecting input of type: str for argument: file_name')
+    if not isinstance(plant_name, str):
+        raise TypeError('Expecting input of type: str for argument: plant_name')
+    if not isinstance(opened, bool):
+        raise TypeError('Expecting input of type: bool for argument: opened')
+    if not isinstance(upload, bool):
+        raise TypeError('Expecting input of type: bool for argument: upload')
 
     success, data = MeasurementData.upload_file(file_name, plant_name, opened, upload)
     if success:
