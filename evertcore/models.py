@@ -20,7 +20,7 @@ def _set_sqlite_pragma(dbapi_connection, connection_record):
 
 
 # custom base class with features that are inherited over all table classes
-class BaseMixin:
+class BaseMixin(db.Model):
 
     @classmethod
     def create(cls, **kwargs):  # method for adding data to table
@@ -64,7 +64,7 @@ class BaseMixin:
 
 
 # Model for plants table
-class Plants(BaseMixin, db.Model):
+class Plants(BaseMixin):
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name', db.VARCHAR(50), unique=True)
     opened = db.Column('opened', db.Integer)
@@ -73,14 +73,14 @@ class Plants(BaseMixin, db.Model):
 
 
 # Model for sections table
-class Sections(BaseMixin, db.Model):
+class Sections(BaseMixin):
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name', db.TEXT)
     plant = db.Column('plant', db.Integer, db.ForeignKey('plants.id', ondelete='CASCADE', onupdate='CASCADE'))
 
 
 # Model for equipment table
-class Equipment(BaseMixin, db.Model):
+class Equipment(BaseMixin):
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name', db.Text)
     plant = db.Column('plant', db.ForeignKey('plants.id', onupdate='CASCADE', ondelete="CASCADE"))
@@ -88,7 +88,7 @@ class Equipment(BaseMixin, db.Model):
 
 
 # Model for tags table
-class Tags(BaseMixin, db.Model):
+class Tags(BaseMixin):
     id = db.Column('id', db.Integer, primary_key=True)
     plant = db.Column('plant', db.ForeignKey('plants.id', ondelete='CASCADE', onupdate="CASCADE"))
     section = db.Column('section', db.ForeignKey('sections.id', ondelete='CASCADE', onupdate="CASCADE"))
