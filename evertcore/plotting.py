@@ -1,4 +1,4 @@
-import pandas as pd
+import pandas
 import json
 
 
@@ -17,7 +17,7 @@ class Fig:
         
         Parameters
         ----------
-        data: pd.DataFrame
+        data: pandas.DataFrame
              Plotting data.
 
         Returns
