@@ -1,6 +1,5 @@
 from copy import deepcopy
 
-import pandas as pd
 from scipy.signal import savgol_filter
 
 
@@ -22,15 +21,6 @@ def _remove_constants_(_dataframe, _headers):
             del _dataframe[h]
             del _headers[i]
     return _dataframe, _headers
-
-
-def _arr_to_df_(_arr, _headings):
-    dfdict = {}
-    for i, h in enumerate(_headings):
-        dfdict[h] = _arr[:, i]
-    # dfdict = dict(zip(headings, arr)) found this method, but having issues slicing arr in one liner
-    DF = pd.DataFrame(dfdict)
-    return DF
 
 
 def _check_constant_(_lst):
