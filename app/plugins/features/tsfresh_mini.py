@@ -139,6 +139,15 @@ def _mean_(_dataframe):
     return points
 
 
+def _format_data_(feature_name, feature_timestamp, feature_value):
+    # This should create appropriate lists in the shape of [['timestamp', 'feature_name'],
+    #                                                       [timestamp, feature_value]]
+    # which is appropriate for Evert.
+    lst = [['timestamp', '{}'.format(feature_name)],
+           [feature_timestamp, feature_value]]
+    return lst
+
+
 def extract_features(__dataframe, config):
     tindex = [i for i in range(len(__dataframe))]
     features = []
