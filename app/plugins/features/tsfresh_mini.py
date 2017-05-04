@@ -3,11 +3,11 @@ import copy
 import numpy as np
 
 
-def _global_min_(_dataframe_):
+def _global_min_(DF):
     points = []
-    headers = list(_dataframe_)
-    min_vals = _dataframe_.min()
-    min_index = _dataframe_.idxmin(0)
+    headers = list(DF)
+    min_vals = DF.min()
+    min_index = DF.idxmin(0)
 
     for i, h in enumerate(headers):
         points.append([h, min_index[h], min_vals[h], 'Global Minimum'])
@@ -15,11 +15,11 @@ def _global_min_(_dataframe_):
     return points
 
 
-def _global_max_(_dataframe_):
+def _global_max_(DF):
     points = []
-    headers = list(_dataframe_)
-    max_vals = _dataframe_.max()
-    max_index = _dataframe_.idxmax(0)
+    headers = list(DF)
+    max_vals = DF.max()
+    max_index = DF.idxmax(0)
 
     for i, h in enumerate(headers):
         points.append([h, max_index[h], max_vals[h], 'Global Maximum'])
@@ -27,19 +27,19 @@ def _global_max_(_dataframe_):
     return points
 
 
-def _filter_peaks_(_lst_, peak_width, width):
+def _filter_peaks_(list_of_peaks, peak_width, width):
     lst = []
     features = []
     _container_ = []
 
-    for i, v in enumerate(_lst_):
+    for i, v in enumerate(list_of_peaks):
 
         if i == 0:
             _container_.append(v)
 
         if i > 0:
 
-            if _lst_[i][0] - _lst_[i - 1][0] < width:
+            if list_of_peaks[i][0] - list_of_peaks[i - 1][0] < width:
                 _container_.append(v)
 
             else:
