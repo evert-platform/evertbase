@@ -2,6 +2,7 @@ from .models import Plants, Sections, Equipment, Tags, MeasurementData, db
 import datetime
 from .plugins import emit_event
 import pandas as pd
+# from io import IOBase
 
 
 def assign_tag_sections(section, tags):
@@ -416,9 +417,9 @@ def upload_file(file_name, plant_name, opened, upload):
         indicates the success status of the upload
 
     """
-
-    if not isinstance(file_name, str):
-        raise TypeError('Expecting input of type: str for argument: file_name')
+    # print(type(file_name))
+    # if not isinstance(file_name, IOBase):
+    #     raise TypeError('Expecting input of type: str for argument: file_name')
     if not isinstance(plant_name, str):
         raise TypeError('Expecting input of type: str for argument: plant_name')
     if not isinstance(opened, bool):
