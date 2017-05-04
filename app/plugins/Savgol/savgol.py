@@ -1,21 +1,18 @@
-from scipy.signal import savgol_filter
+from copy import deepcopy
+
 import pandas as pd
-
-# TODO: Add scipy to plugin requirements
-
-
-def sg_filter(dataframe, settings):
-    dataframe_filtered, headers = _filter_df_(dataframe, settings)
-    return dataframe_filtered
+from scipy.signal import savgol_filter
 
 
-def _filter_df_(_dataframe, settings):
-    poly_width, padding_factor = settings
-    __headers = list(_dataframe)
-    arr_new__, _headers = _remove_constants_(_dataframe, __headers)
-    arr_new_ = savgol_filter(arr_new__, poly_width, padding_factor, axis=0)
-    dataframe_new = _arr_to_df_(arr_new_, _headers)
-    return dataframe_new, _headers
+def _arr_to_stream_(filtered_data, timestamps, headers):
+    _stream_ = []
+    _col_ = []
+    for i, v in enumerate(headers):
+        _col_ = [['timestamp', v]]
+        _col_vals_ = list(map(list, list(zip(timestamps, filtered_data[:, i]))))  # This seems too complex, but it works
+        _col_ += _col_vals_
+        _stream_.append(_col_)
+    return _stream_
 
 
 def _remove_constants_(_dataframe, _headers):
@@ -38,3 +35,18 @@ def _arr_to_df_(_arr, _headings):
 
 def _check_constant_(_lst):
     return all(round(x, 6) == round(_lst[0], 6) for x in _lst)
+
+
+def _filter_df_(_initialdf_, config):
+    DF_nostamp = deepcopy(_initialdf_)
+    del DF_nostamp['timestamp']
+    headers = list(DF_nostamp)
+    window_length, polyorder = config
+    arr_noconst, _headers = _remove_constants_(DF_nostamp, headers)
+    filtered_data = savgol_filter(arr_noconst, window_length, polyorder, axis=0)
+    data_stream = _arr_to_stream_(filtered_data, _initialdf_['timestamp'].tolist(), headers)
+    return data_stream
+
+
+def sg_filter(dataframe, config):
+    return _filter_df_(dataframe, config)
