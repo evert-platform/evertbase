@@ -1,4 +1,4 @@
-import copy
+from copy import deepcopy
 
 import numpy as np
 
@@ -128,7 +128,7 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, *
 
 def extract_features(_initialdf_, config):
     features = []
-    DF_nostamp = copy.deepcopy(_initialdf_)
+    DF_nostamp = deepcopy(_initialdf_)
     del DF_nostamp['timestamp']
     headers = list(DF_nostamp)
 
@@ -141,9 +141,9 @@ def extract_features(_initialdf_, config):
                                     feature_value=minmax[j][2], header_name=minmax[j][0])
             features.append(feature)
 
-    _features = []
-    _features += _global_max_(DF_nostamp) + _global_min_(DF_nostamp) + _median_(DF_nostamp) + _mean_(DF_nostamp)
-    for i in _features:
+    _features_ = []
+    _features_ += _global_max_(DF_nostamp) + _global_min_(DF_nostamp) + _median_(DF_nostamp) + _mean_(DF_nostamp)
+    for i in _features_:
         if i[1] == "line":
             feature = _format_data_(feature_name=i[-1],
                                     feature_timestamp=[_initialdf_['timestamp'].iloc[0],
