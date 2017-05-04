@@ -10,4 +10,4 @@ plugin_upload = UploadSet('plugin', ALL)
 configure_uploads(app, plugin_upload)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    app.run()
