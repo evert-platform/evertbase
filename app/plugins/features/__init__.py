@@ -1,14 +1,17 @@
 from flask import Blueprint
 from .tsfresh_mini import extract_features
 from evertcore.plugins import connect_listener, AppPlugin
+import time
 
 __plugin__ = "FeatureExtraction"
 
 features = Blueprint('features', __name__)
 
 
-def run_plugin(data_before, settings):
+def run_plugin(data_before, settings, **kwargs):
+    q = kwargs['q']
     data_after = extract_features(data_before, settings)
+    q.put(data_after)
     return data_after
 
 
