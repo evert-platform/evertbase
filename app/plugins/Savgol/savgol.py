@@ -39,4 +39,12 @@ def _filter_df_(_initialdf_, config):
 
 
 def sg_filter(dataframe, config):
+    """
+    
+    :param dataframe: A pandas.Dataframe containing timestamps as the first column, and timeseries as further columns
+    :param config: A list containing the following configuration variables: window_length(length of window used to fit)
+                                                                            polyorder(The order of the polynomial used
+                                                                            to fit data).
+    :return: A filtered list of lists, in the correct format for Evert to plot.
+    """
     return _filter_df_(dataframe, config)
