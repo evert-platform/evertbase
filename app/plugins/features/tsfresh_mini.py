@@ -127,6 +127,14 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, *
 
 
 def extract_features(_initialdf_, config):
+    """Extracts data features from a set of timeseries data.
+    :param _initialdf_: A pandas.Dataframe containing timestamps as the first column, and timeseries as further columns
+    :param config: Contains the following configuration variables: Threshold(std deviation),
+                                                                   Window Width(Integer, halfwidth excluding centre),
+                                                                   Peak Width(Minimum number of peaks in a Window Width 
+                                                                   for peak to be identified).
+    :return: A list of lists, containing [['timestamp', 'Col:feature_name'], [timestamp, feature_value]]
+    """
     features = []
     DF_nostamp = deepcopy(_initialdf_)
     del DF_nostamp['timestamp']
