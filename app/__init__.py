@@ -1,10 +1,10 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
-from flask_plugins import PluginManager
-from .main.functions import find_plugins
 from evertcore.data import db
+from evertcore.plugins import plugin_manager
 from config import config
 import os
+from evertcore.websockets import socketio
 
 
 def create_app(config_name):
@@ -30,10 +30,10 @@ def create_app(config_name):
         os.mkdir(app.config['USER_PLUGINS'])
 
     # Configuration of flask_plugins extension
-    PluginManager(app)
+    plugin_manager.init_app(app)
 
     # finding user plugins
-    find_plugins(app)
+    # find_plugins(app)
 
     # registering main blueprint
     from .main import main as main_blueprint
@@ -48,5 +48,8 @@ def create_app(config_name):
     with app.app_context():
         db.create_all()
         db.session.commit()
+
+    # creating socket
+    socketio.init_app(app)
 
     return app
