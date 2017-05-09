@@ -21,23 +21,23 @@ def largest_triangle_three_buckets(data, threshold):
     Return a downsampled version of data.
     Parameters
     ----------
-    data: list of lists/tuples
-        data must be formatted this way: [[x,y], [x,y], [x,y], ...]
-                                    or: [(x,y), (x,y), (x,y), ...]
+    data: pd.DataFrame
+            DataFrame that must be downsampled
+    
     threshold: int
-        threshold must be >= 2 and <= to the len of data
+        threshold must be >= 2. A Threshold of 0 will disable the downsampling.
     Returns
     -------
-    data, but downsampled using threshold
+    sampled: pd.DataFrame
+            Downsampled DataFrame
     """
 
+    if not isinstance(data, pd.DataFrame):
+        raise TypeError('Input of type: pandas.DataFrame expected for argument: data, got {} instead'.format(type(data)))
     if not isinstance(threshold, int) or (0 < threshold <= 2):
         raise LttbException("threshold not well defined")
 
-    if threshold == 0:
-        return data
-
-    if threshold >= len(data):
+    if threshold == 0 or threshold >= len(data):
         return data
 
     else:
@@ -125,6 +125,8 @@ class Fig:
         ----------
         data: pd.DataFrame
              Plotting data.
+        threshold: int
+                    Maximum number of data points to be returned, Default is 0 this disables the downsampling.
 
         Returns
         -------
