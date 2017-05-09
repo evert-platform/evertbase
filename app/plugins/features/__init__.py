@@ -1,7 +1,12 @@
 from flask import Blueprint
 from .tsfresh_mini import extract_features
 from evertcore.plugins import connect_listener, AppPlugin
+from evertcore.websockets import socketio
 import time
+from flask_socketio import SocketIO
+
+# s = SocketIO(message_broker='amqp://guest:guest@localhost:5672//')
+# socketio = SocketIO(message_queue='amqp://guest:guest@localhost:5672//')
 
 __plugin__ = "FeatureExtraction"
 
@@ -9,9 +14,9 @@ features = Blueprint('features', __name__)
 
 
 def run_plugin(data_before, settings, **kwargs):
-    q = kwargs['q']
+    print('event_run')
     data_after = extract_features(data_before, settings)
-    q.put(data_after)
+    socketio.emit('connected', {'data': 'plugin data'}, namespace='/test')
     return data_after
 
 
@@ -21,6 +26,7 @@ class FeatureExtraction(AppPlugin):
         self.register_blueprint(features)
         # There should be a connect event here, I'm unsure how Neill wants this.
         connect_listener("data_upload", run_plugin)
+        connect_listener('zoom_event', run_plugin)
 
         # with open("config.txt") as file:
         #     for line in file:
