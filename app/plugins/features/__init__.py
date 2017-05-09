@@ -2,11 +2,7 @@ from flask import Blueprint
 from .tsfresh_mini import extract_features
 from evertcore.plugins import connect_listener, AppPlugin
 from evertcore.websockets import socketio
-import time
-from flask_socketio import SocketIO
 
-# s = SocketIO(message_broker='amqp://guest:guest@localhost:5672//')
-# socketio = SocketIO(message_queue='amqp://guest:guest@localhost:5672//')
 
 __plugin__ = "FeatureExtraction"
 
