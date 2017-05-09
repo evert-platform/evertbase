@@ -1,6 +1,6 @@
 from flask_socketio import emit, SocketIO
 
-socketio = SocketIO()
+socketio = SocketIO(message_queue='amqp://guest:guest@localhost:5672//')
 
 
 @socketio.on('connect', namespace='/test')
