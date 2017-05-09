@@ -1,4 +1,4 @@
-import pandas
+import pandas as pd
 import json
 import datetime
 import numpy as np
@@ -116,6 +116,7 @@ class Fig:
     def __init__(self):
         self.data = None
         self.datamap = dict()
+        self.dataFrame = pd.DataFrame()
 
     def prepare_data(self, data, threshold=0):
         """
@@ -131,6 +132,7 @@ class Fig:
 
         """
         data = largest_triangle_three_buckets(data, threshold)
+        self.dataFrame = data
         _data = data.values.tolist()
         _columns = data.columns.values
         self.data = [list(_columns)] + _data
