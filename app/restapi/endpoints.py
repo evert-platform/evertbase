@@ -14,9 +14,8 @@ def _plotdata():
     tags = request.args.getlist('tags[]')
     tag_data = evert.data.tag_data(tags)
     fig = evert.plotting.Fig()
-    fig.prepare_data(tag_data)
+    fig.prepare_data(tag_data, 200)
     data, _ = fig.return_data()
-
     return jsonify(success=True, data=data)
 
 
@@ -291,7 +290,7 @@ def _daterange():
 
     tag_data = evert.data.tag_data(tags, datetime.fromtimestamp(domain[0]), datetime.fromtimestamp(domain[1]))
     fig = evert.plotting.Fig()
-    fig.prepare_data(tag_data)
+    fig.prepare_data(tag_data, threshold=500)
     data, datamap = fig.return_data()
 
     return jsonify(success=True, data=data, datamap=datamap)
