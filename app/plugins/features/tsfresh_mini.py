@@ -1,45 +1,13 @@
+from copy import deepcopy
+
 import numpy as np
-import copy
-
-# TODO: Rename and refactor variables to use proper names
-# TODO: Remove commented functions after testing that this library still works as it must
-
-#
-# def _check_constant_(_lst):
-#     return all(round(x, 6) == round(_lst[0], 6) for x in _lst)
-#
-#
-# def _remove_constants_(_dataframe, _headers):
-#     for i, h in enumerate(_headers):
-#         _lst = _dataframe[h].as_matrix()
-#         if _check_constant_(_lst):
-#             del _dataframe[h]
-#             del _headers[i]
-#     return _dataframe, _headers
-#
-#
-# def _filter_df_(_dataframe):
-#     __headers = list(_dataframe)
-#     arr_new__, _headers = _remove_constants_(_dataframe, __headers)
-#     arr_new_ = savgol_filter(arr_new__, 11, 1, axis=0)
-#     dataframe_new = _arr_to_df_(arr_new_, _headers)
-#     return dataframe_new, _headers
-#
-#
-# def _arr_to_df_(_arr, _headings):
-#     dfdict = {}
-#     for i, h in enumerate(_headings):
-#         dfdict[h] = _arr[:, i]
-#     # dfdict = dict(zip(headings, arr)) found this method, but having issues slicing arr in one liner
-#     DF = pd.DataFrame(dfdict)
-#     return DF
 
 
-def _global_min_(_dataframe):
+def _global_min_(DF):
     points = []
-    headers = list(_dataframe)
-    min_vals = _dataframe.min()
-    min_index = _dataframe.idxmin(0)
+    headers = list(DF)
+    min_vals = DF.min()
+    min_index = DF.idxmin(0)
 
     for i, h in enumerate(headers):
         points.append([h, min_index[h], min_vals[h], 'Global Minimum'])
@@ -47,11 +15,11 @@ def _global_min_(_dataframe):
     return points
 
 
-def _global_max_(_dataframe):
+def _global_max_(DF):
     points = []
-    headers = list(_dataframe)
-    max_vals = _dataframe.max()
-    max_index = _dataframe.idxmax(0)
+    headers = list(DF)
+    max_vals = DF.max()
+    max_index = DF.idxmax(0)
 
     for i, h in enumerate(headers):
         points.append([h, max_index[h], max_vals[h], 'Global Maximum'])
@@ -59,19 +27,19 @@ def _global_max_(_dataframe):
     return points
 
 
-def filter_peaks(_lst, peak_width, width):
+def _filter_peaks_(list_of_peaks, peak_width, width):
     lst = []
     features = []
     _container_ = []
 
-    for i, v in enumerate(_lst):
+    for i, v in enumerate(list_of_peaks):
 
         if i == 0:
             _container_.append(v)
 
         if i > 0:
 
-            if _lst[i][0] - _lst[i - 1][0] < width:
+            if list_of_peaks[i][0] - list_of_peaks[i - 1][0] < width:
                 _container_.append(v)
 
             else:
@@ -96,74 +64,104 @@ def filter_peaks(_lst, peak_width, width):
     return features
 
 
-def moving_filter(__vals, config):
-    _threshold, width, peak_width = config
-    lst = []
+def _moving_filter_(vals, config):
+    threshold, width, peak_width = config
+    _lst_ = []
 
-    for i, v in enumerate(__vals):
-        if width <= i <= len(__vals) - width:
-            scope = __vals[i - width: i + width]
+    for i, v in enumerate(vals):
+        if width <= i <= len(vals) - width:
+            scope = vals[i - width: i + width]
 
             std_dev = np.std(scope)
             avg = sum(scope) / len(scope)
 
             if v > scope[0] and v > scope[-1]:
 
-                if v > avg + std_dev * _threshold:
-                    lst.append([i, v, 'max'])
+                if v > avg + std_dev * threshold:
+                    _lst_.append([i, v, 'max'])
 
             elif v < scope[0] and v < scope[-1]:
 
-                if v < avg - std_dev * _threshold:
-                    lst.append([i, v, 'min'])
+                if v < avg - std_dev * threshold:
+                    _lst_.append([i, v, 'min'])
 
-    _lst = filter_peaks(lst, peak_width, width)
-    return _lst
+    lst = _filter_peaks_(_lst_, peak_width, width)
+
+    return lst
 
 
-def _median_(_dataframe):
+def _median_(dataframe):
     points = []
-    headers = list(_dataframe)
-    median_vals = _dataframe.median()
+    headers = list(dataframe)
+    median_vals = dataframe.median()
     for i, h in enumerate(headers):
         points.append([h, 'line', median_vals[h], 'Median'])
+
     return points
 
 
-def _mean_(_dataframe):
+def _mean_(dataframe):
     points = []
-    headers = list(_dataframe)
-    mean_vals = _dataframe.mean()
+    headers = list(dataframe)
+    mean_vals = dataframe.mean()
     for i, h in enumerate(headers):
         points.append([h, 'line', mean_vals[h], 'Mean'])
+
     return points
 
 
-def extract_features(__dataframe, config):
-    tindex = [i for i in range(len(__dataframe))]
-    features = []
-    headers = list(__dataframe)
-    DF_nostamp = copy.copy(__dataframe)
-    del DF_nostamp[headers[0]]
-    del (headers[0])
+def _format_data_(header_name, feature_name, feature_timestamp, feature_value, **kwargs):
+    # This should create appropriate lists in the shape of [['timestamp', 'header_name:feature_name'],
+    #                                                       [timestamp, feature_value]]
+    # which is appropriate for Evert.
 
+    if 'line' in kwargs:
+        lst = [['timestamp', '{}:{}'.format(header_name, feature_name)],
+               [feature_timestamp[0], feature_value],
+               [feature_timestamp[1], feature_value]]
+    else:
+        lst = [['timestamp', '{}:{}'.format(header_name, feature_name)],
+               [feature_timestamp, feature_value]]
+
+    return lst
+
+
+def extract_features(_initialdf_, config):
     """
-    I might have to add a function to remove the timestamp from data,
-    since it could be the case that it is parsed through from Evert.
-    This is quick and easy (and essentially done above).
-    
-    Also, this library assumes a continuous dataframe is given as input.
+    Extracts data features from a set of timeseries data.
+    :param _initialdf_: A pandas.Dataframe containing timestamps as the first column, and timeseries as further columns
+    :param config: A list containing the following configuration variables: Threshold(std deviation),
+                                                                   Window Width(Integer, halfwidth excluding centre),
+                                                                   Peak Width(Minimum number of peaks in a Window Width 
+                                                                   for peak to be identified).
+    :return: A list of lists, containing [['timestamp', 'Col:feature_name'], [timestamp, feature_value]]
     """
+    features = []
+    DF_nostamp = deepcopy(_initialdf_)
+    del DF_nostamp['timestamp']
+    headers = list(DF_nostamp)
 
     for i in headers:
-        minmax = moving_filter(__dataframe[i].as_matrix().tolist(), config)
+        minmax = _moving_filter_(_initialdf_[i].as_matrix().tolist(), config)
         for j in range(len(minmax)):
             minmax[j].insert(0, i)
-        features += minmax
+            feature = _format_data_(feature_name=minmax[j][-1],
+                                    feature_timestamp=_initialdf_['timestamp'].iloc[int(minmax[j][1])],
+                                    feature_value=minmax[j][2], header_name=minmax[j][0])
+            features.append(feature)
 
-    features += _global_max_(__dataframe)
-    features += _global_min_(__dataframe)
-    features += _median_(__dataframe)
-    features += _mean_(__dataframe)
+    _features_ = []
+    _features_ += _global_max_(DF_nostamp) + _global_min_(DF_nostamp) + _median_(DF_nostamp) + _mean_(DF_nostamp)
+    for i in _features_:
+        if i[1] == "line":
+            feature = _format_data_(feature_name=i[-1],
+                                    feature_timestamp=[_initialdf_['timestamp'].iloc[0],
+                                                       _initialdf_['timestamp'].iloc[-1]],
+                                    feature_value=i[2], header_name=i[0], line=True)
+        else:
+            feature = _format_data_(feature_name=i[-1],
+                                    feature_timestamp=_initialdf_['timestamp'].iloc[int(i[1])],
+                                    feature_value=i[2], header_name=i[0])
+        features.append(feature)
 
-    return features, headers, tindex
+    return features

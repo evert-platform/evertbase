@@ -1,2 +1,0 @@
-poly_width == 11
-padding_factor == 1
