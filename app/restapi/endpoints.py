@@ -16,6 +16,8 @@ def _plotdata():
     fig = evert.plotting.Fig()
     fig.prepare_data(tag_data, 200)
     data, _ = fig.return_data()
+    evert.plugins.emit_event('zoom_event', fig.dataFrame)
+
     return jsonify(success=True, data=data)
 
 
