@@ -1,11 +1,10 @@
 from flask import Blueprint
 from .tsfresh_mini import extract_features
 from evertcore.plugins import connect_listener, AppPlugin
-import time
 import pandas as pd
 import configparser
 from evertcore.websockets import socketio
-import os
+
 
 __plugin__ = "FeatureExtraction"
 
@@ -22,9 +21,7 @@ def get_config():
 
 def run_plugin(data_before, **kwargs):
     print('event_emitted')
-    a = os.path.curdir
     settings = [0.3, 3, 50]
-    socketio.emit('connected', {'msg': a}, namespace='/test')
     if isinstance(data_before, pd.DataFrame) and isinstance(settings, list):
         data_after = extract_features(data_before, settings)
     else:
