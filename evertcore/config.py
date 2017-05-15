@@ -1,12 +1,11 @@
 import os
 
 
-# Defualt configuration
 class BaseConfig:
     DEBUG = False
     TESTING = False
     SECRET_KEY = 'hard to guess string'
-    BASE_DIR = os.path.dirname(__file__)
+    BASE_DIR = os.path.join(os.path.dirname(__file__), '..')
     STATIC_DIR = os.path.join(BASE_DIR, 'app/static')
     DB_PATH = os.path.join(STATIC_DIR, 'uploads/EvertStore.db')
     SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(DB_PATH)
@@ -28,7 +27,7 @@ class TestingConfig(BaseConfig):
 
 
 config = {
-    "development": "config.DevelopmentConfig",
-    "testing": "config.TestingConfig",
-    "default": "config.BaseConfig"
+    "development": "evertcore.config.DevelopmentConfig",
+    "testing": "evertcore.config.TestingConfig",
+    "default": "evertcore.config.BaseConfig"
 }
