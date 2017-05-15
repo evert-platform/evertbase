@@ -83,8 +83,6 @@ def register_plugin_settings(plugin_name, config_path):
 
     """
 
-
-
     app = current_app
     evert_config = configparser.RawConfigParser()
     plugin_config = configparser.ConfigParser()
@@ -96,7 +94,7 @@ def register_plugin_settings(plugin_name, config_path):
     if plugin_name not in evert_config.sections():
         evert_config[plugin_name] = dict(plugin_settings)
 
-        with open(os.path.join(app.config["CONFIG_INI"], 'config.ini'), 'a') as configfile:
+        with open(os.path.join(app.config["CONFIG_INI"], 'config.ini'), 'w') as configfile:
             evert_config.write(configfile)
 
 
