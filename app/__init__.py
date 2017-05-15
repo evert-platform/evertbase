@@ -1,11 +1,14 @@
+import os
+import shutil
+
 from flask import Flask
 from flask_bootstrap import Bootstrap
+
+from evertcore.config import config
+from evertcore.custom import sync_plugin_folder
 from evertcore.data import db
 from evertcore.plugins import plugin_manager
-from config import config
-import os
 from evertcore.websockets import socketio
-from evertcore.custom import sync_plugin_folder
 
 
 def create_app(config_name):
@@ -14,6 +17,11 @@ def create_app(config_name):
     :return: Flask application instance
     """
     app = Flask(__name__)
+
+    # checking if evert config folder exists
+    if not os.path.isdir(os.path.join(os.path.expanduser('~'), '.evert')):
+        os.mkdir(os.path.join(os.path.expanduser('~'), '.evert'))
+        shutil.copyfile('config.ini', os.path.expanduser('~/.evert/config.ini'))
 
     # loading configuration based on given config name
     app.config.from_object(config[config_name])
