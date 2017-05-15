@@ -2,10 +2,8 @@ from flask import Blueprint
 from .tsfresh_mini import extract_features
 from evertcore.plugins import connect_listener, AppPlugin
 import pandas as pd
-import configparser
 from evertcore.websockets import socketio
 from evertcore.plugins import register_plugin_settings
-import os
 import configparser
 
 __plugin__ = "FeatureExtraction"
