@@ -3,6 +3,9 @@ from .savgol import sg_filter
 from evertcore.plugins import connect_listener, AppPlugin
 import pandas as pd
 import configparser
+from evertcore.plugins import register_plugin_settings
+
+
 __plugin__ = "SavgolFilter"
 
 savgol = Blueprint('savgol', __name__)
@@ -28,4 +31,5 @@ class SavgolFilter(AppPlugin):
 
     def setup(self):
         self.register_blueprint(savgol)
+        register_plugin_settings(__plugin__, 'Savgol/config.ini')
         connect_listener('data_upload', run_plugin)
