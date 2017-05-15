@@ -1,7 +1,8 @@
 from flask_plugins import connect_event as _connect_event, iter_listeners as _iter_listeners, Plugin, PluginManager
 from multiprocessing import Process
 from flask import current_app
-
+import configparser
+import os
 _plugin_events = ['data_upload', 'zoom_event']
 plugin_manager = PluginManager()
 
@@ -63,6 +64,41 @@ def emit_event(event_name, *args, **kwargs):
     plugin_processes = [Process(target=process, args=args, kwargs=kwargs).start() for process in listeners]
 
     return
+
+
+def register_plugin_settings(plugin_name, config_path):
+    """
+    Registers the plugin config with the default Evert config. Any changes that are made to these settings
+    in Evert will not be updated in the plugins local config file.
+    
+    Parameters
+    ----------
+    plugin_name: str
+                Name of the plugin, Use the '__plugin__' variable.
+    config_path: str
+                File path to the plugin's config file relative to the plugins folder.
+
+    Returns
+    -------
+
+    """
+
+
+
+    app = current_app
+    evert_config = configparser.RawConfigParser()
+    plugin_config = configparser.ConfigParser()
+    evert_config.read(app.config['CONFIG_INI'])
+    local_read__path = os.path.join(app.config["UPLOADED_PLUGIN_DEST"], config_path)
+    plugin_config.read(local_read__path)
+    plugin_settings = plugin_config['DEFAULT']
+
+    if plugin_name not in evert_config.sections():
+        evert_config[plugin_name] = dict(plugin_settings)
+
+        with open(os.path.join(app.config["CONFIG_INI"], 'config.ini'), 'w') as configfile:
+            evert_config.write(configfile)
+
 
 
 
