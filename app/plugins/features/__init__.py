@@ -4,7 +4,9 @@ from evertcore.plugins import connect_listener, AppPlugin
 import pandas as pd
 import configparser
 from evertcore.websockets import socketio
-
+from evertcore.plugins import register_plugin_settings
+import os
+import configparser
 
 __plugin__ = "FeatureExtraction"
 
@@ -35,4 +37,5 @@ class FeatureExtraction(AppPlugin):
 
     def setup(self):
         self.register_blueprint(features)
+        register_plugin_settings(__plugin__, 'features/config.ini')
         connect_listener("zoom_event", run_plugin)
