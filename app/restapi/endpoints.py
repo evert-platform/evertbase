@@ -15,8 +15,10 @@ def _plotdata():
     tag_data = evert.data.tag_data(tags)
     fig = evert.plotting.Fig()
     fig.prepare_data(tag_data, 200)
-    data, _ = fig.return_data()
-    return jsonify(success=True, data=data)
+    data, datamap = fig.return_data()
+    evert.plugins.emit_event('zoom_event', fig.dataFrame)
+
+    return jsonify(success=True, data=data, datamap=datamap)
 
 
 # this functions enables the plugin selected in the enable plugin select element on the plugins page

@@ -13,7 +13,7 @@ def convert_to_timestamp(x):
 
 
 def convert_to_datetime(x):
-    return datetime.datetime.fromtimestamp(x)
+    return datetime.datetime.fromtimestamp(x).strftime('%Y-%m-%d %H:%M:%S')
 
 
 def largest_triangle_three_buckets(data, threshold):
@@ -116,6 +116,7 @@ class Fig:
     def __init__(self):
         self.data = None
         self.datamap = dict()
+        self.dataFrame = pd.DataFrame()
 
     def prepare_data(self, data, threshold=0):
         """
@@ -123,7 +124,7 @@ class Fig:
         
         Parameters
         ----------
-        data: pd.DataFrame
+        data: pandas.DataFrame
              Plotting data.
         threshold: int
                     Maximum number of data points to be returned, Default is 0 this disables the downsampling.
@@ -133,6 +134,8 @@ class Fig:
 
         """
         data = largest_triangle_three_buckets(data, threshold)
+        data.timestamp
+        self.dataFrame = data
         _data = data.values.tolist()
         _columns = data.columns.values
         self.data = [list(_columns)] + _data

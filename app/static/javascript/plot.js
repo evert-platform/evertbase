@@ -10,8 +10,11 @@ $(document).ready(function () {
                 socket.emit('connected', {msg: 'next'})
             });
 
-    socket.on('connected', function(msg){
-        console.log(msg)
+    socket.on('connected', function(data){
+        for (var i=0; i<data.msg.length; i++){
+            console.log(data.msg[i])
+        }
+
     })
 });
 
@@ -106,7 +109,6 @@ var UIController = (function () {
         },
         // rendering of plot data
         updatePlot: function (data) {
-            // TODO: Not working for all types of time formats
             var plot_data = data.data;
             var headers = plot_data.shift();
 

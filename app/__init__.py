@@ -5,6 +5,7 @@ from evertcore.plugins import plugin_manager
 from config import config
 import os
 from evertcore.websockets import socketio
+from evertcore.custom import sync_plugin_folder
 
 
 def create_app(config_name):
@@ -33,7 +34,7 @@ def create_app(config_name):
     plugin_manager.init_app(app)
 
     # finding user plugins
-    # find_plugins(app)
+    sync_plugin_folder(app)
 
     # registering main blueprint
     from .main import main as main_blueprint
