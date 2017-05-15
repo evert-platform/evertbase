@@ -18,13 +18,13 @@ def create_app(config_name):
     """
     app = Flask(__name__)
 
-    # checking if evert config folder exists
-    if not os.path.isdir(os.path.join(os.path.expanduser('~'), '.evert')):
-        os.mkdir(os.path.join(os.path.expanduser('~'), '.evert'))
-        shutil.copyfile('config.ini', os.path.expanduser('~/.evert/config.ini'))
-
     # loading configuration based on given config name
     app.config.from_object(config[config_name])
+
+    # checking if evert config folder exists
+    if not os.path.isdir(app.config['CONFIG_INI']):
+        os.mkdir(app.config['CONFIG_INI'])
+        shutil.copyfile('config.ini', os.path.join(app.config['CONFIG_INI'], 'config.ini'))
 
     # initiating Flask bootstrap styling
     bootstrap = Bootstrap()
