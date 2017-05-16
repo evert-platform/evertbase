@@ -1,6 +1,6 @@
 from copy import deepcopy
-
 from scipy.signal import savgol_filter
+import pandas as pd
 
 
 def _arr_to_stream_(filtered_data, timestamps, headers):
@@ -31,7 +31,9 @@ def _filter_df_(_initialdf_, config):
     DF_nostamp = deepcopy(_initialdf_)
     del DF_nostamp['timestamp']
     headers = list(DF_nostamp)
-    window_length, polyorder = config
+    # setting up config
+    window_length = config['window_length']
+    polyorder = config['polyorder']
     arr_noconst, _headers = _remove_constants_(DF_nostamp, headers)
     filtered_data = savgol_filter(arr_noconst, window_length, polyorder, axis=0)
     data_stream = _arr_to_stream_(filtered_data, _initialdf_['timestamp'].tolist(), headers)
@@ -47,4 +49,12 @@ def sg_filter(dataframe, config):
                                                                             to fit data).
     :return: A filtered list of lists, in the correct format for Evert to plot.
     """
+
+    if not isinstance(dataframe, pd.DataFrame):
+        raise TypeError('Expected input of type: pandas.DataFrame for argument: dataframe, instead got: {}'.format(
+            type(dataframe)
+        ))
+    if not isinstance(config, dict):
+        raise TypeError('Expected input of type: dict for argument: config, instead got: {}'.format(type(config)))
+
     return _filter_df_(dataframe, config)
