@@ -83,21 +83,52 @@ def register_plugin_settings(plugin_name, config_path):
 
     """
 
-    app = current_app
     evert_config = configparser.ConfigParser()
     plugin_config = configparser.ConfigParser()
-    evert_config.read(app.config['CONFIG_INI_FILE'])
-    local_read__path = os.path.join(app.config["UPLOADED_PLUGIN_DEST"], config_path)
+    evert_config.read(current_app.config['CONFIG_INI_FILE'])
+    local_read__path = os.path.join(current_app.config["UPLOADED_PLUGIN_DEST"], config_path)
     plugin_config.read(local_read__path)
     plugin_settings = plugin_config['DEFAULT']
 
     if plugin_name not in evert_config.sections():
         evert_config[plugin_name] = dict(plugin_settings)
 
-        with open(os.path.join(app.config["CONFIG_INI_FILE"]), 'w') as configfile:
+        with open(os.path.join(current_app.config["CONFIG_INI_FILE"]), 'w') as configfile:
             evert_config.write(configfile)
 
 
+def get_plugin_settings(plugin_name):
+    """
+    Gets the setting for the plugin from the central config file
+    
+    Parameters
+    ----------
+    plugin_name: str
+                Name of the plugin. Use the sam name as used to register plugin settings.
 
+    Returns
+    -------
+    plugin_settings: dict
+                    Key value pairs of plugin settings
+
+    """
+
+    if not isinstance(plugin_name, str):
+        raise TypeError('Input of type: str expected for argument: plugin_name, instead got {}'.format(type(plugin_name)))
+
+    plugin_config = configparser.ConfigParser()
+    plugin_config.read(os.path.expanduser('~/.evert/config.ini'))
+
+    config = dict(plugin_config[plugin_name])
+    for key, value in config.items():   # converting values to numbers
+        try:
+            config[key] = int(value)    # checking if value can be converted to int
+        except ValueError:              # If not try float
+            try:
+                config[key] = float(value)  # checking if value can be converted to float
+            except ValueError:              # If not value should probably be a string therefore continue to next item
+                continue                    # in the dict
+
+    return config
 
 
