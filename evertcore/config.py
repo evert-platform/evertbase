@@ -12,7 +12,8 @@ class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOADED_PLUGIN_DEST = os.path.join(BASE_DIR, 'app/plugins')
     USER_PLUGINS = os.path.join(os.path.expanduser('~/Documents'), 'Evert Plugins')
-    CONFIG_INI = os.path.expanduser('~/.evert')
+    CONFIG_INI_FOLDER = os.path.expanduser('~/.evert')
+    CONFIG_INI_FILE = os.path.join(CONFIG_INI_FOLDER, 'config.ini')
 
 
 # configuration for developing
