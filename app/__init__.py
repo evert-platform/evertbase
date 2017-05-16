@@ -22,9 +22,9 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
 
     # checking if evert config folder exists
-    if not os.path.isdir(app.config['CONFIG_INI']):
-        os.mkdir(app.config['CONFIG_INI'])
-        shutil.copyfile('config.ini', os.path.join(app.config['CONFIG_INI'], 'config.ini'))
+    if not os.path.isdir(app.config['CONFIG_INI_FOLDER']):
+        os.mkdir(app.config['CONFIG_INI_FOLDER'])
+        shutil.copyfile('config.ini', os.path.join(app.config['CONFIG_INI_FILE']))
 
     # initiating Flask bootstrap styling
     bootstrap = Bootstrap()
