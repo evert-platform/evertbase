@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 import numpy as np
+import pandas as pd
 
 
 def _global_min_(DF):
@@ -65,27 +66,29 @@ def _filter_peaks_(list_of_peaks, peak_width, width):
 
 
 def _moving_filter_(vals, config):
-    threshold, width, peak_width = config
+    std_threshold = config['std_threshold']
+    scope_width = config['scope_width']
+    peak_width = config['peak_width']
     _lst_ = []
 
     for i, v in enumerate(vals):
-        if width <= i <= len(vals) - width:
-            scope = vals[i - width: i + width]
+        if scope_width <= i <= len(vals) - scope_width:
+            scope = vals[i - scope_width: i + scope_width]
 
             std_dev = np.std(scope)
             avg = sum(scope) / len(scope)
 
             if v > scope[0] and v > scope[-1]:
 
-                if v > avg + std_dev * threshold:
+                if v > avg + std_dev * std_threshold:
                     _lst_.append([i, v, 'max'])
 
             elif v < scope[0] and v < scope[-1]:
 
-                if v < avg - std_dev * threshold:
+                if v < avg - std_dev * std_threshold:
                     _lst_.append([i, v, 'min'])
 
-    lst = _filter_peaks_(_lst_, peak_width, width)
+    lst = _filter_peaks_(_lst_, peak_width, scope_width)
 
     return lst
 
@@ -136,6 +139,13 @@ def extract_features(_initialdf_, config):
                                                                    for peak to be identified).
     :return: A list of lists, containing [['timestamp', 'Col:feature_name'], [timestamp, feature_value]]
     """
+    if not isinstance(_initialdf_, pd.DataFrame):
+        raise TypeError('Expected input of type: pandas.DataFrame for argument: _initialdf_, instead got: {}'.format(
+            type(_initialdf_)
+        ))
+    if not isinstance(config, dict):
+        raise TypeError('Expected input of type: dict for argument: config, instead got: {}'.format(type(config)))
+
     features = []
     DF_nostamp = deepcopy(_initialdf_)
     del DF_nostamp['timestamp']
