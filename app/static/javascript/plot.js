@@ -107,8 +107,33 @@ var UIController = (function () {
             $unitselect.trigger('chosen:updated');
             $tags.trigger('chosen:updated');
         },
-        // rendering of plot data
-        updatePlot: function (data) {
+
+        // update tags select element
+        updateTags: function(data) {
+            var $plotTags = $(DOMStrings.tags);
+            if (data.unittags){
+                updateSelect($plotTags, data.unittags)
+            } else {
+                updateSelect($plotTags, data.alltags)
+            }
+
+        },
+        // delete plot from plot area
+        deletePlot: function(){
+        chart = chart.destroy()
+        }
+    }
+})();
+
+// controller to handle plotting logic
+var plotController = (function() {
+    var DOMStrings, chart;
+
+    DOMStrings = dataController.getDOMStrings();
+
+    return {
+         // rendering of plot data
+        createPlot: function (data) {
             var plot_data = data.data;
             var headers = plot_data.shift();
 
@@ -219,20 +244,6 @@ var UIController = (function () {
                     right: 50
                 }
             });
-        },
-        // update tags select element
-        updateTags: function(data) {
-            var $plotTags = $(DOMStrings.tags);
-            if (data.unittags){
-                updateSelect($plotTags, data.unittags)
-            } else {
-                updateSelect($plotTags, data.alltags)
-            }
-
-        },
-        // delete plot from plot area
-        deletePlot: function(){
-        chart = chart.destroy()
         }
     }
 })();
@@ -247,7 +258,7 @@ var controller = (function () {
     var setupEventListners = function(){
         // Event listener for plot button
         $(DOMStrings.submitBtn).on('click', function () {
-            dataController.getJSONData('/_plotdata', UIController.updatePlot)});
+            dataController.getJSONData('/_plotdata', plotController.createPlot)});
 
 
         // Event listener for when units are selected (updates tags)
