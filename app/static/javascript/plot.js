@@ -107,16 +107,132 @@ var UIController = (function () {
             $unitselect.trigger('chosen:updated');
             $tags.trigger('chosen:updated');
         },
+        // rendering of plot data
+        updatePlot: function (data) {
+            var plot_data = data.data;
+            var headers = plot_data.shift();
+
+            plot_data.map(function (d) {
+                d[0] = new Date(d[0]);
+
+                return d
+            });
+
+            var timeFormat = dataController.timeFormat([plot_data[1][0], plot_data.slice(-1)[0][0]]);
+            plot_data = [headers].concat(plot_data);
+
+            chart = c3.generate({
+                bindto: '#plot',
+                transition:{
+                    duration: null
+                },
+                data: {
+                    x: 'timestamp',
+                    rows: plot_data,
+                    selection:{
+                        enabled: true,
+                        multiple: true,
+                        draggable:true
+                    }
+                },
+                axis: {
+                    x: {
+                        type: 'timeseries',
+                        localtime: true,
+                        tick:{
+                            count: 40,
+                            format: timeFormat,
+                            fit: false,
+                            culling: {
+                                max: 20
+                            },
+                            multiline: true,
+                            width: 50,
+                            padding:{
+                                bottom: 20
+                            }
+                        }
+                    },
+                    y: {
+                        tick:{
+                            format: d3.format('.2f')
+                            }
+                        }
+                    },
+                zoom:{
+                    enabled:true,
+                    onzoomend: function(domain){
+                        var d = domain;
+
+                        $.getJSON('/_daterange',{
+                            ids: $(DOMStrings.tags).val(),
+                            domain: [d[0].getTime(), d[1].getTime()]
+                        }, function (data) {
+
+                            var plot_data = data.data;
+                            var headers = plot_data.shift();
+
+                            plot_data.map(function (d) {
+                                d[0] = new Date(d[0]);
+
+                                return d
+                            });
+                            var new_data = [headers].concat(plot_data);
+
+                            chart.load({
+                                xs: data.datamap,
+                                rows: new_data
+                            });
+                            chart.zoom([d[0], d[1]])
+
+                        });
+                        var format = dataController.timeFormat(d);
+                        var config = {
+                            axis: {
+                                x: {
+                                    type: 'timeseries',
+                                    tick:{
+                                        count: 40,
+                                        format: format,
+                                        culling:{
+                                            max: 20
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        chart.internal.loadConfig(config);
+                    }
+                },
+                point: {
+                    r:1
+                },
+                tooltip:{
+                    format: {
+                        title: function(d){
+                            var parse = d3.time.format('%Y-%m-%d %H:%M');
+                            return parse(d)}
+                    }
+                },
+                padding:{
+                    left: 50,
+                    right: 50
+                }
+            });
+        },
         // update tags select element
         updateTags: function(data) {
             var $plotTags = $(DOMStrings.tags);
-            console.log(data);
             if (data.unittags){
                 updateSelect($plotTags, data.unittags)
             } else {
                 updateSelect($plotTags, data.alltags)
             }
 
+        },
+        // delete plot from plot area
+        deletePlot: function(){
+        chart = chart.destroy()
         }
     }
 })();
