@@ -3,6 +3,11 @@ from multiprocessing import Process
 from flask import current_app
 import configparser
 import os
+
+from .websockets import socketio
+from .plotting import Features
+
+
 _plugin_events = ['data_upload', 'zoom_event']
 plugin_manager = PluginManager()
 
@@ -131,4 +136,11 @@ def get_plugin_settings(plugin_name):
 
     return config
 
+
+def emit_feature_data(data):
+    feature = Features(data)
+    datamap, data = feature.plot_data()
+    socketio.emit('connected', {'data': data, 'datamap': datamap}, namespace='/test')
+
+    return
 
