@@ -28,7 +28,7 @@ def folder_sync(source, target, two_way=True, inverse=False, exclude_patterns=No
 
     """
 
-    _exclude_patterns = ['__pycache__*', '.idea']
+    _exclude_patterns = ['__pycache__*', '.idea', 'DISABLED']
     if exclude_patterns:
         if not isinstance(exclude_patterns, list):
             raise TypeError('Input of type: list expected for argument: exclude_patterns, instead got {}'.format(
