@@ -134,7 +134,6 @@ class Fig:
 
         """
         data = largest_triangle_three_buckets(data, threshold)
-        data.timestamp
         self.dataFrame = data
         _data = data.values.tolist()
         _columns = data.columns.values
@@ -151,4 +150,56 @@ class Fig:
     def __repr__(self, *args, **kwargs):
         return json.dumps({"data": self.data, "datamap": self.datamap})
 
+
+class Features:
+    """
+    Class for adding data features to a plot
+    """
+
+    def __init__(self, data):
+        """
+        
+        Parameters
+        ----------
+        data: list
+            The data must be in the following format.
+            For points:
+                [[['timestamp', 'Tagname: Name of feature'], [timestamp, feature_value]], ...]
+            
+            For Lines:
+            [[['timestamp', 'Tagname: Name of feature'], [timestamp_start, feature_value],
+                                                         [timestamp_end, feature_value]], ...]          
+            
+        """
+        self.data = data
+        self.datamap = self.create_datamap()
+
+    def create_datamap(self):
+        """
+        Maps data x-labels to y-labels.
+        
+        Returns
+        -------
+        
+        _map: list[dict]
+              List of dictionaries
+
+        """
+        _map = []
+        for _data in self.data:
+            _dict = dict()
+            x_name, y_name = _data[0]
+            _dict[y_name] = x_name
+            _map.append(_dict)
+
+        return _map
+
+    def plot_data(self):
+        """
+        
+        Returns
+        -------
+            datamap: list, data: list
+        """
+        return self.datamap, self.data
 
