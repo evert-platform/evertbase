@@ -2,8 +2,8 @@ from flask import Blueprint
 from .tsfresh_mini import extract_features
 from evertcore.plugins import connect_listener, AppPlugin
 import pandas as pd
-from evertcore.websockets import socketio
 from evertcore.plugins import register_plugin_settings, get_plugin_settings
+from evertcore.plugins import emit_plugin_data
 
 __plugin__ = "FeatureExtraction"
 
@@ -19,7 +19,7 @@ def run_plugin(data_before):
                         format(type(data_before)))
 
     data_after = extract_features(data_before, settings)
-    socketio.emit('connected', {'msg': data_after}, namespace='/test')
+    emit_plugin_data(data_after)
     return data_after
 
 
