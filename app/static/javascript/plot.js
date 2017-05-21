@@ -237,9 +237,41 @@ var plotController = (function() {
         },
 
         uploadFeaturesData: function (data) {
-             for (var i=0; i<data.msg.length; i++) {
-                console.log(data.msg[i])
+            var _data = data.data;
+            var _datamap = data.datamap;
+             _data.map(function (d) {
+                 for (var i=1; i<d.length; i++){
+                     d[i][0] = new Date(d[i][0]);
+                 }
+                 // d[1][0] = new Date(d[1][0]);
+
+                 return d
+            });
+
+             for (var i=0; i<data.data.length; i++) {
+                chart.load({
+                    xs: _datamap[i],
+                    rows: _data[i]
+                });
              }
+
+            var format = dataController.timeFormat(d);
+            var config = {
+                axis: {
+                    x: {
+                        type: 'timeseries',
+                        tick:{
+                            count: 40,
+                            format: format,
+                            culling:{
+                                max: 20
+                            }
+                        }
+                    }
+                }
+            };
+            chart.internal.loadConfig(config);
+
         },
         // delete plot from plot area
         deletePlot: function() {
