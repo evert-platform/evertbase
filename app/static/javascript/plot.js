@@ -129,6 +129,7 @@ var plotController = (function() {
 
     var zoomendCallback = function(domain){
                         var d = domain;
+                        console.log(chart.domain);
 
                         $.getJSON('/_daterange',{
                             ids: $(DOMStrings.tags).val(),
@@ -254,23 +255,6 @@ var plotController = (function() {
                     rows: _data[i]
                 });
              }
-
-            var format = dataController.timeFormat(d);
-            var config = {
-                axis: {
-                    x: {
-                        type: 'timeseries',
-                        tick:{
-                            count: 40,
-                            format: format,
-                            culling:{
-                                max: 20
-                            }
-                        }
-                    }
-                }
-            };
-            chart.internal.loadConfig(config);
 
         },
         // delete plot from plot area
