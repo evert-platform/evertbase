@@ -11,9 +11,9 @@ $(document).ready(function () {
             });
 
     socket.on('connected', function(data){
-        for (var i=0; i<data.msg.length; i++){
-            console.log(data.msg[i])
-        }
+
+    plotController.uploadFeaturesData(data)
+
 
     })
 });
@@ -117,10 +117,6 @@ var UIController = (function () {
                 updateSelect($plotTags, data.alltags)
             }
 
-        },
-        // delete plot from plot area
-        deletePlot: function(){
-        chart = chart.destroy()
         }
     }
 })();
@@ -172,7 +168,7 @@ var plotController = (function() {
                             }
                         };
                         chart.internal.loadConfig(config);
-                    }
+                    };
 
     return {
          // rendering of plot data
@@ -196,12 +192,7 @@ var plotController = (function() {
                 },
                 data: {
                     x: 'timestamp',
-                    rows: plot_data,
-                    selection:{
-                        enabled: true,
-                        multiple: true,
-                        draggable:true
-                    }
+                    rows: plot_data
                 },
                 axis: {
                     x: {
@@ -231,21 +222,28 @@ var plotController = (function() {
                     enabled:true,
                     onzoomend: zoomendCallback
                 },
-                point: {
-                    r:1
-                },
-                tooltip:{
-                    format: {
-                        title: function(d){
-                            var parse = d3.time.format('%Y-%m-%d %H:%M');
-                            return parse(d)}
-                    }
-                },
+                // tooltip:{
+                //     format: {
+                //         title: function(d){
+                //             var parse = d3.time.format('%Y-%m-%d %H:%M');
+                //             return parse(d)}
+                //     }
+                // },
                 padding:{
                     left: 50,
                     right: 50
                 }
             });
+        },
+
+        uploadFeaturesData: function (data) {
+             for (var i=0; i<data.msg.length; i++) {
+                console.log(data.msg[i])
+             }
+        },
+        // delete plot from plot area
+        deletePlot: function() {
+        chart = chart.destroy()
         }
     }
 })();
@@ -274,7 +272,7 @@ var controller = (function () {
         });
 
         // Event listener for delete button
-        $(DOMStrings.deleteBtn).on('click', UIController.deletePlot)
+        $(DOMStrings.deleteBtn).on('click', plotController.deletePlot)
 
     };
 
