@@ -7,8 +7,7 @@ import evertcore as evert
 from datetime import datetime
 
 
-# this retrieves the data that needs to be plotted and returns the data that will be rendered as a figure by
-# mpld3.js
+# this retrieves the data that needs to be plotted and returns the data
 @restapi.route('/_plotdata', methods=['GET'])
 def _plotdata():
     tags = request.args.getlist('tags[]')
@@ -114,6 +113,7 @@ def _plantchange(json=True):
     else:
         return jsonify(data)
 
+
 @restapi.route('/_plantchangemanage')
 def _plantchangemanage():
     cur_plant = request.args.get('plantDataManage', None, type=int)
@@ -136,7 +136,6 @@ def _plantchangemanage():
         data = dict(success=False)
 
     return jsonify(data)
-
 
 
 @restapi.route('/_plantupload', methods=['GET', 'POST'])
@@ -197,6 +196,7 @@ def _unitselectchange():
         all_tags = evert.data.get_tag_names(plant=cur_plant)
         return jsonify(success=True, unittags=None, alltags=dict(all_tags))
 
+
 @restapi.route('/_unitchangedatamanage', methods=['GET'])
 def _unitdatamanagechange():
 
@@ -213,6 +213,7 @@ def _unitdatamanagechange():
     else:
         return jsonify(success=True, unittags=None)
 
+
 @restapi.route('/_settags')
 @restapi.route('/_removeunittags', methods=['GET'])
 def _settags():
@@ -220,8 +221,8 @@ def _settags():
     plant = request.args.get('plant', 0, type=int)
     cur_unit = int(request.args.getlist('units[]')[0])
     # mapping string values to integer values
-    tags = map(int, request.args.getlist('tags[]'))
-    selected_unittags = map(int, request.args.getlist('unitTags[]'))
+    tags = [int(t) for t in request.args.getlist('tags[]')]
+    selected_unittags = [int(s) for s in request.args.getlist('unitTags[]')]
 
     if request.path == '/_settags':
         evert.data.assign_tag_sections(cur_unit, tags)

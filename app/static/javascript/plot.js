@@ -39,7 +39,7 @@ var dataController = (function () {
             // required plotting data
             data = {
                 plant: $(DOMStrings.plant).val(),
-                unit: $(DOMStrings.units).val(),
+                units: $(DOMStrings.units).val(),
                 tags: $(DOMStrings.tags).val(),
                 type: $(DOMStrings.type).val()
             };
