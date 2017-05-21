@@ -220,8 +220,8 @@ def _settags():
     plant = request.args.get('plant', 0, type=int)
     cur_unit = int(request.args.getlist('units[]')[0])
     # mapping string values to integer values
-    tags = map(int, request.args.getlist('tags[]'))
-    selected_unittags = map(int, request.args.getlist('unitTags[]'))
+    tags = [int(t) for t in request.args.getlist('tags[]')]
+    selected_unittags = [int(s) for s in request.args.getlist('unitTags[]')]
 
     if request.path == '/_settags':
         evert.data.assign_tag_sections(cur_unit, tags)
