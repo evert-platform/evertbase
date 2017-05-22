@@ -155,7 +155,7 @@ class Fig:
         df = self.dataFrame
         df = df[start <= df.timestamp]
         df = df[df.timestamp <= end]
-        df = df.reset_index()
+        df = df.reset_index(drop=True)
         self.domain = [start, end]
 
         return df
