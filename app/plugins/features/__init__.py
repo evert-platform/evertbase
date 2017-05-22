@@ -10,7 +10,7 @@ __plugin__ = "FeatureExtraction"
 features = Blueprint('features', __name__)
 
 
-def run_plugin(data_before):
+def run_plugin(data_before, domain):
     print('event_emitted')
     settings = get_plugin_settings(__plugin__)
 
@@ -19,7 +19,7 @@ def run_plugin(data_before):
                         format(type(data_before)))
 
     data_after = extract_features(data_before, settings)
-    emit_feature_data(data_after)
+    emit_feature_data(data_after, domain)
     return data_after
 
 
