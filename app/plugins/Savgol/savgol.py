@@ -37,6 +37,7 @@ def _filter_df_(_initialdf_, config):
     arr_noconst, _headers = _remove_constants_(DF_nostamp, headers)
     filtered_data = savgol_filter(arr_noconst, window_length, polyorder, axis=0)
     data_stream = _arr_to_stream_(filtered_data, _initialdf_['timestamp'].tolist(), headers)
+    data_stream.insert(0, 'line')
     return data_stream
 
 
