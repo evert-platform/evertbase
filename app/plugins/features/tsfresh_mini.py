@@ -119,11 +119,11 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, *
     # which is appropriate for Evert.
 
     if 'line' in kwargs:
-        lst = [['timestamp', '{}:{}'.format(header_name, feature_name)],
+        lst = ['line', ['timestamp', '{}:{}'.format(header_name, feature_name)],
                [feature_timestamp[0], feature_value],
                [feature_timestamp[1], feature_value]]
     else:
-        lst = [['timestamp', '{}:{}'.format(header_name, feature_name)],
+        lst = ['scatter, '['timestamp', '{}:{}'.format(header_name, feature_name)],
                [feature_timestamp, feature_value]]
 
     return lst
