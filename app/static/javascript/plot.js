@@ -247,16 +247,33 @@ var plotController = (function() {
         uploadFeaturesData: function (data) {
             var _data = data.data;
 
-            console.log(cdomain);
-            data.domain = data.domain.map(function (d) {return new Date(d)} );
-            var cstart = cdomain[0];
-            var cend = cdomain[1];
+            // console.log(cdomain);
+            // data.domain = data.domain.map(function (d) {return new Date(d)} );
+            // var cstart = cdomain[0];
+            // var cend = cdomain[1];
+            //
+            // var dstart = cdomain[0];
+            // var dend = cdomain[1];
 
-            var dstart = cdomain[0];
-            var dend = cdomain[1];
+            // if (+cstart === +dstart && +cend === +dend || cdomain === null) {
+            //     var _datamap = data.datamap;
+            //      _data.map(function (d) {
+            //          for (var i=1; i<d.length; i++){
+            //              d[i][0] = new Date(d[i][0]);
+            //          }
+            //          return d
+            //      });
+            //
+            //      for (var i=0; i<data.data.length; i++) {
+            //          features.push(_data[i][0][1]);
+            //          chart.load({
+            //              xs: _datamap[i],
+            //              rows: _data[i]
+            //          });
+            //      }
+            // }
 
-            if (+cstart === +dstart && +cend === +dend) {
-                var _datamap = data.datamap;
+            var _datamap = data.datamap;
                  _data.map(function (d) {
                      for (var i=1; i<d.length; i++){
                          d[i][0] = new Date(d[i][0]);
@@ -271,7 +288,6 @@ var plotController = (function() {
                          rows: _data[i]
                      });
                  }
-            }
 
         },
         // delete plot from plot area
