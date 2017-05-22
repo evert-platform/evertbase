@@ -123,9 +123,14 @@ var UIController = (function () {
 
 // controller to handle plotting logic
 var plotController = (function() {
-    var DOMStrings, chart;
+    var DOMStrings, chart, features;
+    features = [];
 
     DOMStrings = dataController.getDOMStrings();
+    var zoomstartCallback = function () {
+        chart.unload(features);
+        features = [];
+    };
 
     var zoomendCallback = function(domain){
                         var d = domain;
@@ -221,6 +226,7 @@ var plotController = (function() {
                     },
                 zoom:{
                     enabled:true,
+                    onzoomstart: zoomstartCallback,
                     onzoomend: zoomendCallback
                 },
                 // tooltip:{
@@ -244,16 +250,17 @@ var plotController = (function() {
                  for (var i=1; i<d.length; i++){
                      d[i][0] = new Date(d[i][0]);
                  }
-                 // d[1][0] = new Date(d[1][0]);
+
 
                  return d
             });
 
              for (var i=0; i<data.data.length; i++) {
-                chart.load({
-                    xs: _datamap[i],
-                    rows: _data[i]
-                });
+                 features.push(_data[i][0][1]);
+                 chart.load({
+                     xs: _datamap[i],
+                     rows: _data[i]
+                 });
              }
 
         },
