@@ -137,10 +137,9 @@ def get_plugin_settings(plugin_name):
     return config
 
 
-def emit_feature_data(data):
+def emit_feature_data(data, domain):
     feature = Features(data)
     datamap, data = feature.plot_data()
-    socketio.emit('connected', {'data': data, 'datamap': datamap}, namespace='/test')
-
+    socketio.emit('connected', {'data': data, 'datamap': datamap, 'domain': domain}, namespace='/test')
     return
 
