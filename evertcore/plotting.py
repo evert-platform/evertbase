@@ -117,6 +117,7 @@ class Fig:
         self.data = None
         self.datamap = dict()
         self.dataFrame = pd.DataFrame()
+        self.domain = []
 
     def prepare_data(self, data, threshold=0):
         """
@@ -146,6 +147,18 @@ class Fig:
 
     def return_data(self):
         return self.data, self.datamap
+
+    def window_data(self, domain):
+        domain = [float(d) for d in domain]
+        start = datetime.datetime.fromtimestamp(domain[0]).strftime('%Y-%m-%d %H:%M:%S')
+        end = datetime.datetime.fromtimestamp(domain[1]).strftime('%Y-%m-%d %H:%M:%S')
+        df = self.dataFrame
+        df = df[start <= df.timestamp]
+        df = df[df.timestamp <= end]
+        df = df.reset_index()
+        self.domain = [start, end]
+
+        return df
 
     def __repr__(self, *args, **kwargs):
         return json.dumps({"data": self.data, "datamap": self.datamap})
