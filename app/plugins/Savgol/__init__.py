@@ -19,4 +19,4 @@ class SavgolFilter(AppPlugin):
     def setup(self):
         self.register_blueprint(savgol)
         register_plugin_settings(__plugin__, 'Savgol/config.ini')
-        connect_listener('zoom_event', run_plugin)
+        # connect_listener('zoom_event', run_plugin)
