@@ -297,4 +297,4 @@ def _daterange():
     data, datamap = fig.return_data()
     window_data = fig.window_data(domain)
     evert.plugins.emit_event('zoom_event', window_data, fig.domain)
-    return jsonify(success=True, data=data, datamap=datamap)
+    return jsonify(success=True, data=data, datamap=datamap, domain=domain)
