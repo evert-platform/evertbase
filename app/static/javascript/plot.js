@@ -137,7 +137,7 @@ var plotController = (function() {
             if (d[0] === 'scatter'){
                 var s = '.c3-circles-'.concat(d[1]).concat(' > circle');
                 d3.selectAll(s).each(function () {
-                d3.select(this).attr('r', 3).attr('opacity', 1)
+                d3.select(this).attr('r', 3).style('opacity', .8)
                 });
 
             }
