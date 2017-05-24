@@ -136,7 +136,7 @@ var plotController = (function() {
                 if (d[0] === "scatter"){            // apply custom radius and style to scatter features
                     var scatter = ".c3-circles-".concat(d[1]).concat(" > circle");
                     d3.selectAll(scatter).each(function () {
-                    d3.select(this).attr("r", 3).style("opacity", 0).transition().style("opacity", 0.8);
+                    d3.select(this).attr("r", 3).style("opacity", 0).transition(500).style("opacity", 0.8);
                     });
                 }
 
