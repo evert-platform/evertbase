@@ -134,11 +134,13 @@ var plotController = (function() {
 
     var renderedCallBack = function () {
         features.forEach(function(d, i){
-            var s = '.c3-circles-'.concat(d).concat(' > circle');
-            d3.selectAll(s).each(function (d, i) {
-                d3.select(this).attr('r', 3)
-            });
+            if (d[0] === 'scatter'){
+                var s = '.c3-circles-'.concat(d[1]).concat(' > circle');
+                d3.selectAll(s).each(function () {
+                d3.select(this).attr('r', 3).attr('opacity', 1)
+                });
 
+            }
         });
     };
 
@@ -288,20 +290,24 @@ var plotController = (function() {
             // }
 
             var _datamap = data.datamap;
-                 _data.map(function (d) {
-                     for (var i=1; i<d.length; i++){
-                         d[i][0] = new Date(d[i][0]);
-                     }
-                     return d
-                 });
 
-                 for (var i=0; i<data.data.length; i++) {
-                     features.push(_data[i][0][1].replace(/(\u003A)|(\s)/g, '-'));
-                     chart.load({
-                         xs: _datamap[i],
-                         rows: _data[i]
-                     });
+             _data.map(function (d) {
+                 for (var i=2; i<d.length; i++){
+                     d[i][0] = new Date(d[i][0]);
                  }
+                 return d
+             });
+             // console.log(_data);
+
+            _data.forEach(function(d, i) {
+                var type = d.splice(0, 1)[0];
+                features.push([type, d[0][1].replace(/(\u003A)|(\s)/g, '-')]);
+                chart.load({
+                     xs: _datamap[i],
+                     rows: d,
+                     type: type
+                 });
+            })
 
         },
         // delete plot from plot area
