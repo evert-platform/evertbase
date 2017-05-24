@@ -132,6 +132,16 @@ var plotController = (function() {
         features = [];
     };
 
+    var renderedCallBack = function () {
+        features.forEach(function(d, i){
+            var s = '.c3-circles-'.concat(d).concat(' > circle');
+            d3.selectAll(s).each(function (d, i) {
+                d3.select(this).attr('r', 3)
+            });
+
+        });
+    };
+
     var zoomendCallback = function(domain){
                         var d = domain;
                         cdomain = domain;
@@ -193,6 +203,7 @@ var plotController = (function() {
             plot_data = [headers].concat(plot_data);
 
             chart = c3.generate({
+                onrendered: renderedCallBack,
                 bindto: '#plot',
                 transition:{
                     duration: null
@@ -240,6 +251,9 @@ var plotController = (function() {
                 padding:{
                     left: 50,
                     right: 50
+                },
+                point: {
+                    r: 1.2
                 }
             });
         },
@@ -282,10 +296,12 @@ var plotController = (function() {
                  });
 
                  for (var i=0; i<data.data.length; i++) {
-                     features.push(_data[i][0][1]);
+                     features.push(_data[i][0][1].replace(/(\u003A)|(\s)/g, '-'));
                      chart.load({
                          xs: _datamap[i],
-                         rows: _data[i]
+                         rows: _data[i],
+                         classes: data.classes
+
                      });
                  }
 
