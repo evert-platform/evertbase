@@ -5,13 +5,13 @@ $(document).ready(function () {
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
     socket.on('connect', function() {
-                // socket.emit('my_event', {data: 'I\'m connected!'});
+
                 console.log('connected');
                 socket.emit('connected', {msg: 'next'})
             });
 
-    socket.on('connected', function(data){
-        plotController.uploadFeaturesData(data)
+    socket.on("pluginFeaturesEmit", function(data){
+        plotController.uploadFeaturesData(data);
 
 
     })
@@ -42,7 +42,7 @@ var dataController = (function () {
                 tags: $(DOMStrings.tags).val(),
                 type: $(DOMStrings.type).val()
             };
-            $.getJSON(route, data, callback)
+            $.getJSON(route, data, callback);
         },
         // return the DOMStrings object
         getDOMStrings: function () {
@@ -79,7 +79,7 @@ var UIController = (function () {
             selector.empty();
             $.each(data, function (value, key) {
                 selector.append($("<option class='active-result'></option>")
-                    .attr("value", value).text(key))
+                    .attr("value", value).text(key));
             });
             selector.trigger('chosen:updated');
         };
@@ -122,6 +122,7 @@ var UIController = (function () {
 
 // controller to handle plotting logic
 var plotController = (function() {
+    "use strict";
     var DOMStrings, chart, features, cdomain;
     features = [];
 
@@ -129,10 +130,6 @@ var plotController = (function() {
     DOMStrings = dataController.getDOMStrings();
     var zoomstartCallback = function () {
 
-        // features.forEach(function(d, i){
-        //    chart.unload(features[d[1]]);
-        // features = [];
-        // })
     };
 
     var renderedCallBack = function () {
@@ -158,7 +155,7 @@ var plotController = (function() {
                         cdomain = domain;   // current plot window domain
 
                         // get new data for current plot window
-                        $.getJSON('/_daterange',{
+                        $.getJSON("/_daterange",{
                             ids: $(DOMStrings.tags).val(),
                             domain: [d[0].getTime(), d[1].getTime()]
                         }, function (data) {
@@ -187,7 +184,7 @@ var plotController = (function() {
                                         xs: data.datamap,
                                         rows: new_data
                                     });
-                                    chart.zoom([d[0], d[1]])
+                                    chart.zoom([d[0], d[1]]);
                                 }
                             }
                         });
