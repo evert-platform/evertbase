@@ -201,7 +201,7 @@ class Features:
         _map = []
         for _data in self.data:
             _dict = dict()
-            x_name, y_name = _data[0]
+            x_name, y_name = _data[1]
             _dict[y_name] = x_name
             _map.append(_dict)
 
