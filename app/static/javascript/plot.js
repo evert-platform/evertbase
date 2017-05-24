@@ -299,9 +299,7 @@ var plotController = (function() {
                      features.push(_data[i][0][1].replace(/(\u003A)|(\s)/g, '-'));
                      chart.load({
                          xs: _datamap[i],
-                         rows: _data[i],
-                         classes: data.classes
-
+                         rows: _data[i]
                      });
                  }
 
