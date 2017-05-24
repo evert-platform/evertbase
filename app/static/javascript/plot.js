@@ -77,8 +77,7 @@ var UIController = (function () {
     var updateSelect = function (selector, data) {
             selector.empty();
             $.each(data, function (value, key) {
-                selector.append($("<option class="active-result"></option>")
-                    .attr("value", value).text(key));
+                selector.append($("<option class='active-result'></option>").attr("value", value).text(key));
             });
             selector.trigger("chosen:updated");
         };
@@ -160,7 +159,7 @@ var plotController = (function() {
                         }, function (data) {
                             // checks if the return data has a domain object
                             if (data.domain !== null){
-                                 data.domain = data.domain.map(function (d) {return new Date(d)}; );
+                                 data.domain = data.domain.map(function (d) {return new Date(d)});
                                 //convert data domain to number
                                 var dstart = +data.domain[0];
                                 var dend = +data.domain[1];
@@ -280,19 +279,19 @@ var plotController = (function() {
 
             var _data = data.data;
 
-            console.log(cdomain);
+
             if (data.domain !== null){
                  data.domain = data.domain.map(function (d) {return new Date(d)} );
 
                 var dstart = data.domain[0];
                 var dend = data.domain[1];
 
-                 var cstart = Math.floor(cdomain[0]/1000);
-                 var cend = Math.floor(cdomain[1]/1000);
+                var cstart = Math.floor(cdomain[0]/1000);
+                var cend = Math.floor(cdomain[1]/1000);
 
             }
 
-            if (+cstart === +dstart && +cend === +dend || cdomain === null) {
+            if ((+cstart === +dstart && +cend === +dend) || cdomain === undefined) {
                 var _datamap = data.datamap;
 
                  _data.map(function (d) {
@@ -311,7 +310,7 @@ var plotController = (function() {
                          rows: d,
                          type: type
                      });
-            })};
+            })}
 
             // var _datamap = data.datamap;
             //
