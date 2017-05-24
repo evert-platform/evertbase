@@ -1,20 +1,19 @@
 $(document).ready(function () {
+    "use strict";
     controller.init();
 
-    var namespace = '/test';
-    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+    var namespace = "/test";
+    var socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port + namespace);
 
-    socket.on('connect', function() {
+    socket.on("connect", function() {
 
-                console.log('connected');
-                socket.emit('connected', {msg: 'next'})
+                console.log("connected");
+                socket.emit("connected", {msg: "next"});
             });
 
     socket.on("pluginFeaturesEmit", function(data){
         plotController.uploadFeaturesData(data);
-
-
-    })
+    });
 });
 
 // Data controller for plotting page
@@ -23,13 +22,13 @@ var dataController = (function () {
 
     // jQuery selectors for DOM objects
     DOMStrings = {
-        plant: 'select#plotPlant',
-        units: 'select#plotUnits',
-        tags: 'select#plotTags',
-        type: 'select#plotType',
-        submitBtn: 'input#Submit',
-        deleteBtn: 'button#deleteplot',
-        plotArea: '#plotarea'
+        plant: "select#plotPlant",
+        units: "select#plotUnits",
+        tags: "select#plotTags",
+        type: "select#plotType",
+        submitBtn: "input#Submit",
+        deleteBtn: "button#deleteplot",
+        plotArea: "#plotarea"
     };
 
     return {
@@ -46,7 +45,7 @@ var dataController = (function () {
         },
         // return the DOMStrings object
         getDOMStrings: function () {
-            return DOMStrings
+            return DOMStrings;
         }, timeFormat: function(domain){
             var min = domain[0], max = domain[1];
             var diff = max - min;
@@ -54,43 +53,43 @@ var dataController = (function () {
 
 
            if (diff <= 3.6e6){
-               format = '%H:%M:%S';
+               format = "%H:%M:%S";
            }else if(diff <= 3.6e6*24 && diff > 3.6e6){
-               format = '%H:%M'
+               format = "%H:%M";
            }else if(diff <= 3.6e6*24*30 && diff > 3.6e6*24){
-               format = '%d-%b  %H:00'
+               format = "%d-%b  %H:00";
            }else if(diff <=3.6e6*24*365 && diff > 3.6e6*24*30) {
-               format = '%M-%d'
+               format = "%M-%d";
            } else {
-               format = '%Y-%m-%d %H:%M'
+               format = "%Y-%m-%d %H:%M";
            }
 
-           return format
+           return format;
         }
-    }
+    };
 })();
 // user interface controller
 var UIController = (function () {
-    var DOMStrings, chart;
+    var DOMStrings;
     // DOM object strings
     DOMStrings = dataController.getDOMStrings();
     // update any select field
     var updateSelect = function (selector, data) {
             selector.empty();
             $.each(data, function (value, key) {
-                selector.append($("<option class='active-result'></option>")
+                selector.append($("<option class="active-result"></option>")
                     .attr("value", value).text(key));
             });
-            selector.trigger('chosen:updated');
+            selector.trigger("chosen:updated");
         };
 
     return {
         // initialises the chosen jQuery plugin elements
         init: function () {
-            $(DOMStrings.plant).chosen({width: '100%'});
-            $(DOMStrings.units).chosen({width: '100%'});
-            $(DOMStrings.tags).chosen({width: '100%'});
-            $(DOMStrings.type).chosen({width: '100%'});
+            $(DOMStrings.plant).chosen({width: "100%"});
+            $(DOMStrings.units).chosen({width: "100%"});
+            $(DOMStrings.tags).chosen({width: "100%"});
+            $(DOMStrings.type).chosen({width: "100%"});
         },
         // setup of all select elements when plant is changed
         plantSetup: function (data) {
@@ -103,17 +102,17 @@ var UIController = (function () {
             //updating the tags select field
             updateSelect($tags, data.alltags);
 
-            $unitselect.trigger('chosen:updated');
-            $tags.trigger('chosen:updated');
+            $unitselect.trigger("chosen:updated");
+            $tags.trigger("chosen:updated");
         },
 
         // update tags select element
         updateTags: function(data) {
             var $plotTags = $(DOMStrings.tags);
             if (data.unittags){
-                updateSelect($plotTags, data.unittags)
+                updateSelect($plotTags, data.unittags);
             } else {
-                updateSelect($plotTags, data.alltags)
+                updateSelect($plotTags, data.alltags);
             }
 
         }
@@ -135,16 +134,16 @@ var plotController = (function() {
     var renderedCallBack = function () {
 
             features.forEach(function(d, i){
-                if (d[0] === 'scatter'){            // apply custom radius and style to scatter features
-                    var s = '.c3-circles-'.concat(d[1]).concat(' > circle');
-                    d3.selectAll(s).each(function () {
-                    d3.select(this).attr('r', 3).style('opacity', 0).transition().style('opacity', 0.8)
+                if (d[0] === "scatter"){            // apply custom radius and style to scatter features
+                    var scatter = ".c3-circles-".concat(d[1]).concat(" > circle");
+                    d3.selectAll(scatter).each(function () {
+                    d3.select(this).attr("r", 3).style("opacity", 0).transition().style("opacity", 0.8);
                     });
                 }
 
-                else if (d[0] === 'line') {         // apply custom  style to line features
-                    var s = '.c3-line-'.concat(d[1]);
-                    d3.select(s).style('stroke-dasharray', '5,5').style('opacity', 0).transition(500).style('opacity', 1)
+                else if (d[0] === "line") {         // apply custom  style to line features
+                    var line = ".c3-line-".concat(d[1]);
+                    d3.select(line).style("stroke-dasharray", "5,5").style("opacity", 0).transition(500).style("opacity", 1);
                 }
             });
         };
@@ -161,7 +160,7 @@ var plotController = (function() {
                         }, function (data) {
                             // checks if the return data has a domain object
                             if (data.domain !== null){
-                                 data.domain = data.domain.map(function (d) {return new Date(d)} );
+                                 data.domain = data.domain.map(function (d) {return new Date(d)}; );
                                 //convert data domain to number
                                 var dstart = +data.domain[0];
                                 var dend = +data.domain[1];
@@ -171,18 +170,18 @@ var plotController = (function() {
                                 // compares the current window data to the data domain to see if they match
                                 if (cstart === dstart && cend === dend){
                                     // if windows match new data is plotted
-                                    var plot_data = data.data;
-                                    var headers = plot_data.shift();
+                                    var plotData = data.data;
+                                    var headers = plotData.shift();
                                     // change date strings to date objects
-                                    plot_data.map(function (d) {
+                                    plotData.map(function (d) {
                                         d[0] = new Date(d[0]);
                                         return d;
                                     });
-                                    var new_data = [headers].concat(plot_data);
+                                    var newData = [headers].concat(plotData);
                                     // loads new data to the chart
                                     chart.load({
                                         xs: data.datamap,
-                                        rows: new_data
+                                        rows: newData
                                     });
                                     chart.zoom([d[0], d[1]]);
                                 }
@@ -210,31 +209,31 @@ var plotController = (function() {
     return {
          // rendering of plot data
         createPlot: function (data) {
-            var plot_data = data.data;
-            var headers = plot_data.shift();
+            var plotData = data.data;
+            var headers = plotData.shift();
 
-            plot_data.map(function (d) {
+            plotData.map(function (d) {
                 d[0] = new Date(d[0]);
 
-                return d
+                return d;
             });
 
-            var timeFormat = dataController.timeFormat([plot_data[1][0], plot_data.slice(-1)[0][0]]);
-            plot_data = [headers].concat(plot_data);
+            var timeFormat = dataController.timeFormat([plotData[1][0], plotData.slice(-1)[0][0]]);
+            plotData = [headers].concat(plotData);
 
             chart = c3.generate({
                 onrendered: renderedCallBack,
-                bindto: '#plot',
+                bindto: "#plot",
                 transition:{
                     duration: null
                 },
                 data: {
-                    x: 'timestamp',
-                    rows: plot_data
+                    x: "timestamp",
+                    rows: plotData
                 },
                 axis: {
                     x: {
-                        type: 'timeseries',
+                        type: "timeseries",
                         localtime: true,
                         tick:{
                             format: timeFormat,
@@ -251,7 +250,7 @@ var plotController = (function() {
                     },
                     y: {
                         tick:{
-                            format: d3.format('.2f')
+                            format: d3.format(".2f")
                             }
                         }
                     },
@@ -263,7 +262,7 @@ var plotController = (function() {
                 // tooltip:{
                 //     format: {
                 //         title: function(d){
-                //             var parse = d3.time.format('%Y-%m-%d %H:%M');
+                //             var parse = d3.time.format("%Y-%m-%d %H:%M");
                 //             return parse(d)}
                 //     }
                 // },
@@ -293,31 +292,26 @@ var plotController = (function() {
 
             }
 
-
-
-
-
             if (+cstart === +dstart && +cend === +dend || cdomain === null) {
-                console.log(true)
                 var _datamap = data.datamap;
 
                  _data.map(function (d) {
                      for (var i=2; i<d.length; i++){
                          d[i][0] = new Date(d[i][0]);
                      }
-                     return d
+                     return d;
                  });
                  // console.log(_data);
 
                 _data.forEach(function(d, i) {
                     var type = d.splice(0, 1)[0];
-                    features.push([type, d[0][1].replace(/(\u003A)|(\s)/g, '-')]);
+                    features.push([type, d[0][1].replace(/(\u003A)|(\s)/g, "-")]);
                     chart.load({
                          xs: _datamap[i],
                          rows: d,
                          type: type
                      });
-            })}
+            })};
 
             // var _datamap = data.datamap;
             //
@@ -331,7 +325,7 @@ var plotController = (function() {
             //
             // _data.forEach(function(d, i) {
             //     var type = d.splice(0, 1)[0];
-            //     features.push([type, d[0][1].replace(/(\u003A)|(\s)/g, '-')]);
+            //     features.push([type, d[0][1].replace(/(\u003A)|(\s)/g, "-")]);
             //     chart.load({
             //          xs: _datamap[i],
             //          rows: d,
@@ -342,13 +336,14 @@ var plotController = (function() {
         },
         // delete plot from plot area
         deletePlot: function() {
-        chart = chart.destroy()
+        chart = chart.destroy();
         }
-    }
+    };
 })();
 
 // general plot page controller
 var controller = (function () {
+    "use strict";
     var DOMStrings;
 
     DOMStrings = dataController.getDOMStrings();
@@ -356,22 +351,22 @@ var controller = (function () {
     // setting up event listeners
     var setupEventListners = function(){
         // Event listener for plot button
-        $(DOMStrings.submitBtn).on('click', function () {
-            dataController.getJSONData('/_plotdata', plotController.createPlot)});
+        $(DOMStrings.submitBtn).on("click", function () {
+            dataController.getJSONData("/_plotdata", plotController.createPlot)});
 
 
         // Event listener for when units are selected (updates tags)
-        $(DOMStrings.units).on('change', function () {
-            dataController.getJSONData('/_unitchange', UIController.updateTags)
+        $(DOMStrings.units).on("change", function () {
+            dataController.getJSONData("/_unitchange", UIController.updateTags)
         });
 
         // Event listner for when the plant is changed (updates units and tags)
-        $(DOMStrings.plant).on('change', function () {
-            dataController.getJSONData('/_plantchangesetup', UIController.plantSetup);
+        $(DOMStrings.plant).on("change", function () {
+            dataController.getJSONData("/_plantchangesetup", UIController.plantSetup);
         });
 
         // Event listener for delete button
-        $(DOMStrings.deleteBtn).on('click', plotController.deletePlot)
+        $(DOMStrings.deleteBtn).on("click", plotController.deletePlot)
 
     };
 
@@ -380,5 +375,5 @@ var controller = (function () {
             UIController.init();
             setupEventListners();
         }
-    }
+    };
 })();
