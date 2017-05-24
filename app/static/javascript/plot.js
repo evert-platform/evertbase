@@ -128,58 +128,74 @@ var plotController = (function() {
 
     DOMStrings = dataController.getDOMStrings();
     var zoomstartCallback = function () {
-        chart.unload(features);
-        features = [];
+
+        // features.forEach(function(d, i){
+        //    chart.unload(features[d[1]]);
+        // features = [];
+        // })
     };
 
     var renderedCallBack = function () {
-        features.forEach(function(d, i){
-            if (d[0] === 'scatter'){
-                var s = '.c3-circles-'.concat(d[1]).concat(' > circle');
-                d3.selectAll(s).each(function () {
-                d3.select(this).attr('r', 3).style('opacity', .8)
-                });
-            }
 
-            else if (d[0] === 'line') {
-                var s = '.c3-line-'.concat(d[1]);
-                d3.select(s).style('stroke-dasharray', '5,5').style('opacity', 1)
-            }
-        });
-    };
+            features.forEach(function(d, i){
+                if (d[0] === 'scatter'){            // apply custom radius and style to scatter features
+                    var s = '.c3-circles-'.concat(d[1]).concat(' > circle');
+                    d3.selectAll(s).each(function () {
+                    d3.select(this).attr('r', 3).style('opacity', 0).transition().style('opacity', 0.8)
+                    });
+                }
+
+                else if (d[0] === 'line') {         // apply custom  style to line features
+                    var s = '.c3-line-'.concat(d[1]);
+                    d3.select(s).style('stroke-dasharray', '5,5').style('opacity', 0).transition(500).style('opacity', 1)
+                }
+            });
+        };
+
 
     var zoomendCallback = function(domain){
                         var d = domain;
-                        cdomain = domain;
+                        cdomain = domain;   // current plot window domain
 
-
+                        // get new data for current plot window
                         $.getJSON('/_daterange',{
                             ids: $(DOMStrings.tags).val(),
                             domain: [d[0].getTime(), d[1].getTime()]
                         }, function (data) {
-
-                            var plot_data = data.data;
-                            var headers = plot_data.shift();
-
-                            plot_data.map(function (d) {
-                                d[0] = new Date(d[0]);
-
-                                return d
-                            });
-                            var new_data = [headers].concat(plot_data);
-
-                            chart.load({
-                                xs: data.datamap,
-                                rows: new_data
-                            });
-                            chart.zoom([d[0], d[1]])
-
+                            // checks if the return data has a domain object
+                            if (data.domain !== null){
+                                 data.domain = data.domain.map(function (d) {return new Date(d)} );
+                                //convert data domain to number
+                                var dstart = +data.domain[0];
+                                var dend = +data.domain[1];
+                                // convert current window domain to number
+                                var cstart = Math.floor(cdomain[0]/1000); // remove some precision to match python data
+                                var cend = Math.floor(cdomain[1]/1000);
+                                // compares the current window data to the data domain to see if they match
+                                if (cstart === dstart && cend === dend){
+                                    // if windows match new data is plotted
+                                    var plot_data = data.data;
+                                    var headers = plot_data.shift();
+                                    // change date strings to date objects
+                                    plot_data.map(function (d) {
+                                        d[0] = new Date(d[0]);
+                                        return d;
+                                    });
+                                    var new_data = [headers].concat(plot_data);
+                                    // loads new data to the chart
+                                    chart.load({
+                                        xs: data.datamap,
+                                        rows: new_data
+                                    });
+                                    chart.zoom([d[0], d[1]])
+                                }
+                            }
                         });
                         var format = dataController.timeFormat(d);
                         var config = {
                                         axis: {
                                             x: {
-                                                type: 'timeseries',
+                                                type: "timeseries",
                                                 tick:{
                                                     culling: {
                                             max: 20
@@ -265,53 +281,66 @@ var plotController = (function() {
         },
 
         uploadFeaturesData: function (data) {
+
             var _data = data.data;
 
-            // console.log(cdomain);
-            // data.domain = data.domain.map(function (d) {return new Date(d)} );
-            // var cstart = cdomain[0];
-            // var cend = cdomain[1];
-            //
-            // var dstart = cdomain[0];
-            // var dend = cdomain[1];
+            console.log(cdomain);
+            if (data.domain !== null){
+                 data.domain = data.domain.map(function (d) {return new Date(d)} );
 
-            // if (+cstart === +dstart && +cend === +dend || cdomain === null) {
-            //     var _datamap = data.datamap;
-            //      _data.map(function (d) {
-            //          for (var i=1; i<d.length; i++){
-            //              d[i][0] = new Date(d[i][0]);
-            //          }
-            //          return d
-            //      });
-            //
-            //      for (var i=0; i<data.data.length; i++) {
-            //          features.push(_data[i][0][1]);
-            //          chart.load({
-            //              xs: _datamap[i],
-            //              rows: _data[i]
-            //          });
-            //      }
-            // }
+                var dstart = data.domain[0];
+                var dend = data.domain[1];
 
-            var _datamap = data.datamap;
+                 var cstart = Math.floor(cdomain[0]/1000);
+                 var cend = Math.floor(cdomain[1]/1000);
 
-             _data.map(function (d) {
-                 for (var i=2; i<d.length; i++){
-                     d[i][0] = new Date(d[i][0]);
-                 }
-                 return d
-             });
-             // console.log(_data);
+            }
 
-            _data.forEach(function(d, i) {
-                var type = d.splice(0, 1)[0];
-                features.push([type, d[0][1].replace(/(\u003A)|(\s)/g, '-')]);
-                chart.load({
-                     xs: _datamap[i],
-                     rows: d,
-                     type: type
+
+
+
+
+            if (+cstart === +dstart && +cend === +dend || cdomain === null) {
+                console.log(true)
+                var _datamap = data.datamap;
+
+                 _data.map(function (d) {
+                     for (var i=2; i<d.length; i++){
+                         d[i][0] = new Date(d[i][0]);
+                     }
+                     return d
                  });
-            })
+                 // console.log(_data);
+
+                _data.forEach(function(d, i) {
+                    var type = d.splice(0, 1)[0];
+                    features.push([type, d[0][1].replace(/(\u003A)|(\s)/g, '-')]);
+                    chart.load({
+                         xs: _datamap[i],
+                         rows: d,
+                         type: type
+                     });
+            })}
+
+            // var _datamap = data.datamap;
+            //
+            //  _data.map(function (d) {
+            //      for (var i=2; i<d.length; i++){
+            //          d[i][0] = new Date(d[i][0]);
+            //      }
+            //      return d
+            //  });
+            //  // console.log(_data);
+            //
+            // _data.forEach(function(d, i) {
+            //     var type = d.splice(0, 1)[0];
+            //     features.push([type, d[0][1].replace(/(\u003A)|(\s)/g, '-')]);
+            //     chart.load({
+            //          xs: _datamap[i],
+            //          rows: d,
+            //          type: type
+            //      });
+            // })
 
         },
         // delete plot from plot area
