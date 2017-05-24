@@ -148,15 +148,15 @@ class Fig:
     def return_data(self):
         return self.data, self.datamap
 
-    def window_data(self, domain):
-        domain = [float(d) for d in domain]
-        start = datetime.datetime.fromtimestamp(domain[0]).strftime('%Y-%m-%d %H:%M:%S')
-        end = datetime.datetime.fromtimestamp(domain[1]).strftime('%Y-%m-%d %H:%M:%S')
+    def window_data(self, domain_conv):
+
+        start = datetime.datetime.fromtimestamp(domain_conv[0]).strftime('%Y-%m-%d %H:%M:%S')
+        end = datetime.datetime.fromtimestamp(domain_conv[1]).strftime('%Y-%m-%d %H:%M:%S')
         df = self.dataFrame
         df = df[start <= df.timestamp]
         df = df[df.timestamp <= end]
         df = df.reset_index(drop=True)
-        self.domain = [start, end]
+        self.domain = domain_conv
 
         return df
 
