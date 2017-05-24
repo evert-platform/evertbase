@@ -139,7 +139,11 @@ var plotController = (function() {
                 d3.selectAll(s).each(function () {
                 d3.select(this).attr('r', 3).style('opacity', .8)
                 });
+            }
 
+            else if (d[0] === 'line') {
+                var s = '.c3-line-'.concat(d[1]);
+                d3.select(s).style('stroke-dasharray', '5,5').style('opacity', 1)
             }
         });
     };
@@ -177,11 +181,9 @@ var plotController = (function() {
                                 x: {
                                     type: 'timeseries',
                                     tick:{
-                                        count: 40,
-                                        format: format,
-                                        culling:{
-                                            max: 20
-                                        }
+                                        fit: true,
+                                        format: format
+
                                     }
                                 }
                             }
@@ -219,12 +221,8 @@ var plotController = (function() {
                         type: 'timeseries',
                         localtime: true,
                         tick:{
-                            count: 40,
                             format: timeFormat,
-                            fit: false,
-                            culling: {
-                                max: 20
-                            },
+                            fit: true,
                             multiline: true,
                             width: 50,
                             padding:{
@@ -255,7 +253,7 @@ var plotController = (function() {
                     right: 50
                 },
                 point: {
-                    r: 1.2
+                    r: 1
                 }
             });
         },
