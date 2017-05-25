@@ -5,7 +5,7 @@ import pandas as pd
 from . import restapi
 import evertcore as evert
 from datetime import datetime
-
+_threshold = 700
 
 # this retrieves the data that needs to be plotted and returns the data
 @restapi.route('/_plotdata', methods=['GET'])
@@ -13,7 +13,7 @@ def _plotdata():
     tags = request.args.getlist('tags[]')
     tag_data = evert.data.tag_data(tags)
     fig = evert.plotting.Fig()
-    fig.prepare_data(tag_data, 200)
+    fig.prepare_data(tag_data, _threshold)
     data, datamap = fig.return_data()
     evert.plugins.emit_event('zoom_event', fig.dataFrame, None)
 
@@ -293,7 +293,7 @@ def _daterange():
 
     tag_data = evert.data.tag_data(tags, datetime.fromtimestamp(domain[0]), datetime.fromtimestamp(domain[1]))
     fig = evert.plotting.Fig()
-    fig.prepare_data(tag_data, threshold=500)
+    fig.prepare_data(tag_data, threshold=_threshold)
     data, datamap = fig.return_data()
     window_data = fig.window_data(domain)
     evert.plugins.emit_event('zoom_event', window_data, fig.domain)
