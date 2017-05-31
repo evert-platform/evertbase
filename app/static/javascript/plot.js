@@ -188,16 +188,15 @@ var plotController = (function() {
                         });
                         var format = dataController.timeFormat(d);
                         var config = {
-                                        axis: {
-                                            x: {
-                                                type: "timeseries",
-                                                tick:{
-                                                    culling: {
+                            axis: {
+                                x: {
+                                    type: "timeseries",
+                                    tick:{
+                                        count: 30,
+                                        format: format,
+                                        culling:{
                                             max: 20
-                                        },
-                                        fit: true,
-                                        format: format
-
+                                        }
                                     }
                                 }
                             }
@@ -236,7 +235,7 @@ var plotController = (function() {
                         localtime: true,
                         tick:{
                             format: timeFormat,
-                            fit: true,
+                            count: 20,
                             culling: {
                                 max: 20
                             },
