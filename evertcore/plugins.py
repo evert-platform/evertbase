@@ -3,9 +3,11 @@ from multiprocessing import Process
 from flask import current_app
 import configparser
 import os
+from sqlalchemy.exc import IntegrityError
 
 from .websockets import socketio
 from .plotting import Features
+from .models import PluginIds
 
 
 _plugin_events = ['data_upload', 'zoom_event']
@@ -143,3 +145,13 @@ def emit_feature_data(data, domain):
     socketio.emit("pluginFeaturesEmit", {'data': data, 'datamap': datamap, 'domain': domain}, namespace='/test')
     return
 
+
+def register_plugin(plugin_name):
+
+    # add plugin to database
+    try:
+        PluginIds.create(plugin_name=plugin_name)
+    except IntegrityError:
+        pass
+
+    return
