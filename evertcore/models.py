@@ -195,15 +195,10 @@ class MeasurementData(db.Model):
 
 
 # Model for the plugin ID table
-class PluginIds(db.Model):
+class PluginIds(BaseMixin, db.Model):
     plugin_id = db.Column('id', db.Integer, primary_key=True)
-    plugin_name = db.Column('name', db.Text)
-    plugin_type = db.Column('type', db.ForeignKey('plugin_types.id', onupdate="CASCADE", ondelete="CASCADE"))
-
-
-class PluginTypes(db.Model):
-    feature_id = db.Column('id', db.Integer, primary_key=True)
-    feature_name = db.Column('name', db.Text)
+    plugin_name = db.Column('name', db.Text, unique=True)
+    plugin_type = db.Column('type', db.Text)
 
 
 # Model for the plugin time series data storage table
