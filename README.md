@@ -14,8 +14,10 @@ Current features:
 
 
 ### Installation
-Clone the `master` branch of the repository to get the latest stable version of the application, then navigate to the folder in the command line.
+Clone the `master` branch of the repository to get the latest stable version of the application, then navigate to the folder in the command line.  
 
+Add the conda-forge channel to the anaconda installer:  
+`conda config --add channels conda-forge`
 
 Create a virtual environment for the app using the following command:
 
@@ -31,6 +33,8 @@ Activate the environment using one of the following commands in the command line
 The application can be started in an IDE or in the command line using the following command:
 
 `python manage.py`
+
+For an explanation of the install process please see the wiki page.
 
 
 
