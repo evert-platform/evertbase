@@ -38,6 +38,12 @@ def create_app(config_name):
     if not os.path.isdir(app.config['USER_PLUGINS']):
         os.mkdir(app.config['USER_PLUGINS'])
 
+    # creating database
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
+        db.session.commit()
+
     # Configuration of flask_plugins extension
     plugin_manager.init_app(app)
 
@@ -52,11 +58,7 @@ def create_app(config_name):
     from .restapi import restapi
     app.register_blueprint(restapi)
 
-    # creating database
-    db.init_app(app)
-    with app.app_context():
-        db.create_all()
-        db.session.commit()
+
 
     # creating socket
     socketio.init_app(app)
