@@ -3,7 +3,7 @@ from .tsfresh_mini import extract_features
 from evertcore.plugins import connect_listener, AppPlugin
 import pandas as pd
 from evertcore.plugins import register_plugin_settings, get_plugin_settings
-from evertcore.plugins import emit_feature_data
+from evertcore.plugins import emit_feature_data, register_plugin
 
 __plugin__ = "FeatureExtraction"
 
@@ -27,5 +27,6 @@ class FeatureExtraction(AppPlugin):
 
     def setup(self):
         self.register_blueprint(features)
+        register_plugin(__plugin__)
         register_plugin_settings(__plugin__, 'features/config.ini')
         connect_listener("zoom_event", run_plugin)
