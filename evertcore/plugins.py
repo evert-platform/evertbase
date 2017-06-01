@@ -11,6 +11,7 @@ from .models import PluginIds
 
 
 _plugin_events = ['data_upload', 'zoom_event']
+_plugin_types = ['features', 'timeseries']
 plugin_manager = PluginManager()
 
 
@@ -146,11 +147,31 @@ def emit_feature_data(data, domain):
     return
 
 
-def register_plugin(plugin_name):
+def register_plugin(plugin_name, plugin_type):
+    """
+    Register the plugin in the database on server start. 
+    
+    Parameters
+    ----------
+    plugin_name: str    
+                Name of the plugin
+    plugin_type: str
+                Type of plugin: ['features', 'timeseries']
+
+    Returns
+    -------
+
+    """
+
+    if not isinstance(plugin_name, str):
+        raise ValueError("Input of type: str expected for argument: plugin_name, instead got: {}".format(type(plugin_name)))
+    if plugin_type not in _plugin_types:
+        raise ValueError('Invalid plugin type: {} valif values are: {}'.format(plugin_type, _plugin_types))
+
 
     # add plugin to database
     try:
-        PluginIds.create(plugin_name=plugin_name)
+        PluginIds.create(plugin_name=plugin_name, plugin_type=plugin_type)
     except IntegrityError:
         pass
 
