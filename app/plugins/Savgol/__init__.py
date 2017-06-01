@@ -1,9 +1,10 @@
 from flask import Blueprint
 from .savgol import sg_filter
 from evertcore.plugins import connect_listener, AppPlugin
-from evertcore.plugins import register_plugin_settings, get_plugin_settings
+from evertcore.plugins import register_plugin_settings, get_plugin_settings, register_plugin
 
 __plugin__ = "SavgolFilter"
+__plugin_type__ = 'timeseries'
 
 savgol = Blueprint('savgol', __name__)
 
@@ -18,5 +19,6 @@ class SavgolFilter(AppPlugin):
 
     def setup(self):
         self.register_blueprint(savgol)
+        register_plugin(__plugin__, __plugin_type__)
         register_plugin_settings(__plugin__, 'Savgol/config.ini')
         # connect_listener('zoom_event', run_plugin)
