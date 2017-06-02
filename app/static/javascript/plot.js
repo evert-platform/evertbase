@@ -2,18 +2,7 @@ $(document).ready(function () {
     "use strict";
     controller.init();
 
-    var namespace = "/test";
-    var socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port + namespace);
-
-    socket.on("connect", function() {
-
-                console.log("connected");
-                socket.emit("connected", {msg: "next"});
-            });
-
-    socket.on("pluginFeaturesEmit", function(data){
-        plotController.uploadFeaturesData(data);
-    });
+    plotController.init();
 });
 
 // Data controller for plotting page
@@ -121,7 +110,7 @@ var UIController = (function () {
 // controller to handle plotting logic
 var plotController = (function() {
     "use strict";
-    var DOMStrings, chart, features, cdomain;
+    var DOMStrings, chart, features, cdomain, socket;
     features = [];
 
 
@@ -146,6 +135,11 @@ var plotController = (function() {
                 }
             });
         };
+
+    var zoomendSocket = function (domain) {
+        console.log('zoom');
+        socket.emit('zoomed', {msg: "zoomed"})
+    };
 
 
     var zoomendCallback = function(domain){
@@ -255,15 +249,8 @@ var plotController = (function() {
                 zoom:{
                     enabled:true,
                     onzoomstart: zoomstartCallback,
-                    onzoomend: zoomendCallback
+                    onzoomend: zoomendSocket
                 },
-                // tooltip:{
-                //     format: {
-                //         title: function(d){
-                //             var parse = d3.time.format("%Y-%m-%d %H:%M");
-                //             return parse(d)}
-                //     }
-                // },
                 padding:{
                     left: 50,
                     right: 50
@@ -311,30 +298,29 @@ var plotController = (function() {
                      });
             })}
 
-            // var _datamap = data.datamap;
-            //
-            //  _data.map(function (d) {
-            //      for (var i=2; i<d.length; i++){
-            //          d[i][0] = new Date(d[i][0]);
-            //      }
-            //      return d
-            //  });
-            //  // console.log(_data);
-            //
-            // _data.forEach(function(d, i) {
-            //     var type = d.splice(0, 1)[0];
-            //     features.push([type, d[0][1].replace(/(\u003A)|(\s)/g, "-")]);
-            //     chart.load({
-            //          xs: _datamap[i],
-            //          rows: d,
-            //          type: type
-            //      });
-            // })
-
         },
         // delete plot from plot area
         deletePlot: function() {
         chart = chart.destroy();
+        },
+        init: function () {
+            var namespace = "/test";
+            socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port + namespace);
+
+            socket.on("connect", function() {
+
+                        console.log("connected");
+
+                        socket.send("connected", {msg: "next"});
+                    });
+
+            socket.on("pluginFeaturesEmit", function(data){
+                plotController.uploadFeaturesData(data);
+            });
+
+            socket.on("zoom_return", function(data){
+            console.log(data.msg)
+            });
         }
     };
 })();
