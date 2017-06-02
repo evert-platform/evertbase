@@ -8,7 +8,7 @@ from evertcore.config import config
 from evertcore.custom import sync_plugin_folder
 from evertcore.data import db
 from evertcore.plugins import plugin_manager
-from evertcore.websockets import socketio
+from evertcore.websockets import socketio_mp
 
 
 def create_app(config_name):
@@ -61,6 +61,7 @@ def create_app(config_name):
 
 
     # creating socket
-    socketio.init_app(app)
+    socketio_mp.init_app(app)
+    # socketio.init_app(app)
 
     return app

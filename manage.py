@@ -1,4 +1,4 @@
-from app import create_app, socketio
+from app import create_app, socketio_mp
 from flask_uploads import UploadSet, configure_uploads, ALL
 import os
 import eventlet
@@ -12,4 +12,4 @@ plugin_upload = UploadSet('plugin', ALL)
 configure_uploads(app, plugin_upload)
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio_mp.run(app)
