@@ -61,7 +61,7 @@ def create_app(config_name):
 
 
     # creating socket
-    socketio_mp.init_app(app)
+    socketio_mp.init_app(app, message_queue='amqp://guest:guest@localhost:5672//')
     # socketio.init_app(app)
 
     return app
