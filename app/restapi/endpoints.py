@@ -283,18 +283,3 @@ def _viewdata():
     columns = [{'title': key} for key in tag_data.columns]
 
     return jsonify(success=True, data=data, headers=columns)
-
-
-@restapi.route('/_daterange')
-def _daterange():
-    domain = request.args.getlist('domain[]')
-    tags = request.args.getlist('ids[]')
-    domain = [float(d)/1000 for d in domain]
-
-    tag_data = evert.data.tag_data(tags, datetime.fromtimestamp(domain[0]), datetime.fromtimestamp(domain[1]))
-    fig = evert.plotting.Fig()
-    fig.prepare_data(tag_data, threshold=_threshold)
-    data, datamap = fig.return_data()
-    window_data = fig.window_data(domain)
-    evert.plugins.emit_event('zoom_event', window_data, fig.domain)
-    return jsonify(success=True, data=data, datamap=datamap, domain=domain)
