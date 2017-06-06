@@ -8,7 +8,7 @@ from evertcore.config import config
 from evertcore.custom import sync_plugin_folder
 from evertcore.data import db
 from evertcore.plugins import plugin_manager
-from evertcore.websockets import socketio_mp
+from evertcore.websockets import socketio
 
 
 def create_app(config_name):
@@ -58,10 +58,7 @@ def create_app(config_name):
     from .restapi import restapi
     app.register_blueprint(restapi)
 
-
-
     # creating socket
-    socketio_mp.init_app(app, message_queue='amqp://guest:guest@localhost:5672//')
-    # socketio.init_app(app)
+    socketio.init_app(app, message_queue='amqp://guest:guest@localhost:5672//')
 
     return app
