@@ -138,49 +138,37 @@ var plotController = (function() {
 
     var zoomendSocket = function (domain) {
         console.log('zoom');
-        socket.emit('zoomed', {msg: "zoomed"})
+
+        var d = domain;
+        cdomain = domain;
+
+        setTimeout(function(){
+            if (d === cdomain) {
+                socket.emit('zoom_event', {ids: $(DOMStrings.tags).val(), domain: [d[0].getTime(), d[1].getTime()]})
+            }
+        }, 200);
     };
 
+    var updatePlot = function(data) {
 
-    var zoomendCallback = function(domain){
-                        var d = domain;
-                        cdomain = domain;   // current plot window domain
+        // if windows match new data is plotted
+        var plotData = data.data;
+        var headers = plotData.shift();
+        // change date strings to date objects
+        plotData.map(function (d) {
+            d[0] = new Date(d[0]);
+            return d;
+        });
+        var newData = [headers].concat(plotData);
+        // loads new data to the chart
+        chart.load({
+            xs: data.datamap,
+            rows: newData
+        });
 
-                        // get new data for current plot window
-                        $.getJSON("/_daterange",{
-                            ids: $(DOMStrings.tags).val(),
-                            domain: [d[0].getTime(), d[1].getTime()]
-                        }, function (data) {
-                            // checks if the return data has a domain object
-                            if (data.domain !== null){
-                                 data.domain = data.domain.map(function (d) {return new Date(d)});
-                                //convert data domain to number
-                                var dstart = +data.domain[0];
-                                var dend = +data.domain[1];
-                                // convert current window domain to number
-                                var cstart = Math.floor(cdomain[0]/1000); // remove some precision to match python data
-                                var cend = Math.floor(cdomain[1]/1000);
-                                // compares the current window data to the data domain to see if they match
-                                if (cstart === dstart && cend === dend){
-                                    // if windows match new data is plotted
-                                    var plotData = data.data;
-                                    var headers = plotData.shift();
-                                    // change date strings to date objects
-                                    plotData.map(function (d) {
-                                        d[0] = new Date(d[0]);
-                                        return d;
-                                    });
-                                    var newData = [headers].concat(plotData);
-                                    // loads new data to the chart
-                                    chart.load({
-                                        xs: data.datamap,
-                                        rows: newData
-                                    });
-                                    chart.zoom([d[0], d[1]]);
-                                }
-                            }
-                        });
-                        var format = dataController.timeFormat(d);
+        chart.zoom([cdomain[0], cdomain[1]]);
+
+        var format = dataController.timeFormat(cdomain);
                         var config = {
                             axis: {
                                 x: {
@@ -195,8 +183,8 @@ var plotController = (function() {
                                 }
                             }
                         };
-                        chart.internal.loadConfig(config);
-                    };
+        chart.internal.loadConfig(config);
+    };
 
     return {
          // rendering of plot data
@@ -206,7 +194,6 @@ var plotController = (function() {
 
             plotData.map(function (d) {
                 d[0] = new Date(d[0]);
-
                 return d;
             });
 
@@ -319,7 +306,7 @@ var plotController = (function() {
             });
 
             socket.on("zoom_return", function(data){
-            console.log(data.msg)
+                updatePlot(data)
             });
         }
     };
