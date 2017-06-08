@@ -15,12 +15,6 @@ def app():
 
 
 @pytest.fixture
-def no_queue():
-    app = create_app_test('testing')
-    return app
-
-
-@pytest.fixture
 def conf_app(config):
     return create_app(config)
 # ==================================================================================
