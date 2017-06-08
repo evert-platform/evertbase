@@ -14,6 +14,7 @@ class BaseConfig:
     USER_PLUGINS = os.path.join(os.path.expanduser('~/Documents'), 'Evert Plugins')
     CONFIG_INI_FOLDER = os.path.expanduser('~/.evert')
     CONFIG_INI_FILE = os.path.join(CONFIG_INI_FOLDER, 'config.ini')
+    MESSAGE_QUEUE = 'amqp://guest:guest@localhost:5672//'
 
 
 # configuration for developing
@@ -26,6 +27,7 @@ class DevelopmentConfig(BaseConfig):
 class TestingConfig(BaseConfig):
     DEBUG = False
     TESTING = True
+    MESSAGE_QUEUE = None
 
 
 config = {
