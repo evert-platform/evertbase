@@ -1,4 +1,4 @@
-from app import create_app, create_app_test
+from app import create_app
 import pytest
 from flask import url_for, current_app
 from flask_socketio import emit, send
