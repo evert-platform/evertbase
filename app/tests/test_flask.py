@@ -1,9 +1,11 @@
-from app import create_app
+from app import create_app, create_app_test
 import pytest
-from flask import url_for
-from .. import main
+from flask import url_for, current_app
+from flask_socketio import emit, send
 from .. import restapi
+from flask_socketio import SocketIO
 
+socketio = SocketIO()
 
 
 @pytest.fixture
@@ -13,8 +15,17 @@ def app():
 
 
 @pytest.fixture
+def no_queue():
+    app = create_app_test('testing')
+    return app
+
+
+@pytest.fixture
 def conf_app(config):
     return create_app(config)
+# ==================================================================================
+#                                 Testing application views
+# ==================================================================================
 
 
 # Class based test for testing the initial rendering of views
@@ -37,15 +48,21 @@ class TestViews:
         assert self.client.get(url_for('main.dataview')).status_code == 200
 
 
-@pytest.mark.parametrize("fixture, app_config, debug, testing", [
-    (conf_app, 'default', False, False),
-    (conf_app, 'testing', False, True),
-    (conf_app, 'development', True, False)
+@pytest.mark.parametrize("fixture, app_config, debug, testing, message_queue", [
+    (conf_app, 'default', False, False, 'amqp://guest:guest@localhost:5672//'),
+    (conf_app, 'testing', False, True, None),
+    (conf_app, 'development', True, False, 'amqp://guest:guest@localhost:5672//')
+
 ])
-def test_debug_testing_values_for_config(fixture, app_config, debug, testing):
+def test_debug_testing_values_for_config(fixture, app_config, debug, testing, message_queue):
     test_app = fixture(app_config)
     assert test_app.debug == debug
     assert test_app.testing == testing
+    assert test_app.config['MESSAGE_QUEUE'] == message_queue
+
+# ================================================================================
+#                               Tests for restAPT endpoints
+# ================================================================================
 
 
 @pytest.mark.parametrize('url', [
@@ -99,3 +116,57 @@ class TestAsync:
         unit.return_value = []
         res = restapi.endpoints._unitselectchange()
         assert res.json['success']
+
+
+# ==========================================================================================
+#                                           Testing websockets
+# ==========================================================================================
+
+@socketio.on('test_event')
+def on_test_event(data):
+    emit('test_event_response', data)
+
+
+@socketio.on('connect')
+def on_connect():
+    send('connected')
+
+
+@socketio.on('custom_namespace_emit')
+def on_custom_namespace_emit(data):
+    emit('return_custom_namespace_emit', data, namespace='/test')
+
+
+@pytest.mark.usefixtures('client_class', 'app')
+class TestSocket:
+
+    def test_connect(self, app):
+        socketio.init_app(app)
+        client = socketio.test_client(app)
+        received = client.get_received()
+        assert current_app.testing
+        assert len(received) == 1
+        assert received[0]['args'] == 'connected'
+
+    def test_emit_event(self, app):
+        socketio.init_app(app)
+        client = socketio.test_client(app)
+        client.get_received()
+        client.emit('test_event', {'test': True})
+        received = client.get_received()
+
+        assert len(received) == 1
+        assert len(received[0]['args']) == 1
+        assert received[0]['name'] == 'test_event_response'
+        assert received[0]['args'][0]['test']
+
+    def test_emit_custom_namespace(self, app):
+        socketio.init_app(app)
+        client = socketio.test_client(app, namespace='/test')
+        client.get_received('/test')
+        client.emit('custom_namespace_emit', {'test': True})
+        received = client.get_received('/test')
+        assert len(received) == 1
+        assert len(received[0]['args']) == 1
+        assert received[0]['name'] == 'return_custom_namespace_emit'
+        assert received[0]['args'][0]['test']
