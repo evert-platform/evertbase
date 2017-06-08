@@ -273,7 +273,6 @@ var plotController = (function() {
                      }
                      return d;
                  });
-                 // console.log(_data);
 
                 _data.forEach(function(d, i) {
                     var type = d.splice(0, 1)[0];
@@ -295,10 +294,7 @@ var plotController = (function() {
             socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port + namespace);
 
             socket.on("connect", function() {
-
                         console.log("connected");
-
-                        socket.send("connected", {msg: "next"});
                     });
 
             socket.on("pluginFeaturesEmit", function(data){
