@@ -4,6 +4,9 @@ from flask import url_for, current_app
 from flask_socketio import emit, send
 from .. import restapi
 from flask_socketio import SocketIO
+import evertcore
+from datetime import datetime
+import pandas as pd
 
 socketio = SocketIO()
 
@@ -96,10 +99,10 @@ class TestAsync:
         tags.return_value = ['0']
         plant = mocker.patch('flask.request.args.get')
         plant.return_value = 0
-
-        # TODO: expand test to cover different paths
         res = restapi.endpoints._deleteunittags()
         assert res.json['success']
+
+
 
     def test_unitchange(self, mocker):
         unit = mocker.patch('flask.request.args.getlist')
@@ -164,3 +167,60 @@ class TestSocket:
         assert len(received[0]['args']) == 1
         assert received[0]['name'] == 'return_custom_namespace_emit'
         assert received[0]['args'][0]['test']
+
+# ========================================================================================
+#                           Testing data manipulation function in evertcore.data
+# ========================================================================================
+
+
+@pytest.mark.usefixtures('client_class', 'app')
+class TestDataFunctions:
+
+    @pytest.mark.parametrize('start, end',
+                             [(datetime(1980, 1, 1), datetime(1982, 1, 1)),
+                              ('1980, 1, 1', '1982, 1, 1')])
+    def test_precache_band(self, start, end):
+
+        try:
+            start_, end_ = evertcore.data.prefetch_cache_band(start, end)
+            assert start_ == datetime(1978, 12, 31, 12, 0)
+            assert end_ == datetime(1983, 1, 1, 12, 0)
+        except TypeError:
+            # testing type checking of function
+            pass
+
+    @pytest.mark.parametrize('ids, start, end, dataframe, pivot',
+                             [(1, None, None, False, False),
+                              ([1], datetime(1970, 1, 1), 'None', False, False),
+                              ([1], 'None', datetime(1970, 1, 1), False, False),
+                              ([1], None, None, 'False', False),
+                              ([1], None, None, True, 'False'),
+                              ([1], datetime(1970, 1, 1), datetime(1980, 1, 1), False, False),
+                              ([1], datetime(1970, 1, 1), datetime(1980, 1, 1), True, False),
+                              ])
+
+    def test_tag_data(self, ids, start, end, dataframe, pivot, mocker):
+
+        data = mocker.patch('evertcore.models.MeasurementData.get_tag_data_in')
+        db_data = [('2017-04-29 10:23:05', '1', 87.89),
+                   ('2017-04-29 10:24:05', '1', 87.89),
+                   ('2017-04-29 10:25:05', '2', 87.89),
+                   ('2017-04-29 10:26:05', '2', 87.89),
+                   ('2017-04-29 20:36:05', '3', 87.749),
+                   ('2017-04-29 20:37:05', '3', 87.75)]
+
+        try:
+            if not dataframe and start is None and end is None:
+                data.return_value = db_data
+                data_ = evertcore.data.tag_data(ids, start, end, dataframe, pivot)
+                assert data_ == db_data
+
+            if not dataframe and start is not None and end is not None:
+                data = mocker.patch('evertcore.models.MeasurementData.filter_between_timestamps')
+                data.return_value = db_data
+                data_ = evertcore.data.tag_data(ids, start, end, dataframe, pivot)
+                assert data_ == db_data
+
+
+        except TypeError:
+            pass
