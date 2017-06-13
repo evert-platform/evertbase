@@ -187,7 +187,7 @@ var plotController = (function() {
         chart.internal.loadConfig(config);
 
         localStorage.setItem('plotData', JSON.stringify({
-                data: data.data,
+                data: newData,
                 datamap: data.datamap
             }))
     };
