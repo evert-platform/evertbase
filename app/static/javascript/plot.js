@@ -301,6 +301,8 @@ var plotController = (function() {
         // delete plot from plot area
         deletePlot: function() {
         chart = chart.destroy();
+        localStorage.setItem('plotData', undefined);
+        localStorage.setItem('plotDomain', undefined);
         },
         init: function () {
             var namespace = "/test";
