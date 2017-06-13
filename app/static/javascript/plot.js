@@ -141,6 +141,7 @@ var plotController = (function() {
 
         var d = domain;
         cdomain = domain;
+        localStorage.setItem('plotDomain', JSON.stringify(cdomain));
 
         setTimeout(function(){
             if (d === cdomain) {
@@ -184,6 +185,11 @@ var plotController = (function() {
                             }
                         };
         chart.internal.loadConfig(config);
+
+        localStorage.setItem('plotData', JSON.stringify({
+                data: data.data,
+                datamap: data.datamap
+            }))
     };
 
     return {
@@ -246,6 +252,13 @@ var plotController = (function() {
                     r: 1
                 }
             });
+
+            localStorage.setItem('plotData', JSON.stringify({
+                data: plotData,
+                datamap: data.datamap
+            }));
+
+            console.log(JSON.parse(localStorage.getItem('plotData')))
         },
 
         uploadFeaturesData: function (data) {
@@ -304,6 +317,7 @@ var plotController = (function() {
             socket.on("zoom_return", function(data){
                 updatePlot(data)
             });
+
         }
     };
 })();
@@ -341,6 +355,17 @@ var controller = (function () {
         init: function () {
             UIController.init();
             setupEventListners();
+
+            console.log('init');
+            if (localStorage.getItem('plotData')||false) {
+                var data = JSON.parse(localStorage.getItem('plotData'));
+                console.log('data: ', data);
+
+                if (localStorage.getItem('plotDomain')||false) {
+                    var cdomain = JSON.parse(localStorage.getItem('plotDomain'));
+                    console.log('cdomian: ', cdomain)
+                }
+            }
         }
     };
 })();
