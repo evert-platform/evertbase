@@ -318,15 +318,15 @@ def tag_data(tag_ids, start=None, end=None, dataframe=True, pivot=True):
 
     """
     if not isinstance(tag_ids, list):
-        raise TypeError('Expecting input of type: list for argument: tag_ids')
+        raise TypeError('Expecting input of type: list for argument: tag_ids, instead got {}'.format(type(tag_ids)))
 
     tag_ids = list(map(int, tag_ids))
 
     if start is not None and end is not None:
         if not isinstance(start, datetime.datetime):
-            raise TypeError('Expecting input of type: datetime.datetime for argument: start')
+            raise TypeError('Expecting input of type: datetime.datetime for argument: start, instead got {}'.format(type(start)))
         if not isinstance(end, datetime.datetime):
-            raise TypeError('Expecting input of type: datetime.datetime for argument: end')
+            raise TypeError('Expecting input of type: datetime.datetime for argument: end, instead got {}'.format(type(end)))
 
         start, end = prefetch_cache_band(start, end)
         data = MeasurementData.filter_between_timestamps(tag_ids, start, end)
