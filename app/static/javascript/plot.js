@@ -30,6 +30,13 @@ var dataController = (function () {
                 tags: $(DOMStrings.tags).val(),
                 type: $(DOMStrings.type).val()
             };
+
+            localStorage.setItem('plotForm', JSON.stringify({
+                plant: data.plant,
+                units: data.units,
+                tags: data.tags
+            }));
+
             $.getJSON(route, data, callback);
         },
         // return the DOMStrings object
@@ -256,6 +263,7 @@ var plotController = (function() {
             localStorage.setItem('plotData', JSON.stringify({
                 data: plotData,
                 datamap: data.datamap
+
             }));
 
             console.log(JSON.parse(localStorage.getItem('plotData')))
@@ -361,7 +369,23 @@ var controller = (function () {
             console.log('init');
             if (localStorage.getItem('plotData')||false) {
                 var data = JSON.parse(localStorage.getItem('plotData'));
+                var formData = JSON.parse(localStorage.getItem('plotForm'));
                 console.log('data: ', data);
+                console.log('form data:', formData);
+
+                DOMStrings = dataController.getDOMStrings();
+
+                $(DOMStrings.plant).val(formData.plant);
+                $(DOMStrings.plant).trigger('chosen:updated');
+                $(DOMStrings.units).val(formData.units);
+                $(DOMStrings.units).trigger('chosen:updated');
+                $(DOMStrings.tags).val(formData.tags);
+                $(DOMStrings.tags).trigger('chosen:updated');
+
+                plotController.createPlot(data);
+
+
+                // plotController.createPlot(data);
 
                 if (localStorage.getItem('plotDomain')||false) {
                     var cdomain = JSON.parse(localStorage.getItem('plotDomain'));
