@@ -312,6 +312,12 @@ var plotController = (function() {
         localStorage.setItem('plotData', undefined);
         localStorage.setItem('plotDomain', undefined);
         },
+        setDomain: function(cdomain) {
+
+            console.log(cdomain);
+
+            chart.zoom([new Date(cdomain[0]), new Date(cdomain[1])])
+        },
         init: function () {
             var namespace = "/test";
             socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port + namespace);
@@ -384,12 +390,11 @@ var controller = (function () {
 
                 plotController.createPlot(data);
 
-
-                // plotController.createPlot(data);
-
                 if (localStorage.getItem('plotDomain')||false) {
                     var cdomain = JSON.parse(localStorage.getItem('plotDomain'));
-                    console.log('cdomian: ', cdomain)
+                    console.log('cdomian: ', cdomain);
+                    plotController.setDomain(cdomain);
+
                 }
             }
         }
