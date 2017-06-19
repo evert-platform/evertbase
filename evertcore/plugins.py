@@ -140,10 +140,11 @@ def get_plugin_settings(plugin_name):
     return config
 
 
-def emit_feature_data(data, domain):
+def emit_feature_data(data, domain, plugin_name):
     feature = Features(data)
     datamap, data = feature.plot_data()
-    socketio.emit("pluginFeaturesEmit", {'data': data, 'datamap': datamap, 'domain': domain}, namespace='/test')
+    socketio.emit("pluginFeaturesEmit", {'data': data, 'datamap': datamap, 'domain': domain, 'name': plugin_name},
+                  namespace='/test')
     return
 
 

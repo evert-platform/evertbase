@@ -20,7 +20,7 @@ def run_plugin(data_before, domain):
                         format(type(data_before)))
 
     data_after = extract_features(data_before, settings)
-    emit_feature_data(data_after, domain)
+    emit_feature_data(data_after, domain, __plugin__)
     return data_after
 
 
