@@ -273,6 +273,19 @@ var plotController = (function() {
 
             var _data = data.data;
 
+            if (localStorage.getItem('plotFeatures')) {
+                var features = JSON.parse(localStorage.getItem('plotFeatures'));
+                var data_name = data.name;
+                features[data_name] = _data;
+            } else {
+                var features = {};
+                var data_name = data.name;
+                features[data_name] = _data;
+
+                localStorage.setItem('plotFeatures', JSON.stringify(features))
+
+            }
+
 
             if (data.domain !== null){
                  data.domain = data.domain.map(function (d) {return new Date(d)} );
@@ -397,6 +410,31 @@ var controller = (function () {
 
                 }
             }
-        }
+        },
+        checkLocalStorage: function(method, key, data){
+            var data = data || {};
+
+            if (method === 'get'){
+                return (typeof localStorage.getItem(key) === undefined) ? false : JSON.parse(localStorage.getItem(key));
+            } else if (method === 'set') {
+                if (key === 'plotFeatures'){
+                    
+                    if (localStorage.getItem('plotFeatures')) {
+                    var features = JSON.parse(localStorage.getItem('plotFeatures'));
+                    var data_name = data.name;
+                    features[data_name] = _data;
+                } else {
+                    var features = {};
+                    var data_name = data.name;
+                    features[data_name] = _data;
+
+                    localStorage.setItem('plotFeatures', JSON.stringify(features))
+
+                }
+
+                }
+            }
+
+    }
     };
 })();
