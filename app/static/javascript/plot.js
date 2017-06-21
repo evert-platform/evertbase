@@ -273,18 +273,7 @@ var plotController = (function() {
 
             var _data = data.data;
 
-            if (localStorage.getItem('plotFeatures')) {
-                var features = JSON.parse(localStorage.getItem('plotFeatures'));
-                var data_name = data.name;
-                features[data_name] = _data;
-            } else {
-                var features = {};
-                var data_name = data.name;
-                features[data_name] = _data;
-
-                localStorage.setItem('plotFeatures', JSON.stringify(features))
-
-            }
+            controller.checkLocalStorage('set', 'plotFeatures', data);
 
 
             if (data.domain !== null){
@@ -408,7 +397,17 @@ var controller = (function () {
                     console.log('cdomian: ', cdomain);
                     plotController.setDomain(cdomain);
 
+                    var features = controller.checkLocalStorage('get', 'plotFeatures');
+                    var featureKeys = Object.keys(features);
+                    if (features) {
+                        for (var i=0; i< featureKeys.length; i++){
+                            plotController.uploadFeaturesData(features[featureKeys[i]])
+                        }
+                    }
+
                 }
+
+                console.log(JSON.parse(localStorage.getItem('plotFeatures')))
             }
         },
         checkLocalStorage: function(method, key, data){
@@ -417,21 +416,26 @@ var controller = (function () {
             if (method === 'get'){
                 return (typeof localStorage.getItem(key) === undefined) ? false : JSON.parse(localStorage.getItem(key));
             } else if (method === 'set') {
+
                 if (key === 'plotFeatures'){
-                    
+
                     if (localStorage.getItem('plotFeatures')) {
-                    var features = JSON.parse(localStorage.getItem('plotFeatures'));
-                    var data_name = data.name;
-                    features[data_name] = _data;
+                        var features = JSON.parse(localStorage.getItem('plotFeatures'));
+                        var data_name = data.name;
+                        features[data_name] = data;
+                        localStorage.setItem('plotFeatures', JSON.stringify(features))
+
+                    } else {
+                        var features = {};
+                        var data_name = data.name;
+                        features[data_name] = data;
+
+                        localStorage.setItem('plotFeatures', JSON.stringify(features))
+
+                    }
+
                 } else {
-                    var features = {};
-                    var data_name = data.name;
-                    features[data_name] = _data;
-
-                    localStorage.setItem('plotFeatures', JSON.stringify(features))
-
-                }
-
+                    localStorage.setItem(key, JSON.stringify(data))
                 }
             }
 
