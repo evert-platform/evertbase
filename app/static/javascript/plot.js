@@ -151,7 +151,8 @@ var plotController = (function() {
                 },
                 yaxis: {
                     showline: true,
-                    ticks: "outside"
+                    ticks: "outside",
+                    fixedrange: true
                 }
             };
 
