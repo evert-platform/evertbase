@@ -17,7 +17,7 @@ var dataController = (function () {
         type: "select#plotType",
         submitBtn: "input#Submit",
         deleteBtn: "button#deleteplot",
-        plotArea: "#plotarea"
+        plotArea: "plot"
     };
 
     return {
@@ -111,7 +111,7 @@ var UIController = (function () {
             }
 
         }
-    }
+    };
 })();
 
 // controller to handle plotting logic
@@ -123,20 +123,6 @@ var plotController = (function() {
 
     DOMStrings = dataController.getDOMStrings();
 
-    var zoomendSocket = function (domain) {
-        console.log('zoom');
-
-
-        // var d = domain;
-        // cdomain = domain;
-        // localStorage.setItem('plotDomain', JSON.stringify(cdomain));
-        //
-        // setTimeout(function(){
-        //     if (d === cdomain) {
-        //         socket.emit('zoom_event', {ids: $(DOMStrings.tags).val(), domain: [d[0].getTime(), d[1].getTime()]})
-        //     }
-        // }, 200);
-    };
 
     var updatePlot = function(data) {
 
@@ -153,7 +139,7 @@ var plotController = (function() {
     return {
          // rendering of plot data
         createPlot: function (data) {
-            console.log(data)
+            console.log(data);
             var plotData = data.data;
 
             var layout = {
@@ -169,7 +155,7 @@ var plotController = (function() {
                 }
             };
 
-            Plotly.newPlot("plot", plotData, layout);
+            Plotly.newPlot(DOMStrings.plotArea, plotData, layout);
 
 
             localStorage.setItem("plotData", JSON.stringify({
@@ -220,8 +206,8 @@ var plotController = (function() {
         },
         // delete plot from plot area
         deletePlot: function() {
-        Plotly.purge('plot');
-        localStorage.setItem('plotData', undefined);
+        Plotly.purge(DOMStrings.plotArea);
+        localStorage.setItem("plotData", undefined);
         // localStorage.setItem('plotDomain', undefined);
         },
         setDomain: function(cdomain) {
@@ -238,12 +224,6 @@ var plotController = (function() {
                         console.log("connected");
                     });
 
-            var $plotarea = $('div#plot');
-            console.log($plotarea)
-
-            $plotarea.on('plotly_relayout', function(e){
-                console.log(e)
-            })
 
             // socket.on("pluginFeaturesEmit", function(data){
             //     plotController.uploadFeaturesData(data);
@@ -309,22 +289,22 @@ var controller = (function () {
 
                 plotController.createPlot(data);
 
-                if (localStorage.getItem('plotDomain')||false) {
-                    var cdomain = JSON.parse(localStorage.getItem('plotDomain'));
-                    console.log('cdomian: ', cdomain);
-                    plotController.setDomain(cdomain);
+                // if (localStorage.getItem('plotDomain')||false) {
+                //     var cdomain = JSON.parse(localStorage.getItem('plotDomain'));
+                //     console.log('cdomian: ', cdomain);
+                //     plotController.setDomain(cdomain);
+                //
+                //     var features = controller.checkLocalStorage('get', 'plotFeatures');
+                //     var featureKeys = Object.keys(features);
+                //     if (features) {
+                //         for (var i=0; i< featureKeys.length; i++){
+                //             plotController.uploadFeaturesData(features[featureKeys[i]])
+                //         }
+                //     }
+                //
+                // }
 
-                    var features = controller.checkLocalStorage('get', 'plotFeatures');
-                    var featureKeys = Object.keys(features);
-                    if (features) {
-                        for (var i=0; i< featureKeys.length; i++){
-                            plotController.uploadFeaturesData(features[featureKeys[i]])
-                        }
-                    }
-
-                }
-
-                console.log(JSON.parse(localStorage.getItem('plotFeatures')))
+                // console.log(JSON.parse(localStorage.getItem('plotFeatures')))
             }
         },
         checkLocalStorage: function(method, key, data){
