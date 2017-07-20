@@ -31,7 +31,7 @@ var dataController = (function () {
                 type: $(DOMStrings.type).val()
             };
 
-            localStorage.setItem('plotForm', JSON.stringify({
+            localStorage.setItem("plotForm", JSON.stringify({
                 plant: data.plant,
                 units: data.units,
                 tags: data.tags
@@ -157,6 +157,12 @@ var plotController = (function() {
 
             Plotly.newPlot(DOMStrings.plotArea, plotData, layout);
 
+            // Event listener for when plot is zoomed. Must be called after plot is created.
+            var plotArea = document.getElementById('plot');
+            plotArea.on('plotly_relayout', function(e){
+                console.log(e);
+            });
+
 
             localStorage.setItem("plotData", JSON.stringify({
                 data: plotData,
@@ -262,7 +268,9 @@ var controller = (function () {
         });
 
         // Event listener for delete button
-        $(DOMStrings.deleteBtn).on("click", plotController.deletePlot)
+        $(DOMStrings.deleteBtn).on("click", plotController.deletePlot);
+
+
 
     };
 
