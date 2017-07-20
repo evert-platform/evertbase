@@ -202,71 +202,38 @@ var plotController = (function() {
     return {
          // rendering of plot data
         createPlot: function (data) {
+            console.log(data)
             var plotData = data.data;
-            var headers = plotData.shift();
 
-            plotData.map(function (d) {
-                d[0] = new Date(d[0]);
-                return d;
-            });
-
-            var timeFormat = dataController.timeFormat([plotData[1][0], plotData.slice(-1)[0][0]]);
-            plotData = [headers].concat(plotData);
-
-            chart = c3.generate({
-                onrendered: renderedCallBack,
-                bindto: "#plot",
-                transition:{
-                    duration: null
+            var layout = {
+                showlegend: true,
+                xaxis : {
+                    title: "timestamp",
+                    showline: true,
+                    ticks: "outside"
                 },
-                data: {
-                    x: "timestamp",
-                    rows: plotData
-                },
-                axis: {
-                    x: {
-                        type: "timeseries",
-                        localtime: true,
-                        tick:{
-                            format: timeFormat,
-                            count: 20,
-                            culling: {
-                                max: 20
-                            },
-                            multiline: true,
-                            width: 50,
-                            padding:{
-                                bottom: 20
-                            }
-                        }
-                    },
-                    y: {
-                        tick:{
-                            format: d3.format(".2f")
-                            }
-                        }
-                    },
-                zoom:{
-                    enabled:true,
-                    onzoomstart: zoomstartCallback,
-                    onzoomend: zoomendSocket
-                },
-                padding:{
-                    left: 50,
-                    right: 50
-                },
-                point: {
-                    r: 1
+                yaxis: {
+                    showline: true,
+                    ticks: "outside"
                 }
-            });
+            };
 
-            localStorage.setItem('plotData', JSON.stringify({
-                data: plotData,
-                datamap: data.datamap
+            Plotly.newPlot('plot', plotData, layout);
 
-            }));
+            // plotData.map(function (d) {
+            //     d[0] = new Date(d[0]);
+            //     return d;
+            // });
+            //
 
-            console.log(JSON.parse(localStorage.getItem('plotData')))
+            //
+            // localStorage.setItem('plotData', JSON.stringify({
+            //     data: plotData,
+            //     datamap: data.datamap
+            //
+            // }));
+            //
+            // console.log(JSON.parse(localStorage.getItem('plotData')))
         },
 
         uploadFeaturesData: function (data) {
@@ -328,13 +295,13 @@ var plotController = (function() {
                         console.log("connected");
                     });
 
-            socket.on("pluginFeaturesEmit", function(data){
-                plotController.uploadFeaturesData(data);
-            });
-
-            socket.on("zoom_return", function(data){
-                updatePlot(data)
-            });
+            // socket.on("pluginFeaturesEmit", function(data){
+            //     plotController.uploadFeaturesData(data);
+            // });
+            //
+            // socket.on("zoom_return", function(data){
+            //     updatePlot(data)
+            // });
 
         }
     };
