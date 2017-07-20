@@ -136,13 +136,14 @@ class Fig:
         """
         data = largest_triangle_three_buckets(data, threshold)
         self.dataFrame = data
-        _data = data.values.tolist()
-        _columns = data.columns.values
-        self.data = [list(_columns)] + _data
+        data_names = data.columns.values
 
-        for c in _columns:
-            if c != 'timestamp':
-                self.datamap[c] = 'timestamp'
+        data_plot = []
+        for n in data_names:
+            if n != 'timestamp':
+                data_plot.append(dict(x=list(data['timestamp'].values), y=list(data[n].values), name=n))
+        print(data_plot)
+        self.data = data_plot
         return
 
     def return_data(self):
