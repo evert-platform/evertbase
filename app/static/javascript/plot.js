@@ -122,81 +122,32 @@ var plotController = (function() {
 
 
     DOMStrings = dataController.getDOMStrings();
-    var zoomstartCallback = function () {
-
-    };
-
-    var renderedCallBack = function () {
-
-            features.forEach(function(d, i){
-                if (d[0] === "scatter"){            // apply custom radius and style to scatter features
-                    var scatter = ".c3-circles-".concat(d[1]).concat(" > circle");
-                    d3.selectAll(scatter).each(function () {
-                    d3.select(this).attr("r", 3).style("opacity", 0).transition(500).style("opacity", 0.8);
-                    });
-                }
-
-                else if (d[0] === "line") {         // apply custom  style to line features
-                    var line = ".c3-line-".concat(d[1]);
-                    d3.select(line).style("stroke-dasharray", "5,5").style("opacity", 0).transition(500).style("opacity", 1);
-                }
-            });
-        };
 
     var zoomendSocket = function (domain) {
         console.log('zoom');
 
-        var d = domain;
-        cdomain = domain;
-        localStorage.setItem('plotDomain', JSON.stringify(cdomain));
 
-        setTimeout(function(){
-            if (d === cdomain) {
-                socket.emit('zoom_event', {ids: $(DOMStrings.tags).val(), domain: [d[0].getTime(), d[1].getTime()]})
-            }
-        }, 200);
+        // var d = domain;
+        // cdomain = domain;
+        // localStorage.setItem('plotDomain', JSON.stringify(cdomain));
+        //
+        // setTimeout(function(){
+        //     if (d === cdomain) {
+        //         socket.emit('zoom_event', {ids: $(DOMStrings.tags).val(), domain: [d[0].getTime(), d[1].getTime()]})
+        //     }
+        // }, 200);
     };
 
     var updatePlot = function(data) {
 
         // if windows match new data is plotted
         var plotData = data.data;
-        var headers = plotData.shift();
-        // change date strings to date objects
-        plotData.map(function (d) {
-            d[0] = new Date(d[0]);
-            return d;
-        });
-        var newData = [headers].concat(plotData);
-        // loads new data to the chart
-        chart.load({
-            xs: data.datamap,
-            rows: newData
-        });
 
-        chart.zoom([cdomain[0], cdomain[1]]);
 
-        var format = dataController.timeFormat(cdomain);
-                        var config = {
-                            axis: {
-                                x: {
-                                    type: "timeseries",
-                                    tick:{
-                                        count: 30,
-                                        format: format,
-                                        culling:{
-                                            max: 20
-                                        }
-                                    }
-                                }
-                            }
-                        };
-        chart.internal.loadConfig(config);
-
-        localStorage.setItem('plotData', JSON.stringify({
-                data: newData,
-                datamap: data.datamap
-            }))
+        // localStorage.setItem("plotData", JSON.stringify({
+        //         data: newData,
+        //         datamap: data.datamap
+        //     }));
     };
 
     return {
@@ -218,22 +169,14 @@ var plotController = (function() {
                 }
             };
 
-            Plotly.newPlot('plot', plotData, layout);
+            Plotly.newPlot("plot", plotData, layout);
 
-            // plotData.map(function (d) {
-            //     d[0] = new Date(d[0]);
-            //     return d;
-            // });
-            //
 
-            //
-            // localStorage.setItem('plotData', JSON.stringify({
-            //     data: plotData,
-            //     datamap: data.datamap
-            //
-            // }));
-            //
-            // console.log(JSON.parse(localStorage.getItem('plotData')))
+            localStorage.setItem("plotData", JSON.stringify({
+                data: plotData,
+                layout: layout
+
+            }));
         },
 
         uploadFeaturesData: function (data) {
@@ -277,9 +220,9 @@ var plotController = (function() {
         },
         // delete plot from plot area
         deletePlot: function() {
-        chart = chart.destroy();
+        Plotly.purge('plot');
         localStorage.setItem('plotData', undefined);
-        localStorage.setItem('plotDomain', undefined);
+        // localStorage.setItem('plotDomain', undefined);
         },
         setDomain: function(cdomain) {
 
@@ -294,6 +237,13 @@ var plotController = (function() {
             socket.on("connect", function() {
                         console.log("connected");
                     });
+
+            var $plotarea = $('div#plot');
+            console.log($plotarea)
+
+            $plotarea.on('plotly_relayout', function(e){
+                console.log(e)
+            })
 
             // socket.on("pluginFeaturesEmit", function(data){
             //     plotController.uploadFeaturesData(data);
