@@ -3,3 +3,4 @@ app/static/uploads/
 .cache
 README.md
 migrations
+__pycache__
