@@ -155,13 +155,19 @@ var plotController = (function() {
                     fixedrange: true
                 }
             };
-
-            Plotly.newPlot(DOMStrings.plotArea, plotData, layout);
+// TODO: find a way to remove some of the buttons from hover bar.
+            Plotly.newPlot(DOMStrings.plotArea, plotData, layout,
+                {scrollZoom: true,
+                    boxZoom: false,
+                    showLink: false,
+                    displayLogo: false
+                });
 
             // Event listener for when plot is zoomed. Must be called after plot is created.
             var plotArea = document.getElementById('plot');
             plotArea.on('plotly_relayout', function(e){
                 console.log(e);
+                console.log(plotArea.data);
             });
 
 
