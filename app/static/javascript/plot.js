@@ -297,23 +297,6 @@ var controller = (function () {
                 $(DOMStrings.tags).trigger('chosen:updated');
 
                 plotController.createPlot(data);
-
-                // if (localStorage.getItem('plotDomain')||false) {
-                //     var cdomain = JSON.parse(localStorage.getItem('plotDomain'));
-                //     console.log('cdomian: ', cdomain);
-                //     plotController.setDomain(cdomain);
-                //
-                //     var features = controller.checkLocalStorage('get', 'plotFeatures');
-                //     var featureKeys = Object.keys(features);
-                //     if (features) {
-                //         for (var i=0; i< featureKeys.length; i++){
-                //             plotController.uploadFeaturesData(features[featureKeys[i]])
-                //         }
-                //     }
-                //
-                // }
-
-                // console.log(JSON.parse(localStorage.getItem('plotFeatures')))
             }
         },
         checkLocalStorage: function(method, key, data){
