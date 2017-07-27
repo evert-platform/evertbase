@@ -149,71 +149,17 @@ class Fig:
     def return_data(self):
         return self.data, self.datamap
 
-    def window_data(self, domain_conv):
+    def window_data(self, domain):
 
-        start = datetime.datetime.fromtimestamp(domain_conv[0]).strftime('%Y-%m-%d %H:%M:%S')
-        end = datetime.datetime.fromtimestamp(domain_conv[1]).strftime('%Y-%m-%d %H:%M:%S')
         df = self.dataFrame
-        df = df[start <= df.timestamp]
-        df = df[df.timestamp <= end]
+        df = df[domain[0] <= df.timestamp]
+        df = df[df.timestamp <= domain[1]]
         df = df.reset_index(drop=True)
-        self.domain = domain_conv
+        self.domain = domain
 
         return df
 
     def __repr__(self, *args, **kwargs):
         return json.dumps({"data": self.data, "datamap": self.datamap})
 
-
-class Features:
-    """
-    Class for adding data features to a plot
-    """
-
-    def __init__(self, data):
-        """
-        
-        Parameters
-        ----------
-        data: list
-            The data must be in the following format.
-            For points:
-                [[['timestamp', 'Tagname: Name of feature'], [timestamp, feature_value]], ...]
-            
-            For Lines:
-            [[['timestamp', 'Tagname: Name of feature'], [timestamp_start, feature_value],
-                                                         [timestamp_end, feature_value]], ...]          
-            
-        """
-        self.data = data
-        self.datamap = self.create_datamap()
-
-    def create_datamap(self):
-        """
-        Maps data x-labels to y-labels.
-        
-        Returns
-        -------
-        
-        _map: list[dict]
-              List of dictionaries
-
-        """
-        _map = []
-        for _data in self.data:
-            _dict = dict()
-            x_name, y_name = _data[1]
-            _dict[y_name] = x_name
-            _map.append(_dict)
-
-        return _map
-
-    def plot_data(self):
-        """
-        
-        Returns
-        -------
-            datamap: list, data: list
-        """
-        return self.datamap, self.data
 
