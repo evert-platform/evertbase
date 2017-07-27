@@ -226,9 +226,11 @@ var plotController = (function() {
                     });
 
 
-            // socket.on("pluginFeaturesEmit", function(data){
-            //     plotController.uploadFeaturesData(data);
-            // });
+            socket.on("pluginFeaturesEmit", function(data){
+                console.log('pluginfeatures')
+                console.log(data)
+                // plotController.uploadFeaturesData(data);
+            });
             //
             socket.on("zoom_return", function(data){
                 updatePlot(data);
