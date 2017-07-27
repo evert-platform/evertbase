@@ -139,7 +139,6 @@ var plotController = (function() {
     return {
          // rendering of plot data
         createPlot: function (data) {
-            console.log(data);
             var plotData = data.data;
 
             var layout = {
@@ -155,7 +154,7 @@ var plotController = (function() {
                     fixedrange: true
                 }
             };
-// TODO: find a way to remove some of the buttons from hover bar.
+
             Plotly.newPlot(DOMStrings.plotArea, plotData, layout,
                 {
                     scrollZoom: true,
@@ -170,7 +169,18 @@ var plotController = (function() {
             var plotArea = document.getElementById('plot');
             plotArea.on('plotly_relayout', function(e){
                 console.log(e);
-                console.log(plotArea.data);
+                console.log(Object.keys(e));
+
+                if (_.has(e, 'xaxis.range[0]') && _.has(e, 'xaxis.range[1]')){
+                    console.log('Zoom event');
+                    var xmin = e['xaxis.range[0]'];
+                    var xmax = e['xaxis.range[1]'];
+                    socket.emit('zoom_event',
+                        {
+                            domain: [xmin, xmax],
+                            ids: $(DOMStrings.tags).val()
+                        });
+                }
             });
 
 
@@ -188,49 +198,12 @@ var plotController = (function() {
             controller.checkLocalStorage('set', 'plotFeatures', data);
 
 
-            if (data.domain !== null){
-                 data.domain = data.domain.map(function (d) {return new Date(d)} );
-
-                var dstart = data.domain[0];
-                var dend = data.domain[1];
-
-                var cstart = Math.floor(cdomain[0]/1000);
-                var cend = Math.floor(cdomain[1]/1000);
-
-            }
-
-            if ((+cstart === +dstart && +cend === +dend) || cdomain === undefined) {
-                var _datamap = data.datamap;
-
-                 _data.map(function (d) {
-                     for (var i=2; i<d.length; i++){
-                         d[i][0] = new Date(d[i][0]);
-                     }
-                     return d;
-                 });
-
-                _data.forEach(function(d, i) {
-                    var type = d.splice(0, 1)[0];
-                    features.push([type, d[0][1].replace(/(\u003A)|(\s)/g, "-")]);
-                    chart.load({
-                         xs: _datamap[i],
-                         rows: d,
-                         type: type
-                     });
-            })}
-
         },
         // delete plot from plot area
         deletePlot: function() {
         Plotly.purge(DOMStrings.plotArea);
         localStorage.setItem("plotData", undefined);
         // localStorage.setItem('plotDomain', undefined);
-        },
-        setDomain: function(cdomain) {
-
-            console.log(cdomain);
-
-            chart.zoom([new Date(cdomain[0]), new Date(cdomain[1])])
         },
         init: function () {
             var namespace = "/test";
@@ -245,9 +218,10 @@ var plotController = (function() {
             //     plotController.uploadFeaturesData(data);
             // });
             //
-            // socket.on("zoom_return", function(data){
-            //     updatePlot(data)
-            // });
+            socket.on("zoom_return", function(data){
+                // updatePlot(data)
+                console.log(data);
+            });
 
         }
     };
