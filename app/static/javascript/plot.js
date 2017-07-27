@@ -117,8 +117,23 @@ var UIController = (function () {
 // controller to handle plotting logic
 var plotController = (function() {
     "use strict";
-    var DOMStrings, chart, features, cdomain, socket, number_traces, self_relayout;
-    features = [];
+    var DOMStrings, chart, plotState, cdomain, socket, number_traces, self_relayout;
+    plotState = {
+        featureTraces: [],
+        dataTraces: [],
+        sumTraces: function(){return plotState.featureTraces.length + plotState.dataTraces.length},
+        numFeatures: function(){return plotState.featureTraces.length},
+        numData: function(){return plotState.dataTraces.length},
+        allDataTraceNumbers: function(){
+            var traces = [];
+            this.dataTraces.forEach(function(d){
+                traces.push(d.traceID)
+            });
+            return traces
+        }
+    };
+
+
     self_relayout = false;
 
 
@@ -130,7 +145,7 @@ var plotController = (function() {
         // if windows match new data is plotted
         var plotData = data.data;
 
-        Plotly.deleteTraces(DOMStrings.plotArea, number_traces);
+        Plotly.deleteTraces(DOMStrings.plotArea, plotState.allDataTraceNumbers());
         Plotly.addTraces(DOMStrings.plotArea, plotData);
 
 
@@ -147,10 +162,8 @@ var plotController = (function() {
         createPlot: function (data) {
             var plotData = data.data;
 
-            var N = plotData.length;
-            number_traces = Array.apply(null, {length: N}).map(Number.call, Number);
-
-            // number_traces = plotArea.length
+            plotState.featureTraces = [];
+            plotState.dataTraces = [];
 
             var layout = {
                 showlegend: true,
@@ -175,6 +188,13 @@ var plotController = (function() {
                     showTips: false,
                     modeBarButtonsToRemove: ['autoScale2d', 'resetScale2d', 'sendDataToCloud']
                 });
+
+            plotData.forEach(function(d, i){
+                plotState.dataTraces.push({
+                    name: d.name,
+                    traceID: i
+                })
+            });
 
             // Event listener for when plot is zoomed. Must be called after plot is created.
             var plotArea = document.getElementById('plot');
@@ -205,7 +225,17 @@ var plotController = (function() {
 
         uploadFeaturesData: function (data) {
 
-            var _data = data.data;
+            // var _data = data.data;
+            //
+            // if (_.has(featureTraces, data.name)){
+            //
+            // } else {
+            //
+            //     Plotly.addTraces(DOMStrings.plotArea, _data);
+            //     // featureTraces[data.name] =
+            //
+            // }
+
 
             controller.checkLocalStorage('set', 'plotFeatures', data);
 
@@ -227,9 +257,9 @@ var plotController = (function() {
 
 
             socket.on("pluginFeaturesEmit", function(data){
-                console.log('pluginfeatures')
-                console.log(data)
-                // plotController.uploadFeaturesData(data);
+                console.log('pluginfeatures');
+                console.log(data);
+                plotController.uploadFeaturesData(data);
             });
             //
             socket.on("zoom_return", function(data){
