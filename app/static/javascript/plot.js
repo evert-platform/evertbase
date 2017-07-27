@@ -117,8 +117,9 @@ var UIController = (function () {
 // controller to handle plotting logic
 var plotController = (function() {
     "use strict";
-    var DOMStrings, chart, features, cdomain, socket;
+    var DOMStrings, chart, features, cdomain, socket, number_traces, self_relayout;
     features = [];
+    self_relayout = false;
 
 
     DOMStrings = dataController.getDOMStrings();
@@ -129,17 +130,27 @@ var plotController = (function() {
         // if windows match new data is plotted
         var plotData = data.data;
 
+        Plotly.deleteTraces(DOMStrings.plotArea, number_traces);
+        Plotly.addTraces(DOMStrings.plotArea, plotData);
 
-        // localStorage.setItem("plotData", JSON.stringify({
-        //         data: newData,
-        //         datamap: data.datamap
-        //     }));
+
+        var old_plotData = localStorage.getItem('plotData');
+
+        localStorage.setItem("plotData", JSON.stringify({
+                data: plotData,
+                layout: old_plotData.layout
+            }));
     };
 
     return {
          // rendering of plot data
         createPlot: function (data) {
             var plotData = data.data;
+
+            var N = plotData.length;
+            number_traces = Array.apply(null, {length: N}).map(Number.call, Number);
+
+            // number_traces = plotArea.length
 
             var layout = {
                 showlegend: true,
@@ -171,7 +182,7 @@ var plotController = (function() {
                 console.log(e);
                 console.log(Object.keys(e));
 
-                if (_.has(e, 'xaxis.range[0]') && _.has(e, 'xaxis.range[1]')){
+                if (_.has(e, 'xaxis.range[0]') && _.has(e, 'xaxis.range[1]') && self_relayout === false){
                     console.log('Zoom event');
                     var xmin = e['xaxis.range[0]'];
                     var xmax = e['xaxis.range[1]'];
@@ -187,6 +198,7 @@ var plotController = (function() {
             localStorage.setItem("plotData", JSON.stringify({
                 data: plotData,
                 layout: layout
+
 
             }));
         },
@@ -219,8 +231,7 @@ var plotController = (function() {
             // });
             //
             socket.on("zoom_return", function(data){
-                // updatePlot(data)
-                console.log(data);
+                updatePlot(data);
             });
 
         }
