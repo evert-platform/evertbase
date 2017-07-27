@@ -4,9 +4,7 @@ from flask import current_app
 import configparser
 import os
 from sqlalchemy.exc import IntegrityError
-
 from .websockets import socketio
-from .plotting import Features
 from .models import PluginIds
 
 
@@ -141,9 +139,7 @@ def get_plugin_settings(plugin_name):
 
 
 def emit_feature_data(data, domain, plugin_name):
-    feature = Features(data)
-    datamap, data = feature.plot_data()
-    socketio.emit("pluginFeaturesEmit", {'data': data, 'datamap': datamap, 'domain': domain, 'name': plugin_name},
+    socketio.emit("pluginFeaturesEmit", {'data': data, 'name': plugin_name},
                   namespace='/test')
     return
 
