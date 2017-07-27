@@ -157,10 +157,13 @@ var plotController = (function() {
             };
 // TODO: find a way to remove some of the buttons from hover bar.
             Plotly.newPlot(DOMStrings.plotArea, plotData, layout,
-                {scrollZoom: true,
+                {
+                    scrollZoom: true,
                     boxZoom: false,
                     showLink: false,
-                    displayLogo: false
+                    displayLogo: false,
+                    showTips: false,
+                    modeBarButtonsToRemove: ['autoScale2d', 'resetScale2d', 'sendDataToCloud']
                 });
 
             // Event listener for when plot is zoomed. Must be called after plot is created.
