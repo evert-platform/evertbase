@@ -117,20 +117,21 @@ var UIController = (function () {
 // controller to handle plotting logic
 var plotController = (function() {
     "use strict";
-    var DOMStrings, chart, plotState, cdomain, socket, number_traces, self_relayout;
+    var DOMStrings, plotState, socket, self_relayout;
     plotState = {
-        featureTraces: [],
+        pluginNames: [],
+        pluginTraces: [],
         dataTraces: [],
         traces: [],
-        sumTraces: function(){return plotState.featureTraces.length + plotState.dataTraces.length},
-        numFeatures: function(){return plotState.featureTraces.length},
+        sumTraces: function(){return plotState.pluginTraces.length + plotState.dataTraces.length},
+        numFeatures: function(){return plotState.pluginTraces.length},
         numData: function(){return plotState.dataTraces.length},
         allDataTraceNumbers: function(){
             var traces = [];
             this.dataTraces.forEach(function(d){
-                traces.push(d.traceID)
+                traces.push(d.traceID);
             });
-            return traces
+            return traces;
         }
     };
 
@@ -165,8 +166,9 @@ var plotController = (function() {
         createPlot: function (data) {
             var plotData = data.data;
 
-            plotState.featureTraces = [];
+            plotState.pluginTraces = [];
             plotState.dataTraces = [];
+            plotState.pluginNames = [];
 
             var layout = {
                 showlegend: true,
@@ -226,6 +228,32 @@ var plotController = (function() {
         },
 
         uploadFeaturesData: function (data) {
+
+            if (plotState.pluginNames.length === 0) {
+                console.log('no plugins');
+
+                plotState.pluginNames.push(data.name);
+                var firstTraceIndex = plotState.numData();
+                var traceIds = [];
+                var traceNames = [];
+
+                data.data.forEach(function(d, i){
+                    traceIds.push(firstTraceIndex + i);
+                    traceNames.push(d.name);
+                });
+                plotState.pluginTraces.push({
+                    plugin: data.name,
+                    traceIDs: traceIds,
+                    traceNames: traceNames
+                });
+
+                console.log(plotState.pluginTraces);
+
+                Plotly.addTraces(DOMStrings.plotArea, data.data);
+
+            } else if (plotState.pluginNames.length !== 0) {
+                console.log('plugins data present')
+            }
 
 
 
