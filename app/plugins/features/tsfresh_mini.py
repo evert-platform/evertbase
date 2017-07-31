@@ -124,7 +124,10 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, *
             'name': feature_name,
             'x': [feature_timestamp[0], feature_timestamp[1]],
             'y': [feature_value, feature_value],
-            'mode': 'lines'
+            'mode': 'lines',
+            'line': {
+                'dash': 'dashdot'
+            }
         }
 
     else:
