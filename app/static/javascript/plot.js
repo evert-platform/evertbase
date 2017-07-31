@@ -121,6 +121,7 @@ var plotController = (function() {
     plotState = {
         featureTraces: [],
         dataTraces: [],
+        traces: [],
         sumTraces: function(){return plotState.featureTraces.length + plotState.dataTraces.length},
         numFeatures: function(){return plotState.featureTraces.length},
         numData: function(){return plotState.dataTraces.length},
@@ -144,9 +145,11 @@ var plotController = (function() {
 
         // if windows match new data is plotted
         var plotData = data.data;
+        console.log(plotState.allDataTraceNumbers());
+
 
         Plotly.deleteTraces(DOMStrings.plotArea, plotState.allDataTraceNumbers());
-        Plotly.addTraces(DOMStrings.plotArea, plotData);
+        Plotly.addTraces(DOMStrings.plotArea, plotData, plotState.allDataTraceNumbers());
 
 
         var old_plotData = localStorage.getItem('plotData');
@@ -190,6 +193,7 @@ var plotController = (function() {
                 });
 
             plotData.forEach(function(d, i){
+                plotState.traces.push(d.name, i);
                 plotState.dataTraces.push({
                     name: d.name,
                     traceID: i
@@ -218,26 +222,11 @@ var plotController = (function() {
             localStorage.setItem("plotData", JSON.stringify({
                 data: plotData,
                 layout: layout
-
-
             }));
         },
 
         uploadFeaturesData: function (data) {
 
-            // var _data = data.data;
-            //
-            // if (_.has(featureTraces, data.name)){
-            //
-            // } else {
-            //
-            //     Plotly.addTraces(DOMStrings.plotArea, _data);
-            //     // featureTraces[data.name] =
-            //
-            // }
-
-
-            controller.checkLocalStorage('set', 'plotFeatures', data);
 
 
         },
