@@ -261,6 +261,11 @@ var plotController = (function() {
                     Plotly.addTraces(DOMStrings.plotArea, data.data, previousTraceIDs);
                 }
 
+                else if (pluginDataIndex === -1) {
+                    console.log('pass');
+                    // TODO: add code to add plugin if others are also present
+                }
+
             }
 
 
