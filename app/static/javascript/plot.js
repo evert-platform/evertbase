@@ -344,36 +344,7 @@ var controller = (function () {
 
                 plotController.createPlot(data);
             }
-        },
-        checkLocalStorage: function(method, key, data){
-            var data = data || {};
+        }
 
-            if (method === "get"){
-                return (typeof localStorage.getItem(key) === undefined) ? false : JSON.parse(localStorage.getItem(key));
-            } else if (method === "set") {
-
-                if (key === "plotFeatures"){
-
-                    if (localStorage.getItem("plotFeatures")) {
-                        var features = JSON.parse(localStorage.getItem("plotFeatures"));
-                        var data_name = data.name;
-                        features[data_name] = data;
-                        localStorage.setItem("plotFeatures", JSON.stringify(features));
-
-                    } else {
-                        var features = {};
-                        var data_name = data.name;
-                        features[data_name] = data;
-
-                        localStorage.setItem("plotFeatures", JSON.stringify(features));
-
-                    }
-
-                } else {
-                    localStorage.setItem(key, JSON.stringify(data));
-                }
-            }
-
-    }
     };
 })();
