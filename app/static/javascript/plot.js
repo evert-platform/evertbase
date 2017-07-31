@@ -230,7 +230,6 @@ var plotController = (function() {
         uploadFeaturesData: function (data) {
 
             if (plotState.pluginNames.length === 0) {
-                console.log('no plugins');
 
                 plotState.pluginNames.push(data.name);
                 var firstTraceIndex = plotState.numData();
@@ -247,12 +246,21 @@ var plotController = (function() {
                     traceNames: traceNames
                 });
 
-                console.log(plotState.pluginTraces);
 
                 Plotly.addTraces(DOMStrings.plotArea, data.data);
 
             } else if (plotState.pluginNames.length !== 0) {
-                console.log('plugins data present')
+                console.log('plugins data present');
+
+                var pluginDataIndex = _.indexOf(plotState.pluginNames, data.name);
+
+                if (pluginDataIndex !== -1) {
+                    var previousTraceIDs = plotState.pluginTraces[pluginDataIndex].traceIDs;
+
+                    Plotly.deleteTraces(DOMStrings.plotArea, previousTraceIDs);
+                    Plotly.addTraces(DOMStrings.plotArea, data.data, previousTraceIDs);
+                }
+
             }
 
 
