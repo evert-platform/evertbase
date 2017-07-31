@@ -135,12 +135,7 @@ var plotController = (function() {
         }
     };
 
-
-    self_relayout = false;
-
-
     DOMStrings = dataController.getDOMStrings();
-
 
     var updatePlot = function(data) {
 
@@ -148,12 +143,10 @@ var plotController = (function() {
         var plotData = data.data;
         console.log(plotState.allDataTraceNumbers());
 
-
         Plotly.deleteTraces(DOMStrings.plotArea, plotState.allDataTraceNumbers());
         Plotly.addTraces(DOMStrings.plotArea, plotData, plotState.allDataTraceNumbers());
 
-
-        var old_plotData = localStorage.getItem('plotData');
+        var old_plotData = localStorage.getItem("plotData");
 
         localStorage.setItem("plotData", JSON.stringify({
                 data: plotData,
@@ -191,7 +184,7 @@ var plotController = (function() {
                     showLink: false,
                     displayLogo: false,
                     showTips: false,
-                    modeBarButtonsToRemove: ['autoScale2d', 'resetScale2d', 'sendDataToCloud']
+                    modeBarButtonsToRemove: ["autoScale2d", "resetScale2d", "sendDataToCloud"]
                 });
 
             plotData.forEach(function(d, i){
@@ -203,16 +196,16 @@ var plotController = (function() {
             });
 
             // Event listener for when plot is zoomed. Must be called after plot is created.
-            var plotArea = document.getElementById('plot');
-            plotArea.on('plotly_relayout', function(e){
+            var plotArea = document.getElementById("plot");
+            plotArea.on("plotly_relayout", function(e){
                 console.log(e);
                 console.log(Object.keys(e));
 
-                if (_.has(e, 'xaxis.range[0]') && _.has(e, 'xaxis.range[1]') && self_relayout === false){
-                    console.log('Zoom event');
-                    var xmin = e['xaxis.range[0]'];
-                    var xmax = e['xaxis.range[1]'];
-                    socket.emit('zoom_event',
+                if (_.has(e, "xaxis.range[0]") && _.has(e, "xaxis.range[1]") && self_relayout === false){
+                    console.log("Zoom event");
+                    var xmin = e["xaxis.range[0]"];
+                    var xmax = e["xaxis.range[1]"];
+                    socket.emit("zoom_event",
                         {
                             domain: [xmin, xmax],
                             ids: $(DOMStrings.tags).val()
@@ -250,7 +243,7 @@ var plotController = (function() {
                 Plotly.addTraces(DOMStrings.plotArea, data.data);
 
             } else if (plotState.pluginNames.length !== 0) {
-                console.log('plugins data present');
+                console.log("plugins data present");
 
                 var pluginDataIndex = _.indexOf(plotState.pluginNames, data.name);
 
@@ -262,7 +255,7 @@ var plotController = (function() {
                 }
 
                 else if (pluginDataIndex === -1) {
-                    console.log('pass');
+                    console.log("pass");
                     // TODO: add code to add plugin if others are also present
                 }
 
@@ -287,7 +280,7 @@ var plotController = (function() {
 
 
             socket.on("pluginFeaturesEmit", function(data){
-                console.log('pluginfeatures');
+                console.log("pluginfeatures");
                 console.log(data);
                 plotController.uploadFeaturesData(data);
             });
@@ -336,21 +329,18 @@ var controller = (function () {
             UIController.init();
             setupEventListners();
 
-            console.log('init');
-            if (localStorage.getItem('plotData')||false) {
-                var data = JSON.parse(localStorage.getItem('plotData'));
-                var formData = JSON.parse(localStorage.getItem('plotForm'));
-                console.log('data: ', data);
-                console.log('form data:', formData);
-
+            console.log("init");
+            if (localStorage.getItem("plotData")||false) {
+                var data = JSON.parse(localStorage.getItem("plotData"));
+                var formData = JSON.parse(localStorage.getItem("plotForm"));
                 DOMStrings = dataController.getDOMStrings();
 
                 $(DOMStrings.plant).val(formData.plant);
-                $(DOMStrings.plant).trigger('chosen:updated');
+                $(DOMStrings.plant).trigger("chosen:updated");
                 $(DOMStrings.units).val(formData.units);
-                $(DOMStrings.units).trigger('chosen:updated');
+                $(DOMStrings.units).trigger("chosen:updated");
                 $(DOMStrings.tags).val(formData.tags);
-                $(DOMStrings.tags).trigger('chosen:updated');
+                $(DOMStrings.tags).trigger("chosen:updated");
 
                 plotController.createPlot(data);
             }
@@ -358,29 +348,29 @@ var controller = (function () {
         checkLocalStorage: function(method, key, data){
             var data = data || {};
 
-            if (method === 'get'){
+            if (method === "get"){
                 return (typeof localStorage.getItem(key) === undefined) ? false : JSON.parse(localStorage.getItem(key));
-            } else if (method === 'set') {
+            } else if (method === "set") {
 
-                if (key === 'plotFeatures'){
+                if (key === "plotFeatures"){
 
-                    if (localStorage.getItem('plotFeatures')) {
-                        var features = JSON.parse(localStorage.getItem('plotFeatures'));
+                    if (localStorage.getItem("plotFeatures")) {
+                        var features = JSON.parse(localStorage.getItem("plotFeatures"));
                         var data_name = data.name;
                         features[data_name] = data;
-                        localStorage.setItem('plotFeatures', JSON.stringify(features))
+                        localStorage.setItem("plotFeatures", JSON.stringify(features));
 
                     } else {
                         var features = {};
                         var data_name = data.name;
                         features[data_name] = data;
 
-                        localStorage.setItem('plotFeatures', JSON.stringify(features))
+                        localStorage.setItem("plotFeatures", JSON.stringify(features));
 
                     }
 
                 } else {
-                    localStorage.setItem(key, JSON.stringify(data))
+                    localStorage.setItem(key, JSON.stringify(data));
                 }
             }
 
