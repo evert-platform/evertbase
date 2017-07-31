@@ -161,15 +161,15 @@ def extract_features(_initialdf_, config):
     DF_nostamp = deepcopy(_initialdf_)
     del DF_nostamp['timestamp']
     headers = list(DF_nostamp)
-
-    for i in headers:
-        minmax = _moving_filter_(_initialdf_[i].as_matrix().tolist(), config)
-        for j in range(len(minmax)):
-            minmax[j].insert(0, i)
-            feature = _format_data_(feature_name=minmax[j][-1],
-                                    feature_timestamp=_initialdf_['timestamp'].iloc[int(minmax[j][1])],
-                                    feature_value=minmax[j][2], header_name=minmax[j][0])
-            features.append(feature)
+    #
+    # for i in headers:
+    #     minmax = _moving_filter_(_initialdf_[i].as_matrix().tolist(), config)
+    #     for j in range(len(minmax)):
+    #         minmax[j].insert(0, i)
+    #         feature = _format_data_(feature_name=minmax[j][-1],
+    #                                 feature_timestamp=_initialdf_['timestamp'].iloc[int(minmax[j][1])],
+    #                                 feature_value=minmax[j][2], header_name=minmax[j][0])
+    #         features.append(feature)
 
     _features_ = []
     _features_ += _global_max_(DF_nostamp) + _global_min_(DF_nostamp) + _median_(DF_nostamp) + _mean_(DF_nostamp)
