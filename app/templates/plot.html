@@ -2,9 +2,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}Plot{% endblock %}
 {% block head %}
-    <link href="{{ url_for('static', filename='css/c3.min.css') }}" rel="stylesheet" type="text/css">
 
-    <script src="{{ url_for('static', filename='javascript/c3.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/plot.js') }}?v=989" type="text/javascript"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='javascript/plotly.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='javascript/lodash.min.js') }}"></script>
