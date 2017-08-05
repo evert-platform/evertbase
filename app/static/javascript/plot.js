@@ -123,7 +123,6 @@ var plotController = (function() {
         pluginTraces: [],
         dataTraces: [],
         traces: [],
-        sumTraces: function(){return plotState.pluginTraces.length + plotState.dataTraces.length},
         numFeatures: function(){return plotState.pluginTraces.length},
         numData: function(){return plotState.dataTraces.length},
         allDataTraceNumbers: function(){
@@ -192,7 +191,7 @@ var plotController = (function() {
                 plotState.dataTraces.push({
                     name: d.name,
                     traceID: i
-                })
+                });
             });
 
             // Event listener for when plot is zoomed. Must be called after plot is created.
