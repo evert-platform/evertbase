@@ -232,12 +232,14 @@ var plotController = (function() {
             var plotArea = document.getElementById("plot");
             plotArea.on("plotly_relayout", function(e){
                 console.log(e);
-                console.log(Object.keys(e));
+                console.log(Object.keys(e)[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g));
+                var keys = Object.keys(e);
 
-                if (_.has(e, "xaxis.range[0]") && _.has(e, "xaxis.range[1]") && self_relayout === false){
+                if (keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g) &&
+                    keys[1].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)){
                     console.log("Zoom event");
-                    var xmin = e["xaxis.range[0]"];
-                    var xmax = e["xaxis.range[1]"];
+                    var xmin = e[keys[0]];
+                    var xmax = e[keys[1]];
                     socket.emit("zoom_event",
                         {
                             domain: [xmin, xmax],
