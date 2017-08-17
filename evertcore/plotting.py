@@ -113,11 +113,12 @@ class Fig:
     Creates an instance of the Evert Fig class. This class is passed to the front end to be rendered.
     """
 
-    def __init__(self):
+    def __init__(self, subplots=False):
         self.data = None
         self.datamap = dict()
         self.dataFrame = pd.DataFrame()
         self.domain = []
+        self.subplots = subplots
 
     def prepare_data(self, data, threshold=0):
         """
@@ -137,14 +138,28 @@ class Fig:
         data = largest_triangle_three_buckets(data, threshold)
         self.dataFrame = data
         data_names = data.columns.values
-
         data_plot = []
-        for n in data_names:
-            if n != 'timestamp':
-                data_plot.append(dict(x=list(data['timestamp'].values), y=list(data[n].values), name=n))
-        print(data_plot)
-        self.data = data_plot
-        return
+
+        if self.subplots:
+            print('subplots')
+            for i, n in enumerate(data_names):
+                if n != 'timestamp':
+                    data_plot.append(dict(x=list(data['timestamp'].values),
+                                          y=list(data[n].values),
+                                          name=n,
+                                          xaxis='x{}'.format(i),
+                                          yaxis='y{}'.format(i)))
+            self.data = data_plot
+            return
+
+        elif not self.subplots:
+
+            for n in data_names:
+                if n != 'timestamp':
+                    data_plot.append(dict(x=list(data['timestamp'].values), y=list(data[n].values), name=n))
+
+            self.data = data_plot
+            return
 
     def return_data(self):
         return self.data, self.datamap
