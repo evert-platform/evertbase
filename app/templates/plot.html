@@ -31,19 +31,21 @@
                  </button>
               </div>
          </fieldset>
-{#         <fieldset class="col-xs-7 col-sm-7 col-md-7 col-lg-7" style="display: inline">#}
-{#             <legend>Plot Options</legend>#}
+         <fieldset class="col-xs-7 col-sm-7 col-md-7 col-lg-7" style="display: inline">
+             <legend>Plot Options</legend>
 {#             <div style="display: block">#}
 {#                     Plot type: {{ form.selectType(class='form-control') }}#}
 {#             </div>#}
-{#         </fieldset>#}
+             <div class="checkbox">
+                 <label><input type="checkbox" id="subplots-check">Subplots</label>
+             </div>
+
+         </fieldset>
 
 
      </form>
 </div>
 
-<div id="plot"></div>
-</div>
-
+<div id="plot" style="min-height: 600px"></div>
 
 {% endblock %}
