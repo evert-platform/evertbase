@@ -17,7 +17,8 @@ var dataController = (function () {
         type: "select#plotType",
         submitBtn: "input#Submit",
         deleteBtn: "button#deleteplot",
-        plotArea: "plot"
+        plotArea: "plot",
+        subplotsCheck: 'input#subplots-check'
     };
 
     return {
@@ -28,7 +29,8 @@ var dataController = (function () {
                 plant: $(DOMStrings.plant).val(),
                 units: $(DOMStrings.units).val(),
                 tags: $(DOMStrings.tags).val(),
-                type: $(DOMStrings.type).val()
+                type: $(DOMStrings.type).val(),
+                subplotCheck: $(DOMStrings.subplotsCheck).is(':checked')
             };
 
             localStorage.setItem("plotForm", JSON.stringify({
@@ -157,24 +159,56 @@ var plotController = (function() {
          // rendering of plot data
         createPlot: function (data) {
             var plotData = data.data;
+            var layout;
 
             plotState.pluginTraces = [];
             plotState.dataTraces = [];
             plotState.pluginNames = [];
 
-            var layout = {
-                showlegend: true,
-                xaxis : {
-                    title: "timestamp",
-                    showline: true,
-                    ticks: "outside"
-                },
-                yaxis: {
-                    showline: true,
-                    ticks: "outside",
-                    fixedrange: true
-                }
-            };
+
+
+            if ($(DOMStrings.subplotsCheck).is(':checked')){
+                var frac = 1/plotData.length;
+                layout = {
+                    showlegend: true
+                };
+                plotData.forEach(function(d, i){
+                    layout['xaxis'.concat(i+1)] = {
+                        title: i === 0 ? "Timestamp": undefined,
+                        showline: true,
+                        ticks: "outside",
+                        anchor: 'y'+(i+1)
+                    };
+                    layout['yaxis'.concat(i+1)]= {
+                        showline: true,
+                        ticks: "outside",
+                        fixedrange: true,
+                        title: d.name,
+                        domain: [frac*i + 0.09 , frac*(i+1)]
+                    }
+                });
+                console.log(layout);
+
+            } else if (!$(DOMStrings.subplotsCheck).is(':checked')){
+                layout = {
+                    showlegend: true,
+                    xaxis : {
+                        title: "timestamp",
+                        showline: true,
+                        ticks: "outside"
+                    },
+                    yaxis: {
+                        showline: true,
+                        ticks: "outside",
+                        fixedrange: true
+                    }
+                };
+                console.log(layout);
+            }
+
+            console.log(plotData);
+
+
 
             Plotly.newPlot(DOMStrings.plotArea, plotData, layout,
                 {
