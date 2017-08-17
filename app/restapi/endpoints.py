@@ -11,11 +11,12 @@ _threshold = 700
 @restapi.route('/_plotdata', methods=['GET'])
 def _plotdata():
     tags = request.args.getlist('tags[]')
+    subplots = request.args.get('subplotCheck', False, type=bool)
     tag_data = evert.data.tag_data(tags)
-    fig = evert.plotting.Fig()
+    fig = evert.plotting.Fig(subplots=subplots)
     fig.prepare_data(tag_data, _threshold)
     data, datamap = fig.return_data()
-    evert.plugins.emit_event('zoom_event', fig.dataFrame, None)
+    # evert.plugins.emit_event('zoom_event', fig.dataFrame, None)
 
     return jsonify(success=True, data=data, datamap=datamap)
 
