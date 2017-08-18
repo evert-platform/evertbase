@@ -113,12 +113,13 @@ class Fig:
     Creates an instance of the Evert Fig class. This class is passed to the front end to be rendered.
     """
 
-    def __init__(self, subplots=False):
+    def __init__(self, subplots=False, link_xaxes=False):
         self.data = None
         self.datamap = dict()
         self.dataFrame = pd.DataFrame()
         self.domain = []
         self.subplots = subplots
+        self.link_xaxes = link_xaxes
 
     def prepare_data(self, data, threshold=0):
         """
@@ -144,11 +145,20 @@ class Fig:
             print('subplots')
             for i, n in enumerate(data_names):
                 if n != 'timestamp':
-                    data_plot.append(dict(x=list(data['timestamp'].values),
-                                          y=list(data[n].values),
-                                          name=n,
-                                          xaxis='x{}'.format(i),
-                                          yaxis='y{}'.format(i)))
+                    if self.link_xaxes:
+                        data_plot.append(dict(x=list(data['timestamp'].values),
+                                              y=list(data[n].values),
+                                              name=n,
+                                              xaxis='x'.format(i),
+                                              yaxis='y{}'.format(i)))
+                    else:
+                        data_plot.append(dict(x=list(data['timestamp'].values),
+                                              y=list(data[n].values),
+                                              name=n,
+                                              xaxis='x{}'.format(i),
+                                              yaxis='y{}'.format(i)))
+                else:
+                    pass
             self.data = data_plot
             return
 
