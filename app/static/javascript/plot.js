@@ -18,7 +18,9 @@ var dataController = (function () {
         submitBtn: "input#Submit",
         deleteBtn: "button#deleteplot",
         plotArea: "plot",
-        subplotsCheck: 'input#subplots-check'
+        subplotsCheck: 'input#subplots-check',
+        linkXaxesValue: 'input#linkXaxesValue',
+        linkXaxisCheckbox: 'div#linkXcheckbox'
     };
 
     return {
@@ -30,7 +32,8 @@ var dataController = (function () {
                 units: $(DOMStrings.units).val(),
                 tags: $(DOMStrings.tags).val(),
                 type: $(DOMStrings.type).val(),
-                subplotCheck: $(DOMStrings.subplotsCheck).is(':checked')
+                subplotCheck: $(DOMStrings.subplotsCheck).is(':checked'),
+                linkXaxes: $(DOMStrings.linkXaxesValue).is(':checked')
             };
 
             localStorage.setItem("plotForm", JSON.stringify({
@@ -87,6 +90,7 @@ var UIController = (function () {
             $(DOMStrings.units).chosen({width: "100%"});
             $(DOMStrings.tags).chosen({width: "100%"});
             $(DOMStrings.type).chosen({width: "100%"});
+
         },
         // setup of all select elements when plant is changed
         plantSetup: function (data) {
@@ -172,21 +176,45 @@ var plotController = (function() {
                 layout = {
                     showlegend: true
                 };
-                plotData.forEach(function(d, i){
-                    layout['xaxis'.concat(i+1)] = {
-                        title: i === 0 ? "Timestamp": undefined,
-                        showline: true,
-                        ticks: "outside",
-                        anchor: 'y'+(i+1)
-                    };
-                    layout['yaxis'.concat(i+1)]= {
-                        showline: true,
-                        ticks: "outside",
-                        fixedrange: true,
-                        title: d.name,
-                        domain: [frac*i + 0.09 , frac*(i+1)]
-                    }
-                });
+
+                if (!$(DOMStrings.linkXaxesValue).is(":checked")){
+                    plotData.forEach(function(d, i){
+                        layout['xaxis'.concat(i+1)] = {
+                            title: i === 0 ? "Timestamp": undefined,
+                            showline: true,
+                            ticks: "outside",
+                            anchor: 'y'+(i+1)
+                        };
+                        layout['yaxis'.concat(i+1)]= {
+                            showline: true,
+                            ticks: "outside",
+                            fixedrange: true,
+                            title: d.name,
+                            domain: [frac*i + 0.09 , frac*(i+1)]
+                        }
+                    });
+
+                } else {
+
+                    layout['xaxis'] = {
+                            title: "Timestamp",
+                            showline: true,
+                            ticks: "outside"
+
+                        };
+
+                    plotData.forEach(function(d, i) {
+                        layout['yaxis'.concat(i + 1)]= {
+                            showline: true,
+                            ticks: "outside",
+                            fixedrange: true,
+                            title: d.name,
+                            domain: [frac*i + 0.09 , frac*(i+1)]
+                        }
+                    });
+                }
+
+
                 console.log(layout);
 
             } else if (!$(DOMStrings.subplotsCheck).is(':checked')){
@@ -354,6 +382,15 @@ var controller = (function () {
 
         // Event listener for delete button
         $(DOMStrings.deleteBtn).on("click", plotController.deletePlot);
+
+        // Event listener for subplots check button
+        $(DOMStrings.subplotsCheck).on('click', function(){
+            if ($(this).is(':checked')){
+                $(DOMStrings.linkXaxisCheckbox).show();
+            } else {
+                $(DOMStrings.linkXaxisCheckbox).hide()
+            }
+        })
 
 
 
