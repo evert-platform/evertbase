@@ -10,8 +10,10 @@ _threshold = 700
 # this retrieves the data that needs to be plotted and returns the data
 @restapi.route('/_plotdata', methods=['GET'])
 def _plotdata():
+
     tags = request.args.getlist('tags[]')
-    subplots = request.args.get('subplotCheck', False, type=bool)
+    subplots = request.args.get('subplotCheck', 'false', type=str)
+    subplots = False if subplots == 'false' else True
     tag_data = evert.data.tag_data(tags)
     fig = evert.plotting.Fig(subplots=subplots)
     fig.prepare_data(tag_data, _threshold)
