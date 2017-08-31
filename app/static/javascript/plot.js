@@ -123,7 +123,7 @@ var UIController = (function () {
 // controller to handle plotting logic
 var plotController = (function() {
     "use strict";
-    var DOMStrings, plotState, socket, self_relayout;
+    var DOMStrings, plotState, socket, self_relayout, stateconstructor;
     plotState = {
         pluginNames: [],
         pluginTraces: [],
@@ -139,6 +139,8 @@ var plotController = (function() {
             return traces;
         }
     };
+
+    stateconstructor = new evertState();
 
     DOMStrings = dataController.getDOMStrings();
 
@@ -164,13 +166,17 @@ var plotController = (function() {
         createPlot: function (data) {
             var plotData = data.data;
             var layout;
+            console.log(new evertTrace(plotData[0].name, plotData[0].x, plotData[0].y, plotData[0].xaxis, plotData[0].yaxis));
 
             plotState.pluginTraces = [];
             plotState.dataTraces = [];
             plotState.pluginNames = [];
 
+            plotData.forEach(function(d, i){
+               stateconstructor.addTrace(new evertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis))
+            });
 
-
+            console.log(stateconstructor);
             if ($(DOMStrings.subplotsCheck).is(':checked')){
                 var frac = 1/plotData.length;
                 layout = {
@@ -213,9 +219,6 @@ var plotController = (function() {
                         }
                     });
                 }
-
-
-                console.log(layout);
 
             } else if (!$(DOMStrings.subplotsCheck).is(':checked')){
                 layout = {
