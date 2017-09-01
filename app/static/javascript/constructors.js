@@ -10,14 +10,18 @@ function EvertPlotState(){
     this.traces = [];
     this.subplots = false;
     this.linkedXAxis = false;
+    this.plotLayout = {};
 
 
     this.addTrace = function(trace){
-        this.traces.push(trace)
+        this.traces.push(trace);
     };
 
-    this.clearTraces = function () {
-        this.traces = []
+    this.resetState = function () {
+        this.traces = [];
+        this.subplots = false;
+        this.linkedXAxis = false;
+        this.plotLayout = {};
     };
 
 }
