@@ -123,7 +123,8 @@ var UIController = (function () {
 // controller to handle plotting logic
 var plotController = (function() {
     "use strict";
-    var DOMStrings, plotState, socket, self_relayout, stateconstructor;
+    var DOMStrings, plotState, socket, plotStateObject;
+    plotStateObject = new EvertPlotState();
     plotState = {
         pluginNames: [],
         pluginTraces: [],
@@ -164,15 +165,18 @@ var plotController = (function() {
     return {
          // rendering of plot data
         createPlot: function (data) {
+
             var plotData = data.data;
             var layout;
-
             plotState.pluginTraces = [];
             plotState.dataTraces = [];
             plotState.pluginNames = [];
 
+            plotData.forEach(function(d, i) {
+                plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis))
+            });
+            console.log(plotStateObject);
 
-            console.log(stateconstructor);
             if ($(DOMStrings.subplotsCheck).is(':checked')){
                 var frac = 1/plotData.length;
                 layout = {
@@ -232,9 +236,6 @@ var plotController = (function() {
                 };
                 console.log(layout);
             }
-
-            console.log(plotData);
-
 
 
             Plotly.newPlot(DOMStrings.plotArea, plotData, layout,
@@ -329,6 +330,7 @@ var plotController = (function() {
         // delete plot from plot area
         deletePlot: function() {
         Plotly.purge(DOMStrings.plotArea);
+        plotStateObject.resetState();
         localStorage.setItem("plotData", undefined);
         // localStorage.setItem('plotDomain', undefined);
         },
@@ -351,6 +353,9 @@ var plotController = (function() {
                 updatePlot(data);
             });
 
+        },
+        getPlotState: function(){
+            return plotStateObject
         }
     };
 })();
@@ -358,9 +363,10 @@ var plotController = (function() {
 // general plot page controller
 var controller = (function () {
     "use strict";
-    var DOMStrings;
+    var DOMStrings, plotStateObject;
 
     DOMStrings = dataController.getDOMStrings();
+    plotStateObject = plotController.getPlotState();
 
     // setting up event listeners
     var setupEventListners = function(){
@@ -386,8 +392,10 @@ var controller = (function () {
         $(DOMStrings.subplotsCheck).on('click', function(){
             if ($(this).is(':checked')){
                 $(DOMStrings.linkXaxisCheckbox).show();
+                plotStateObject.subplots = true;
             } else {
-                $(DOMStrings.linkXaxisCheckbox).hide()
+                $(DOMStrings.linkXaxisCheckbox).hide();
+                plotStateObject.subplots = false;
             }
         })
 
