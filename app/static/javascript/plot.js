@@ -7,7 +7,8 @@ $(document).ready(function () {
 
 // Data controller for plotting page
 var dataController = (function () {
-    var data, DOMStrings;
+    var data, DOMStrings, plotState;
+    // plotState = plotController.getPlotState();
 
     // jQuery selectors for DOM objects
     DOMStrings = {
@@ -18,9 +19,9 @@ var dataController = (function () {
         submitBtn: "input#Submit",
         deleteBtn: "button#deleteplot",
         plotArea: "plot",
-        subplotsCheck: 'input#subplots-check',
-        linkXaxesValue: 'input#linkXaxesValue',
-        linkXaxisCheckbox: 'div#linkXcheckbox'
+        subplotsCheck: "input#subplots-check",
+        linkXaxesValue: "input#linkXaxesValue",
+        linkXaxisCheckbox: "div#linkXcheckbox"
     };
 
     return {
@@ -32,16 +33,9 @@ var dataController = (function () {
                 units: $(DOMStrings.units).val(),
                 tags: $(DOMStrings.tags).val(),
                 type: $(DOMStrings.type).val(),
-                subplotCheck: $(DOMStrings.subplotsCheck).is(':checked'),
-                linkXaxes: $(DOMStrings.linkXaxesValue).is(':checked')
+                subplotCheck: $(DOMStrings.subplotsCheck).is(":checked"),
+                linkXaxes: $(DOMStrings.linkXaxesValue).is(":checked")
             };
-
-            localStorage.setItem("plotForm", JSON.stringify({
-                plant: data.plant,
-                units: data.units,
-                tags: data.tags
-            }));
-
             $.getJSON(route, data, callback);
         },
         // return the DOMStrings object
@@ -123,43 +117,20 @@ var UIController = (function () {
 // controller to handle plotting logic
 var plotController = (function() {
     "use strict";
-    var DOMStrings, plotState, socket, plotStateObject;
+    var DOMStrings, socket, plotStateObject;
     plotStateObject = new EvertPlotState();
-    plotState = {
-        pluginNames: [],
-        pluginTraces: [],
-        dataTraces: [],
-        traces: [],
-        numFeatures: function(){return plotState.pluginTraces.length},
-        numData: function(){return plotState.dataTraces.length},
-        allDataTraceNumbers: function(){
-            var traces = [];
-            this.dataTraces.forEach(function(d){
-                traces.push(d.traceID);
-            });
-            return traces;
-        }
-    };
-
-
-
     DOMStrings = dataController.getDOMStrings();
 
     var updatePlot = function(data) {
 
         // if windows match new data is plotted
         var plotData = data.data;
-        console.log(plotState.allDataTraceNumbers());
 
-        Plotly.deleteTraces(DOMStrings.plotArea, plotState.allDataTraceNumbers());
-        Plotly.addTraces(DOMStrings.plotArea, plotData, plotState.allDataTraceNumbers());
+        // Plotly.deleteTraces(DOMStrings.plotArea, plotState.allDataTraceNumbers());
+        // Plotly.addTraces(DOMStrings.plotArea, plotData, plotState.allDataTraceNumbers());
 
         var old_plotData = localStorage.getItem("plotData");
 
-        localStorage.setItem("plotData", JSON.stringify({
-                data: plotData,
-                layout: old_plotData.layout
-            }));
     };
 
     return {
@@ -168,14 +139,18 @@ var plotController = (function() {
 
             var plotData = data.data;
             var layout;
-            plotState.pluginTraces = [];
-            plotState.dataTraces = [];
-            plotState.pluginNames = [];
+
+            plotStateObject.resetState();
 
             plotData.forEach(function(d, i) {
-                plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis))
+                plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis));
             });
-            console.log(plotStateObject);
+
+            plotStateObject.formData = {
+                plant: $(DOMStrings.plant).val(),
+                units: $(DOMStrings.units).val(),
+                tags: $(DOMStrings.tags).val()
+            };
 
             if ($(DOMStrings.subplotsCheck).is(':checked')){
                 var frac = 1/plotData.length;
@@ -216,7 +191,7 @@ var plotController = (function() {
                             fixedrange: true,
                             title: d.name,
                             domain: [frac*i + 0.09 , frac*(i+1)]
-                        }
+                        };
                     });
                 }
 
@@ -234,8 +209,9 @@ var plotController = (function() {
                         fixedrange: true
                     }
                 };
-                console.log(layout);
             }
+
+            plotStateObject.plotLayout = layout;
 
 
             Plotly.newPlot(DOMStrings.plotArea, plotData, layout,
@@ -248,19 +224,9 @@ var plotController = (function() {
                     modeBarButtonsToRemove: ["autoScale2d", "resetScale2d", "sendDataToCloud"]
                 });
 
-            plotData.forEach(function(d, i){
-                plotState.traces.push(d.name, i);
-                plotState.dataTraces.push({
-                    name: d.name,
-                    traceID: i
-                });
-            });
-
             // Event listener for when plot is zoomed. Must be called after plot is created.
             var plotArea = document.getElementById("plot");
             plotArea.on("plotly_relayout", function(e){
-                console.log(e);
-                console.log(Object.keys(e)[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g));
                 var keys = Object.keys(e);
 
                 if (keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g) &&
@@ -277,52 +243,49 @@ var plotController = (function() {
             });
 
 
-            localStorage.setItem("plotData", JSON.stringify({
-                data: plotData,
-                layout: layout
-            }));
+            localStorage.setItem("plotState", JSON.stringify(plotStateObject.writeState()));
         },
 
         uploadFeaturesData: function (data) {
 
-            if (plotState.pluginNames.length === 0) {
+            // if (plotState.pluginNames.length === 0) {
+            //
+            //     plotState.pluginNames.push(data.name);
+            //     var firstTraceIndex = plotState.numData();
+            //     var traceIds = [];
+            //     var traceNames = [];
+            //
+            //     data.data.forEach(function(d, i){
+            //         traceIds.push(firstTraceIndex + i);
+            //         traceNames.push(d.name);
+            //     });
+            //     plotState.pluginTraces.push({
+            //         plugin: data.name,
+            //         traceIDs: traceIds,
+            //         traceNames: traceNames
+            //     });
+            //
+            //
+            //     Plotly.addTraces(DOMStrings.plotArea, data.data);
 
-                plotState.pluginNames.push(data.name);
-                var firstTraceIndex = plotState.numData();
-                var traceIds = [];
-                var traceNames = [];
-
-                data.data.forEach(function(d, i){
-                    traceIds.push(firstTraceIndex + i);
-                    traceNames.push(d.name);
-                });
-                plotState.pluginTraces.push({
-                    plugin: data.name,
-                    traceIDs: traceIds,
-                    traceNames: traceNames
-                });
-
-
-                Plotly.addTraces(DOMStrings.plotArea, data.data);
-
-            } else if (plotState.pluginNames.length !== 0) {
-                console.log("plugins data present");
-
-                var pluginDataIndex = _.indexOf(plotState.pluginNames, data.name);
-
-                if (pluginDataIndex !== -1) {
-                    var previousTraceIDs = plotState.pluginTraces[pluginDataIndex].traceIDs;
-
-                    Plotly.deleteTraces(DOMStrings.plotArea, previousTraceIDs);
-                    Plotly.addTraces(DOMStrings.plotArea, data.data, previousTraceIDs);
-                }
-
-                else if (pluginDataIndex === -1) {
-                    console.log("pass");
-                    // TODO: add code to add plugin if others are also present
-                }
-
-            }
+            // } else if (plotState.pluginNames.length !== 0) {
+            //     console.log("plugins data present");
+            //
+            //     var pluginDataIndex = _.indexOf(plotState.pluginNames, data.name);
+            //
+            //     if (pluginDataIndex !== -1) {
+            //         var previousTraceIDs = plotState.pluginTraces[pluginDataIndex].traceIDs;
+            //
+            //         Plotly.deleteTraces(DOMStrings.plotArea, previousTraceIDs);
+            //         Plotly.addTraces(DOMStrings.plotArea, data.data, previousTraceIDs);
+            //     }
+            //
+            //     else if (pluginDataIndex === -1) {
+            //         console.log("pass");
+            //         // TODO: add code to add plugin if others are also present
+            //     }
+            //
+            // }
 
 
 
@@ -335,27 +298,27 @@ var plotController = (function() {
         // localStorage.setItem('plotDomain', undefined);
         },
         init: function () {
-            var namespace = "/test";
-            socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port + namespace);
-
-            socket.on("connect", function() {
-                        console.log("connected");
-                    });
-
-
-            socket.on("pluginFeaturesEmit", function(data){
-                console.log("pluginfeatures");
-                console.log(data);
-                plotController.uploadFeaturesData(data);
-            });
+            // var namespace = "/test";
+            // socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port + namespace);
             //
-            socket.on("zoom_return", function(data){
-                updatePlot(data);
-            });
+            // socket.on("connect", function() {
+            //             console.log("connected");
+            //         });
+            //
+            //
+            // socket.on("pluginFeaturesEmit", function(data){
+            //     console.log("pluginfeatures");
+            //     console.log(data);
+            //     plotController.uploadFeaturesData(data);
+            // });
+            // //
+            // socket.on("zoom_return", function(data){
+            //     updatePlot(data);
+            // });
 
         },
         getPlotState: function(){
-            return plotStateObject
+            return plotStateObject;
         }
     };
 })();
@@ -377,10 +340,10 @@ var controller = (function () {
 
         // Event listener for when units are selected (updates tags)
         $(DOMStrings.units).on("change", function () {
-            dataController.getJSONData("/_unitchange", UIController.updateTags)
+            dataController.getJSONData("/_unitchange", UIController.updateTags);
         });
 
-        // Event listner for when the plant is changed (updates units and tags)
+        // Event listener for when the plant is changed (updates units and tags)
         $(DOMStrings.plant).on("change", function () {
             dataController.getJSONData("/_plantchangesetup", UIController.plantSetup);
         });
@@ -389,18 +352,15 @@ var controller = (function () {
         $(DOMStrings.deleteBtn).on("click", plotController.deletePlot);
 
         // Event listener for subplots check button
-        $(DOMStrings.subplotsCheck).on('click', function(){
-            if ($(this).is(':checked')){
+        $(DOMStrings.subplotsCheck).on("click", function(){
+            if ($(this).is(":checked")){
                 $(DOMStrings.linkXaxisCheckbox).show();
                 plotStateObject.subplots = true;
             } else {
                 $(DOMStrings.linkXaxisCheckbox).hide();
                 plotStateObject.subplots = false;
             }
-        })
-
-
-
+        });
     };
 
     return {
@@ -409,9 +369,13 @@ var controller = (function () {
             setupEventListners();
 
             console.log("init");
-            if (localStorage.getItem("plotData")||false) {
-                var data = JSON.parse(localStorage.getItem("plotData"));
-                var formData = JSON.parse(localStorage.getItem("plotForm"));
+            if (localStorage.getItem("plotState")||false) {
+
+                plotStateObject = new EvertPlotState();
+                plotStateObject.readState(JSON.parse(localStorage.getItem("plotState")));
+
+
+                var formData = plotStateObject.formData;
                 DOMStrings = dataController.getDOMStrings();
 
                 $(DOMStrings.plant).val(formData.plant);
@@ -421,7 +385,9 @@ var controller = (function () {
                 $(DOMStrings.tags).val(formData.tags);
                 $(DOMStrings.tags).trigger("chosen:updated");
 
-                plotController.createPlot(data);
+                plotController.createPlot({
+                    data: plotStateObject.traces
+                });
             }
         }
 
