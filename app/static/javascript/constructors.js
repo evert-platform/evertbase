@@ -11,6 +11,7 @@ function EvertPlotState(){
     this.subplots = false;
     this.linkedXAxis = false;
     this.plotLayout = {};
+    this.formData = {};
 
 
     this.addTrace = function(trace){
@@ -22,6 +23,7 @@ function EvertPlotState(){
         this.subplots = false;
         this.linkedXAxis = false;
         this.plotLayout = {};
+        this.formData = {};
     };
 
 }
