@@ -135,11 +135,7 @@ var plotController = (function() {
 
     return {
          // rendering of plot data
-        createPlot: function (data) {
-
-            var plotData = data.data;
-            var layout;
-
+        createPlot: function (plotData, layout) {
             plotStateObject.resetState();
 
             plotData.forEach(function(d, i) {
@@ -152,66 +148,69 @@ var plotController = (function() {
                 tags: $(DOMStrings.tags).val()
             };
 
-            if ($(DOMStrings.subplotsCheck).is(':checked')){
-                var frac = 1/plotData.length;
-                layout = {
-                    showlegend: true
-                };
+            if (layout === undefined){
+                if ($(DOMStrings.subplotsCheck).is(':checked')){
+                    var frac = 1/plotData.length;
+                    layout = {
+                        showlegend: true
+                    };
 
-                if (!$(DOMStrings.linkXaxesValue).is(":checked")){
-                    plotData.forEach(function(d, i){
-                        layout['xaxis'.concat(i+1)] = {
-                            title: i === 0 ? "Timestamp": undefined,
-                            showline: true,
-                            ticks: "outside",
-                            anchor: 'y'+(i+1)
-                        };
-                        layout['yaxis'.concat(i+1)]= {
-                            showline: true,
-                            ticks: "outside",
-                            fixedrange: true,
-                            title: d.name,
-                            domain: [frac*i + 0.09 , frac*(i+1)]
-                        }
-                    });
+                    if (!$(DOMStrings.linkXaxesValue).is(":checked")){
+                        plotData.forEach(function(d, i){
+                            layout['xaxis'.concat(i+1)] = {
+                                title: i === 0 ? "Timestamp": undefined,
+                                showline: true,
+                                ticks: "outside",
+                                anchor: 'y'+(i+1)
+                            };
+                            layout['yaxis'.concat(i+1)]= {
+                                showline: true,
+                                ticks: "outside",
+                                fixedrange: true,
+                                title: d.name,
+                                domain: [frac*i + 0.09 , frac*(i+1)]
+                            }
+                        });
 
-                } else {
+                    } else {
 
-                    layout['xaxis'] = {
-                            title: "Timestamp",
+                        layout['xaxis'] = {
+                                title: "Timestamp",
+                                showline: true,
+                                ticks: "outside"
+
+                            };
+
+                        plotData.forEach(function(d, i) {
+                            layout['yaxis'.concat(i + 1)]= {
+                                showline: true,
+                                ticks: "outside",
+                                fixedrange: true,
+                                title: d.name,
+                                domain: [frac*i + 0.09 , frac*(i+1)]
+                            };
+                        });
+                    }
+
+                } else if (!$(DOMStrings.subplotsCheck).is(':checked')){
+                    layout = {
+                        showlegend: true,
+                        xaxis : {
+                            title: "timestamp",
                             showline: true,
                             ticks: "outside"
-
-                        };
-
-                    plotData.forEach(function(d, i) {
-                        layout['yaxis'.concat(i + 1)]= {
+                        },
+                        yaxis: {
                             showline: true,
                             ticks: "outside",
-                            fixedrange: true,
-                            title: d.name,
-                            domain: [frac*i + 0.09 , frac*(i+1)]
-                        };
-                    });
+                            fixedrange: true
+                        }
+                    };
                 }
 
-            } else if (!$(DOMStrings.subplotsCheck).is(':checked')){
-                layout = {
-                    showlegend: true,
-                    xaxis : {
-                        title: "timestamp",
-                        showline: true,
-                        ticks: "outside"
-                    },
-                    yaxis: {
-                        showline: true,
-                        ticks: "outside",
-                        fixedrange: true
-                    }
-                };
+                plotStateObject.plotLayout = layout;
             }
 
-            plotStateObject.plotLayout = layout;
 
 
             Plotly.newPlot(DOMStrings.plotArea, plotData, layout,
@@ -335,7 +334,9 @@ var controller = (function () {
     var setupEventListners = function(){
         // Event listener for plot button
         $(DOMStrings.submitBtn).on("click", function () {
-            dataController.getJSONData("/_plotdata", plotController.createPlot)});
+            dataController.getJSONData("/_plotdata", function(d) {
+                plotController.createPlot(d.data)
+            })});
 
 
         // Event listener for when units are selected (updates tags)
@@ -385,9 +386,7 @@ var controller = (function () {
                 $(DOMStrings.tags).val(formData.tags);
                 $(DOMStrings.tags).trigger("chosen:updated");
 
-                plotController.createPlot({
-                    data: plotStateObject.traces
-                });
+                plotController.createPlot(plotStateObject.traces, plotStateObject.plotLayout);
             }
         }
 
