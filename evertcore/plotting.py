@@ -115,7 +115,6 @@ class Fig:
 
     def __init__(self, subplots=False, link_xaxes=False):
         self.data = None
-        self.datamap = dict()
         self.dataFrame = pd.DataFrame()
         self.domain = []
         self.subplots = subplots
@@ -172,7 +171,7 @@ class Fig:
             return
 
     def return_data(self):
-        return self.data, self.datamap
+        return self.data
 
     def window_data(self, domain):
 
