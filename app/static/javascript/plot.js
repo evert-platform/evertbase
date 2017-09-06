@@ -126,6 +126,7 @@ var plotController = (function() {
         // if windows match new data is plotted
         var plotData = data.data;
         var DataTraceNo = plotStateObject.getTraceNumbers();
+        // TODO: expand to work on more than one plot.
         Plotly.deleteTraces(DOMStrings.plotArea, DataTraceNo);
         Plotly.addTraces(DOMStrings.plotArea, plotData, DataTraceNo);
     };
