@@ -1,9 +1,10 @@
-function EvertTrace(name, x, y, xaxis, yaxis){
+function EvertTrace(name, x, y, xaxis, yaxis, traceNo){
     this.name = name;
     this.x = x;
     this.y = y;
     this.xaxis = xaxis;
     this.yaxis = yaxis;
+    this.traceNo = traceNo;
 }
 
 function EvertPlotState(){
@@ -20,6 +21,7 @@ function EvertPlotState(){
 
     this.resetState = function () {
         this.traces = [];
+        this.pluginTraces = [];
         this.subplots = false;
         this.linkedXAxis = false;
         this.plotLayout = {};
@@ -42,6 +44,10 @@ function EvertPlotState(){
             plotLayout: this.plotLayout,
             formData: this.formData
         };
-    }
+    };
+
+    this.getTraceNumbers = function () {
+        return _.map(this.traces, function (d) {return d.traceNo;});
+    };
 
 }
