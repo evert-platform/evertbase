@@ -375,7 +375,7 @@ var controller = (function () {
                 plotStateObject = new EvertPlotState();
                 plotStateObject.readState(JSON.parse(localStorage.getItem("plotState")));
 
-
+                console.log(plotStateObject);
                 var formData = plotStateObject.formData;
                 DOMStrings = dataController.getDOMStrings();
 
@@ -385,6 +385,10 @@ var controller = (function () {
                 $(DOMStrings.units).trigger("chosen:updated");
                 $(DOMStrings.tags).val(formData.tags);
                 $(DOMStrings.tags).trigger("chosen:updated");
+
+                $(DOMStrings.subplotsCheck).attr('checked', plotStateObject.subplots);
+                $(DOMStrings.subplotsCheck).trigger('click');
+                $(DOMStrings.linkXaxesValue).attr('checked', plotStateObject.linkedXAxis);
 
                 plotController.createPlot(plotStateObject.traces, plotStateObject.plotLayout);
             }
