@@ -125,12 +125,9 @@ var plotController = (function() {
 
         // if windows match new data is plotted
         var plotData = data.data;
-
-        // Plotly.deleteTraces(DOMStrings.plotArea, plotState.allDataTraceNumbers());
-        // Plotly.addTraces(DOMStrings.plotArea, plotData, plotState.allDataTraceNumbers());
-
-        var old_plotData = localStorage.getItem("plotData");
-
+        var DataTraceNo = plotStateObject.getTraceNumbers();
+        Plotly.deleteTraces(DOMStrings.plotArea, DataTraceNo);
+        Plotly.addTraces(DOMStrings.plotArea, plotData, DataTraceNo);
     };
 
     return {
@@ -139,7 +136,7 @@ var plotController = (function() {
             plotStateObject.resetState();
 
             plotData.forEach(function(d, i) {
-                plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis));
+                plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis, i));
             });
 
             plotStateObject.formData = {
@@ -297,12 +294,12 @@ var plotController = (function() {
         // localStorage.setItem('plotDomain', undefined);
         },
         init: function () {
-            // var namespace = "/test";
-            // socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port + namespace);
-            //
-            // socket.on("connect", function() {
-            //             console.log("connected");
-            //         });
+            var namespace = "/test";
+            socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port + namespace);
+
+            socket.on("connect", function() {
+                        console.log("connected");
+                    });
             //
             //
             // socket.on("pluginFeaturesEmit", function(data){
@@ -311,9 +308,9 @@ var plotController = (function() {
             //     plotController.uploadFeaturesData(data);
             // });
             // //
-            // socket.on("zoom_return", function(data){
-            //     updatePlot(data);
-            // });
+            socket.on("zoom_return", function(data){
+                updatePlot(data);
+            });
 
         },
         getPlotState: function(){
