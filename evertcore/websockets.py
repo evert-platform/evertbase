@@ -41,5 +41,6 @@ def zoom_event(socket_data):
     plugins.emit_event('zoom_event', window_data, fig.domain)
 
     emit('zoom_return', dict(success=True, data=data_))
+    print('data emitted')
     return
 
