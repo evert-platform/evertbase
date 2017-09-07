@@ -13,7 +13,7 @@ function EvertPlotState(){
     this.linkedXAxis = false;
     this.plotLayout = {};
     this.formData = {};
-    this.tags_map = {};
+    this.tagsMap = {};
 
 
     this.addTrace = function(trace){
@@ -27,6 +27,7 @@ function EvertPlotState(){
         this.linkedXAxis = false;
         this.plotLayout = {};
         this.formData = {};
+        this.tagsMap = {};
     };
 
     this.readState = function(state){
@@ -35,6 +36,7 @@ function EvertPlotState(){
         this.linkedXAxis = state.linkedXAxis;
         this.plotLayout = state.plotLayout;
         this.formData = state.formData;
+        this.tagsMap = state.tagsMap;
     };
 
     this.writeState = function() {
@@ -43,7 +45,8 @@ function EvertPlotState(){
             subplots: this.subplots,
             linkedXAxis: this.linkedXAxis,
             plotLayout: this.plotLayout,
-            formData: this.formData
+            formData: this.formData,
+            tagsMap: this.tagsMap,
         };
     };
 
