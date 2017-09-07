@@ -125,15 +125,20 @@ var plotController = (function() {
 
         // if windows match new data is plotted
         var plotData = data.data;
-        var DataTraceNo = plotStateObject.getTraceNumbers();
+        var traceNames = _.map(plotData, function(d){return d.name});
+        var DataTraceNo = plotStateObject.getTraceNumbers(traceNames);
+
         // TODO: expand to work on more than one plot.
         Plotly.deleteTraces(DOMStrings.plotArea, DataTraceNo);
         Plotly.addTraces(DOMStrings.plotArea, plotData, DataTraceNo);
+        // Plotly.update(DOMStrings.plotArea, plotData, plotStateObject.plotLayout);
+
+        console.log('plot updated')
     };
 
     return {
          // rendering of plot data
-        createPlot: function (plotData, layout) {
+        createPlot: function (plotData, layout, tags_map) {
             plotStateObject.resetState();
 
             plotData.forEach(function(d, i) {
@@ -145,6 +150,8 @@ var plotController = (function() {
                 units: $(DOMStrings.units).val(),
                 tags: $(DOMStrings.tags).val()
             };
+
+            plotStateObject.tags_map = tags_map;
 
             if (layout === undefined){
                 if ($(DOMStrings.subplotsCheck).is(':checked')){
@@ -209,8 +216,6 @@ var plotController = (function() {
                 plotStateObject.plotLayout = layout;
             }
 
-
-
             Plotly.newPlot(DOMStrings.plotArea, plotData, layout,
                 {
                     scrollZoom: true,
@@ -225,10 +230,12 @@ var plotController = (function() {
             var plotArea = document.getElementById("plot");
             plotArea.on("plotly_relayout", function(e){
                 var keys = Object.keys(e);
+                console.log('relayout');
 
                 if (keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g) &&
                     keys[1].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)){
                     console.log("Zoom event");
+                    console.log(keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g), keys[1].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g))
                     var xmin = e[keys[0]];
                     var xmax = e[keys[1]];
                     socket.emit("zoom_event",
@@ -333,7 +340,7 @@ var controller = (function () {
         // Event listener for plot button
         $(DOMStrings.submitBtn).on("click", function () {
             dataController.getJSONData("/_plotdata", function(d) {
-                plotController.createPlot(d.data)
+                plotController.createPlot(d.data, undefined, d.tags_map)
             })});
 
 
