@@ -36,10 +36,10 @@ def zoom_event(socket_data):
 
     fig = plotting.Fig()
     fig.prepare_data(tag_data_, threshold=_threshold)
-    data_, datamap = fig.return_data()
+    data_ = fig.return_data()
     window_data = fig.window_data(socket_data['domain'])
     plugins.emit_event('zoom_event', window_data, fig.domain)
 
-    emit('zoom_return', dict(success=True, data=data_, datamap=datamap))
+    emit('zoom_return', dict(success=True, data=data_))
     return
 
