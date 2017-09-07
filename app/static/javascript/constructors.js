@@ -13,6 +13,7 @@ function EvertPlotState(){
     this.linkedXAxis = false;
     this.plotLayout = {};
     this.formData = {};
+    this.tags_map = {};
 
 
     this.addTrace = function(trace){
@@ -46,8 +47,14 @@ function EvertPlotState(){
         };
     };
 
-    this.getTraceNumbers = function () {
-        return _.map(this.traces, function (d) {return d.traceNo;});
+    this.getTraceNumbers = function (traceNames) {
+        var collect = [];
+        this.traces.forEach(function(d, i){
+            if (_.includes(traceNames, d.name)){
+                collect.push(d)
+            }
+        });
+        return _.map(collect, function (d) {return d.traceNo;});
     };
 
 }
