@@ -123,14 +123,23 @@ var plotController = (function() {
 
     var updatePlot = function(data) {
 
-        // if windows match new data is plotted
-        var plotData = data.data;
-        var traceNames = _.map(plotData, function(d){return d.name});
-        var DataTraceNo = plotStateObject.getTraceNumbers(traceNames);
 
-        // TODO: expand to work on more than one plot.
-        Plotly.deleteTraces(DOMStrings.plotArea, DataTraceNo);
-        Plotly.addTraces(DOMStrings.plotArea, plotData, DataTraceNo);
+
+        // if windows match new data is plotted
+        var newData = data.data;
+        var newDataNames = _.map(newData, function(d){return d.name});
+        var plotArea = document.getElementById('plot');
+        var currentData = plotArea.data;
+        var dataChange = _.partition(currentData, function(d){return _.includes(newDataNames, d.name);});
+
+        plotArea.data = newData.concat(dataChange[1]);
+        Plotly.redraw(DOMStrings.plotArea);
+
+        console.log(plotArea.data);
+
+        // // TODO: expand to work on more than one plot.
+        // Plotly.deleteTraces(DOMStrings.plotArea, DataTraceNo);
+        // Plotly.addTraces(DOMStrings.plotArea, plotData);
         // Plotly.update(DOMStrings.plotArea, plotData, plotStateObject.plotLayout);
 
         console.log('plot updated')
@@ -246,7 +255,7 @@ var plotController = (function() {
                 }
             });
 
-
+            console.log(document.getElementById('plot').data);
             localStorage.setItem("plotState", JSON.stringify(plotStateObject.writeState()));
         },
 
@@ -379,8 +388,6 @@ var controller = (function () {
 
                 plotStateObject = new EvertPlotState();
                 plotStateObject.readState(JSON.parse(localStorage.getItem("plotState")));
-
-                console.log(plotStateObject);
                 var formData = plotStateObject.formData;
                 DOMStrings = dataController.getDOMStrings();
 
