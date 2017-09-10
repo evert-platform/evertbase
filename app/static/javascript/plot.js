@@ -150,7 +150,7 @@ var plotController = (function() {
             plotStateObject.resetState();
 
             plotData.forEach(function(d, i) {
-                plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis, i));
+                plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis));
             });
 
             plotStateObject.formData = {
