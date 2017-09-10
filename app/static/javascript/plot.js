@@ -147,6 +147,13 @@ var plotController = (function() {
         // redraw plot
         Plotly.redraw(DOMStrings.plotArea);
 
+
+        var selectDataIDs = function (zoomEventKey) {
+            if (zoomEventKey.match(/xaxis/g)){
+
+            }
+        }
+
     };
 
     return {
@@ -164,7 +171,7 @@ var plotController = (function() {
                 tags: $(DOMStrings.tags).val()
             };
 
-            plotStateObject.tags_map = tags_map;
+            plotStateObject.tagsMap = tags_map;
 
             if (layout === undefined){
                 if ($(DOMStrings.subplotsCheck).is(':checked')){
@@ -175,24 +182,24 @@ var plotController = (function() {
 
                     if (!$(DOMStrings.linkXaxesValue).is(":checked")){
                         plotData.forEach(function(d, i){
-                            layout['xaxis'.concat(i+1)] = {
+                            layout["xaxis".concat(i+1)] = {
                                 title: i === 0 ? "Timestamp": undefined,
                                 showline: true,
                                 ticks: "outside",
-                                anchor: 'y'+(i+1)
+                                anchor: "y"+(i+1)
                             };
-                            layout['yaxis'.concat(i+1)]= {
+                            layout["yaxis".concat(i+1)]= {
                                 showline: true,
                                 ticks: "outside",
                                 fixedrange: true,
                                 title: d.name,
                                 domain: [frac*i + 0.09 , frac*(i+1)]
-                            }
+                            };
                         });
 
                     } else {
 
-                        layout['xaxis'] = {
+                        layout["xaxis"] = {
                                 title: "Timestamp",
                                 showline: true,
                                 ticks: "outside"
@@ -200,7 +207,7 @@ var plotController = (function() {
                             };
 
                         plotData.forEach(function(d, i) {
-                            layout['yaxis'.concat(i + 1)]= {
+                            layout["yaxis".concat(i + 1)]= {
                                 showline: true,
                                 ticks: "outside",
                                 fixedrange: true,
@@ -210,7 +217,7 @@ var plotController = (function() {
                         });
                     }
 
-                } else if (!$(DOMStrings.subplotsCheck).is(':checked')){
+                } else if (!$(DOMStrings.subplotsCheck).is(":checked")){
                     layout = {
                         showlegend: true,
                         xaxis : {
@@ -243,19 +250,49 @@ var plotController = (function() {
             var plotArea = document.getElementById("plot");
             plotArea.on("plotly_relayout", function(e){
                 var keys = Object.keys(e);
-                console.log('relayout');
+                var names;
+                console.log(keys);
+
 
                 if (keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g) &&
                     keys[1].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)){
-                    console.log("Zoom event");
-                    console.log(keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g), keys[1].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g))
+
                     var xmin = e[keys[0]];
                     var xmax = e[keys[1]];
-                    socket.emit("zoom_event",
+
+                    if (!$(DOMStrings.subplotsCheck).is(":checked")){
+                        socket.emit("zoom_event",
                         {
                             domain: [xmin, xmax],
                             ids: $(DOMStrings.tags).val()
                         });
+                    } else {
+                         var plotXAxes = _.map(plotArea.data, function(d){return d.xaxis;});
+                         var xAxis = keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)[0];
+                         var xAxisNumber = xAxis.match(/([0-9])/g);
+                         if (!xAxisNumber) {
+                            names = _.partition(plotArea.data, function(d){
+                                return _.includes(["x"], d.xaxis);
+                            })[0];
+
+                         } else if (xAxisNumber){
+                             names = _.partition(plotArea.data, function(d){
+                                 return _.includes(["x".concat(xAxisNumber)], d.xaxis);
+                           })[0];
+                         }
+
+                         var ids = [];
+                         names.forEach(function(d, i){
+                             ids.push(plotStateObject.tagsMap[d.name])
+                         });
+
+                         socket.emit("zoom_event",
+                        {
+                            domain: [xmin, xmax],
+                            ids: ids
+                        });
+                    }
+
                 }
             });
 
@@ -402,9 +439,9 @@ var controller = (function () {
                 $(DOMStrings.tags).val(formData.tags);
                 $(DOMStrings.tags).trigger("chosen:updated");
 
-                $(DOMStrings.subplotsCheck).attr('checked', plotStateObject.subplots);
-                $(DOMStrings.subplotsCheck).trigger('click');
-                $(DOMStrings.linkXaxesValue).attr('checked', plotStateObject.linkedXAxis);
+                $(DOMStrings.subplotsCheck).attr("checked", plotStateObject.subplots);
+                $(DOMStrings.subplotsCheck).trigger("click");
+                $(DOMStrings.linkXaxesValue).attr("checked", plotStateObject.linkedXAxis);
 
                 plotController.createPlot(plotStateObject.traces, plotStateObject.plotLayout);
             }
