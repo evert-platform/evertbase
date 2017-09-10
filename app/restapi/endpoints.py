@@ -17,13 +17,13 @@ def _plotdata():
     linkx = request.args.get('linkXaxes', 'false', type=str)
     linkx = False if linkx == 'false' else True
     tag_data = evert.data.tag_data(tags)
-    tag_names = dict(evert.data.get_tag_names(key='id', values=list(map(int,tags))))
+    tag_map = {name_: id_ for id_, name_ in evert.data.get_tag_names(key='id', values=list(map(int,tags)))}
     fig = evert.plotting.Fig(subplots=subplots, link_xaxes=linkx)
     fig.prepare_data(tag_data, _threshold)
     data = fig.return_data()
     # evert.plugins.emit_event('zoom_event', fig.dataFrame, None)
 
-    return jsonify(success=True, data=data, tags_map=tag_names)
+    return jsonify(success=True, data=data, tags_map=tag_map)
 
 
 # this functions enables the plugin selected in the enable plugin select element on the plugins page
