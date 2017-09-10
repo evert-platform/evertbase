@@ -7,6 +7,7 @@ $(document).ready(function () {
 
 // Data controller for plotting page
 var dataController = (function () {
+    "use strict";
     var data, DOMStrings, plotState;
     // plotState = plotController.getPlotState();
 
@@ -65,6 +66,7 @@ var dataController = (function () {
 })();
 // user interface controller
 var UIController = (function () {
+    "use strict";
     var DOMStrings;
     // DOM object strings
     DOMStrings = dataController.getDOMStrings();
@@ -126,8 +128,8 @@ var plotController = (function() {
         var newData = data.data;
         console.log(newData);
         // names of the traces that need to be updated
-        var newDataNames = _.map(newData, function(d){return d.name});
-        var plotArea = document.getElementById('plot');
+        var newDataNames = _.map(newData, function(d){return d.name;});
+        var plotArea = document.getElementById("plot");
         // current data visible on the plot
         var currentData = plotArea.data;
         // split data into data that must change and data that must stay the same
@@ -135,7 +137,7 @@ var plotController = (function() {
 
         var updatedData = [];
         newDataNames.forEach(function(d, i){
-            var dplot = _.find(dataSplit[0], ['name', d]);
+            var dplot = _.find(dataSplit[0], ["name", d]);
             dplot.x = newData[i].x;
             dplot.y = newData[i].y;
             updatedData.push(dplot);
@@ -145,7 +147,6 @@ var plotController = (function() {
         // redraw plot
         Plotly.redraw(DOMStrings.plotArea);
 
-        console.log(plotArea.data);
     };
 
     return {
