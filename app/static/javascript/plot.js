@@ -126,33 +126,21 @@ var plotController = (function() {
     var updatePlot = function(data) {
         // data coming from websocket after zoom.
         var newData = data.data;
-        console.log(newData);
         // names of the traces that need to be updated
         var newDataNames = _.map(newData, function(d){return d.name;});
         var plotArea = document.getElementById("plot");
         // current data visible on the plot
         var currentData = plotArea.data;
-        // split data into data that must change and data that must stay the same
-        var dataSplit = _.partition(currentData, function(d){return _.includes(newDataNames, d.name);});
 
-        var updatedData = [];
         newDataNames.forEach(function(d, i){
-            var dplot = _.find(dataSplit[0], ["name", d]);
-            dplot.x = newData[i].x;
-            dplot.y = newData[i].y;
-            updatedData.push(dplot);
+            var index = _.findIndex(currentData, ["name", d]);
+            currentData[index].x = newData[i].x;
+            currentData[index].y = newData[i].y;
+
         });
-        // update plot data
-        plotArea.data = updatedData.concat(dataSplit[1]);
+        plotArea.data = currentData;
         // redraw plot
         Plotly.redraw(DOMStrings.plotArea);
-
-
-        var selectDataIDs = function (zoomEventKey) {
-            if (zoomEventKey.match(/xaxis/g)){
-
-            }
-        }
 
     };
 
@@ -174,7 +162,7 @@ var plotController = (function() {
             plotStateObject.tagsMap = tags_map;
 
             if (layout === undefined){
-                if ($(DOMStrings.subplotsCheck).is(':checked')){
+                if ($(DOMStrings.subplotsCheck).is(":checked")){
                     var frac = 1/plotData.length;
                     layout = {
                         showlegend: true
@@ -232,7 +220,6 @@ var plotController = (function() {
                         }
                     };
                 }
-
                 plotStateObject.plotLayout = layout;
             }
 
@@ -251,8 +238,6 @@ var plotController = (function() {
             plotArea.on("plotly_relayout", function(e){
                 var keys = Object.keys(e);
                 var names;
-                console.log(keys);
-
 
                 if (keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g) &&
                     keys[1].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)){
@@ -283,7 +268,7 @@ var plotController = (function() {
 
                          var ids = [];
                          names.forEach(function(d, i){
-                             ids.push(plotStateObject.tagsMap[d.name])
+                             ids.push(plotStateObject.tagsMap[d.name]);
                          });
 
                          socket.emit("zoom_event",
@@ -292,11 +277,9 @@ var plotController = (function() {
                             ids: ids
                         });
                     }
-
                 }
             });
 
-            console.log(document.getElementById('plot').data);
             localStorage.setItem("plotState", JSON.stringify(plotStateObject.writeState()));
         },
 
