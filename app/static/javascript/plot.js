@@ -230,7 +230,8 @@ var plotController = (function() {
                     showLink: false,
                     displayLogo: false,
                     showTips: false,
-                    modeBarButtonsToRemove: ["autoScale2d", "resetScale2d", "sendDataToCloud"]
+                    modeBarButtonsToRemove: ["autoScale2d", "resetScale2d", "sendDataToCloud"],
+                    doubleClick: false
                 });
 
             // Event listener for when plot is zoomed. Must be called after plot is created.
@@ -239,7 +240,7 @@ var plotController = (function() {
                 var keys = Object.keys(e);
                 var names;
 
-                if (keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g) &&
+                if (keys.length > 0 && keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g) &&
                     keys[1].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)){
 
                     var xmin = e[keys[0]];
@@ -252,7 +253,6 @@ var plotController = (function() {
                             ids: $(DOMStrings.tags).val()
                         });
                     } else {
-                         var plotXAxes = _.map(plotArea.data, function(d){return d.xaxis;});
                          var xAxis = keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)[0];
                          var xAxisNumber = xAxis.match(/([0-9])/g);
                          if (!xAxisNumber) {
@@ -278,8 +278,15 @@ var plotController = (function() {
                         });
                     }
                 }
+
+                plotStateObject.plotLayout = plotArea.layout;
             });
 
+            plotArea.on('plotly_doubleclick', function(d){
+                console.log('double_click')
+            })
+            plotStateObject.initialRange = plotArea.layout.xaxis.range;
+            console.log(plotStateObject);
             localStorage.setItem("plotState", JSON.stringify(plotStateObject.writeState()));
         },
 
