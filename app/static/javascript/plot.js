@@ -282,11 +282,7 @@ var plotController = (function() {
                 plotStateObject.plotLayout = plotArea.layout;
             });
 
-            plotArea.on('plotly_doubleclick', function(d){
-                console.log('double_click')
-            })
             plotStateObject.initialRange = plotArea.layout.xaxis.range;
-            console.log(plotStateObject);
             localStorage.setItem("plotState", JSON.stringify(plotStateObject.writeState()));
         },
 
