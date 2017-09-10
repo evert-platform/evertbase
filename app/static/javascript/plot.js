@@ -122,27 +122,30 @@ var plotController = (function() {
     DOMStrings = dataController.getDOMStrings();
 
     var updatePlot = function(data) {
-
-
-
-        // if windows match new data is plotted
+        // data coming from websocket after zoom.
         var newData = data.data;
+        console.log(newData);
+        // names of the traces that need to be updated
         var newDataNames = _.map(newData, function(d){return d.name});
         var plotArea = document.getElementById('plot');
+        // current data visible on the plot
         var currentData = plotArea.data;
-        var dataChange = _.partition(currentData, function(d){return _.includes(newDataNames, d.name);});
+        // split data into data that must change and data that must stay the same
+        var dataSplit = _.partition(currentData, function(d){return _.includes(newDataNames, d.name);});
 
-        plotArea.data = newData.concat(dataChange[1]);
+        var updatedData = [];
+        newDataNames.forEach(function(d, i){
+            var dplot = _.find(dataSplit[0], ['name', d]);
+            dplot.x = newData[i].x;
+            dplot.y = newData[i].y;
+            updatedData.push(dplot);
+        });
+        // update plot data
+        plotArea.data = updatedData.concat(dataSplit[1]);
+        // redraw plot
         Plotly.redraw(DOMStrings.plotArea);
 
         console.log(plotArea.data);
-
-        // // TODO: expand to work on more than one plot.
-        // Plotly.deleteTraces(DOMStrings.plotArea, DataTraceNo);
-        // Plotly.addTraces(DOMStrings.plotArea, plotData);
-        // Plotly.update(DOMStrings.plotArea, plotData, plotStateObject.plotLayout);
-
-        console.log('plot updated')
     };
 
     return {
