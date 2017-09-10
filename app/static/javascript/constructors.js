@@ -1,4 +1,5 @@
 function EvertTrace(name, x, y, xaxis, yaxis, traceNo){
+    "use strict";
     this.name = name;
     this.x = x;
     this.y = y;
@@ -8,12 +9,14 @@ function EvertTrace(name, x, y, xaxis, yaxis, traceNo){
 }
 
 function EvertPlotState(){
+    "use strict";
     this.traces = [];
     this.subplots = false;
     this.linkedXAxis = false;
     this.plotLayout = {};
     this.formData = {};
     this.tagsMap = {};
+    this.initialRange = [];
 
 
     this.addTrace = function(trace){
@@ -22,12 +25,12 @@ function EvertPlotState(){
 
     this.resetState = function () {
         this.traces = [];
-        this.pluginTraces = [];
         this.subplots = false;
         this.linkedXAxis = false;
         this.plotLayout = {};
         this.formData = {};
         this.tagsMap = {};
+        this.initialRange = [];
     };
 
     this.readState = function(state){
@@ -37,6 +40,7 @@ function EvertPlotState(){
         this.plotLayout = state.plotLayout;
         this.formData = state.formData;
         this.tagsMap = state.tagsMap;
+        this.initialRange = state.initialRange
     };
 
     this.writeState = function() {
@@ -47,17 +51,7 @@ function EvertPlotState(){
             plotLayout: this.plotLayout,
             formData: this.formData,
             tagsMap: this.tagsMap,
+            initialRange: this.initialRange
         };
     };
-
-    this.getTraceNumbers = function (traceNames) {
-        var collect = [];
-        this.traces.forEach(function(d, i){
-            if (_.includes(traceNames, d.name)){
-                collect.push(d)
-            }
-        });
-        return _.map(collect, function (d) {return d.traceNo;});
-    };
-
 }
