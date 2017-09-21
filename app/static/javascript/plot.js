@@ -274,7 +274,8 @@ var plotController = (function() {
                          socket.emit("zoom_event",
                         {
                             domain: [xmin, xmax],
-                            ids: ids
+                            ids: ids,
+                            xAxisNo:  xAxisNumber || 1
                         });
                     }
                 }
@@ -287,46 +288,16 @@ var plotController = (function() {
         },
 
         uploadFeaturesData: function (data) {
+            console.log(data.data);
 
-            // if (plotState.pluginNames.length === 0) {
-            //
-            //     plotState.pluginNames.push(data.name);
-            //     var firstTraceIndex = plotState.numData();
-            //     var traceIds = [];
-            //     var traceNames = [];
-            //
-            //     data.data.forEach(function(d, i){
-            //         traceIds.push(firstTraceIndex + i);
-            //         traceNames.push(d.name);
-            //     });
-            //     plotState.pluginTraces.push({
-            //         plugin: data.name,
-            //         traceIDs: traceIds,
-            //         traceNames: traceNames
-            //     });
-            //
-            //
-            //     Plotly.addTraces(DOMStrings.plotArea, data.data);
+            var plotArea = document.getElementById('plot');
+            var currentData = plotArea.data;
+            currentData = currentData.concat(data.data);
+            plotArea.data = currentData;
 
-            // } else if (plotState.pluginNames.length !== 0) {
-            //     console.log("plugins data present");
-            //
-            //     var pluginDataIndex = _.indexOf(plotState.pluginNames, data.name);
-            //
-            //     if (pluginDataIndex !== -1) {
-            //         var previousTraceIDs = plotState.pluginTraces[pluginDataIndex].traceIDs;
-            //
-            //         Plotly.deleteTraces(DOMStrings.plotArea, previousTraceIDs);
-            //         Plotly.addTraces(DOMStrings.plotArea, data.data, previousTraceIDs);
-            //     }
-            //
-            //     else if (pluginDataIndex === -1) {
-            //         console.log("pass");
-            //         // TODO: add code to add plugin if others are also present
-            //     }
-            //
-            // }
+            console.log(plotArea.data);
 
+            Plotly.redraw(DOMStrings.plotArea);
 
 
         },
@@ -344,14 +315,13 @@ var plotController = (function() {
             socket.on("connect", function() {
                         console.log("connected");
                     });
-            //
-            //
-            // socket.on("pluginFeaturesEmit", function(data){
-            //     console.log("pluginfeatures");
-            //     console.log(data);
-            //     plotController.uploadFeaturesData(data);
-            // });
-            // //
+
+
+            socket.on("pluginFeaturesEmit", function(data){
+                console.log("pluginfeatures");
+                plotController.uploadFeaturesData(data);
+            });
+
             socket.on("zoom_return", function(data){
                 updatePlot(data);
             });
