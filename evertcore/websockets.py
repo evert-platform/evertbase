@@ -11,8 +11,6 @@ _threshold = 500
 
 @socketio.on('connect', namespace='/test')
 def joined():
-    """Sent by clients when they enter a room.
-    A status message is broadcast to all people in the room."""
     print('Socket connected')
 
 
@@ -38,7 +36,7 @@ def zoom_event(socket_data):
     fig.prepare_data(tag_data_, threshold=_threshold)
     data_ = fig.return_data()
     window_data = fig.window_data(socket_data['domain'])
-    plugins.emit_event('zoom_event', window_data, fig.domain)
+    plugins.emit_event('zoom_event', window_data, fig.domain, int(socket_data['xAxisNo'][0]))
 
     emit('zoom_return', dict(success=True, data=data_))
     print('data emitted')
