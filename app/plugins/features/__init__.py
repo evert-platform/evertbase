@@ -11,7 +11,7 @@ __plugin_type__ = 'features'
 features = Blueprint('features', __name__)
 
 
-def run_plugin(data_before, domain):
+def run_plugin(data_before, domain, axis):
     print('event_emitted')
     settings = get_plugin_settings(__plugin__)
 
@@ -19,7 +19,7 @@ def run_plugin(data_before, domain):
         raise TypeError('Expected input of type: pandas.DataFrame for argument: data_before, instead got: {}'.
                         format(type(data_before)))
 
-    data_after = extract_features(data_before, settings)
+    data_after = extract_features(data_before, settings, axis)
     emit_feature_data(data_after, domain, __plugin__)
     return data_after
 

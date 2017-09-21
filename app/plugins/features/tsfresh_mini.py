@@ -113,17 +113,14 @@ def _mean_(dataframe):
     return points
 
 
-def _format_data_(header_name, feature_name, feature_timestamp, feature_value, **kwargs):
-    # This should create appropriate lists in the shape of [['timestamp', 'header_name:feature_name'],
-    #                                                       [timestamp, feature_value]]
-    # which is appropriate for Evert.
+def _format_data_(header_name, feature_name, feature_timestamp, feature_value, axis, **kwargs):
 
     if 'line' in kwargs:
 
         lst = {
-            'name': feature_name,
-            'x': [feature_timestamp[0], feature_timestamp[1]],
-            'y': [feature_value, feature_value],
+            'name': header_name + ': ' + feature_name,
+            'x{}'.format(axis): [feature_timestamp[0], feature_timestamp[1]],
+            'y{}'.format(axis): [feature_value, feature_value],
             'mode': 'lines',
             'line': {
                 'dash': 'dashdot'
@@ -133,9 +130,9 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, *
     else:
 
         lst = {
-            'name': feature_name,
-            'x': [feature_timestamp],
-            'y': [feature_value],
+            'name':  header_name + ': ' + feature_name,
+            'x{}'.format(axis): [feature_timestamp],
+            'y{}'.format(axis): [feature_value],
             'mode': 'markers'
 
         }
@@ -143,7 +140,7 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, *
     return lst
 
 
-def extract_features(_initialdf_, config):
+def extract_features(_initialdf_, config, axis):
     """
     Extracts data features from a set of timeseries data.
     :param _initialdf_: A pandas.Dataframe containing timestamps as the first column, and timeseries as further columns
@@ -181,11 +178,11 @@ def extract_features(_initialdf_, config):
             feature = _format_data_(feature_name=i[-1],
                                     feature_timestamp=[_initialdf_['timestamp'].iloc[0],
                                                        _initialdf_['timestamp'].iloc[-1]],
-                                    feature_value=i[2], header_name=i[0], line=True)
+                                    feature_value=i[2], header_name=i[0], line=True, axis=axis)
         else:
             feature = _format_data_(feature_name=i[-1],
                                     feature_timestamp=_initialdf_['timestamp'].iloc[int(i[1])],
-                                    feature_value=i[2], header_name=i[0])
+                                    feature_value=i[2], header_name=i[0], axis=axis)
         features.append(feature)
 
     return features
