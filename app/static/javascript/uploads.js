@@ -135,14 +135,14 @@ var controller = (function () {
             })
         });
         // Event listener for opening a file
-        $(DOMButtons.openFile).on('click', function () {
+        $(DOMButtons.openFile).on('click', function (event) {
             event.preventDefault();
             event.stopPropagation();
             var formdata = new FormData($('#datafile')[0]);
             dataController.postForm('/_dataopen', formdata, 'File uploaded and ready to use')
         });
         // Event listener for uploading file
-        $(DOMButtons.uploadFile).on('click', function () {
+        $(DOMButtons.uploadFile).on('click', function (event) {
             event.preventDefault();
             event.stopPropagation();
             var formdata = new FormData($('#datafile')[0]);
