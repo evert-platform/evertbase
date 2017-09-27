@@ -20,9 +20,11 @@ var dataController = (function () {
         submitBtn: "input#Submit",
         deleteBtn: "button#deleteplot",
         plotArea: "plot",
+        plotAddOnsArea: "plotAddOnsArea",
         subplotsCheck: "input#subplots-check",
         linkXaxesValue: "input#linkXaxesValue",
-        linkXaxisCheckbox: "div#linkXcheckbox"
+        linkXaxisCheckbox: "div#linkXcheckbox",
+        plotAddOns: 'select#AddOnSelect'
     };
 
     return {
@@ -148,6 +150,7 @@ var plotController = (function() {
          // rendering of plot data
         createPlot: function (plotData, layout, tags_map) {
             plotStateObject.resetState();
+            Plotly.purge(DOMStrings.plotAddOnsArea);
 
             plotData.forEach(function(d, i) {
                 plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis));
@@ -305,6 +308,7 @@ var plotController = (function() {
         deletePlot: function() {
         Plotly.purge(DOMStrings.plotArea);
         plotStateObject.resetState();
+        Plotly.purge(DOMStrings.plotAddOnsArea);
         localStorage.setItem("plotData", undefined);
         // localStorage.setItem('plotDomain', undefined);
         },
@@ -373,6 +377,17 @@ var controller = (function () {
                 plotStateObject.subplots = false;
             }
         });
+
+        // Event listener for plot add-ons
+        $(DOMStrings.plotAddOns).on('change', function(){
+            if ($(this).val() === 'gridplot'){
+                gridplot(plotStateObject, DOMStrings.plotAddOnsArea)
+            } else if ($(this).val() === 'none'){
+                Plotly.purge(DOMStrings.plotAddOnsArea)
+            }
+
+        })
+
     };
 
     return {
