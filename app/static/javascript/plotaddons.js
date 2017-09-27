@@ -3,6 +3,7 @@ function gridplot(plotState, plotAddOnArea) {
     var data = [];
     var traces = [];
     var layout = {showlegend: false};
+    console.log(plotState.traces);
 
     plotState.traces.forEach(function(d, i){
         data.push({
@@ -24,6 +25,12 @@ function gridplot(plotState, plotAddOnArea) {
                     x: data[i-1].values,
                     type: 'histogram',
                     mode: 'markers',
+                    marker: {
+                        line: {
+                            color: "rgba(191, 191, 191, 0.8)",
+                            width: 1
+                        }
+                    },
                     xaxis: 'x'.concat(pos),
                     yaxis: 'y'.concat(pos)
                 });
@@ -37,7 +44,10 @@ function gridplot(plotState, plotAddOnArea) {
                     type: 'scatter',
                     mode: 'markers',
                     xaxis: 'x'.concat(pos),
-                    yaxis: 'y'.concat(pos)
+                    yaxis: 'y'.concat(pos),
+                    marker: {
+                        opacity: 0.6
+                    }
                 })
             }
 
@@ -84,6 +94,4 @@ function gridplot(plotState, plotAddOnArea) {
         }
     }
     Plotly.plot(plotAddOnArea, traces, layout);
-    console.log(traces, layout);
-    console.log(document.getElementById(plotAddOnArea).data)
 }
