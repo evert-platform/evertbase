@@ -310,6 +310,7 @@ var plotController = (function() {
         plotStateObject.resetState();
         Plotly.purge(DOMStrings.plotAddOnsArea);
         localStorage.setItem("plotData", undefined);
+        $(DOMStrings.plotAddOns).val('none');
         // localStorage.setItem('plotDomain', undefined);
         },
         init: function () {
