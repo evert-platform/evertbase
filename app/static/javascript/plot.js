@@ -150,7 +150,9 @@ var plotController = (function() {
          // rendering of plot data
         createPlot: function (plotData, layout, tags_map) {
             plotStateObject.resetState();
+
             Plotly.purge(DOMStrings.plotAddOnsArea);
+            $(DOMStrings.plotAddOns).val('none');
 
             plotData.forEach(function(d, i) {
                 plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis));
@@ -236,7 +238,7 @@ var plotController = (function() {
                     modeBarButtonsToRemove: ["autoScale2d", "resetScale2d", "sendDataToCloud"],
                     doubleClick: false
                 });
-
+             console.log(plotStateObject.traces);
             // Event listener for when plot is zoomed. Must be called after plot is created.
             var plotArea = document.getElementById("plot");
             plotArea.on("plotly_relayout", function(e){
@@ -351,7 +353,8 @@ var controller = (function () {
         // Event listener for plot button
         $(DOMStrings.submitBtn).on("click", function () {
             dataController.getJSONData("/_plotdata", function(d) {
-                plotController.createPlot(d.data, undefined, d.tags_map)
+                plotController.createPlot(d.data, undefined, d.tags_map);
+
             })});
 
 
@@ -382,7 +385,7 @@ var controller = (function () {
         // Event listener for plot add-ons
         $(DOMStrings.plotAddOns).on('change', function(){
             if ($(this).val() === 'gridplot'){
-                gridplot(plotStateObject, DOMStrings.plotAddOnsArea)
+                gridplot(plotController.getPlotState(), DOMStrings.plotAddOnsArea)
             } else if ($(this).val() === 'none'){
                 Plotly.purge(DOMStrings.plotAddOnsArea)
             }
