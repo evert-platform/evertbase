@@ -3,7 +3,7 @@ function gridplot(plotState, plotAddOnArea) {
     var data = [];
     var traces = [];
     var layout = {showlegend: false};
-    console.log(plotState.traces);
+
 
     plotState.traces.forEach(function(d, i){
         data.push({
