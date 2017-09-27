@@ -238,7 +238,6 @@ var plotController = (function() {
                     modeBarButtonsToRemove: ["autoScale2d", "resetScale2d", "sendDataToCloud"],
                     doubleClick: false
                 });
-             console.log(plotStateObject.traces);
             // Event listener for when plot is zoomed. Must be called after plot is created.
             var plotArea = document.getElementById("plot");
             plotArea.on("plotly_relayout", function(e){
