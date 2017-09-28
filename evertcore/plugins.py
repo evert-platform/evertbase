@@ -8,8 +8,8 @@ from .websockets import socketio
 from .models import PluginIds
 
 
-_plugin_events = ['data_upload', 'zoom_event']
-_plugin_types = ['features', 'timeseries']
+_plugin_events = ['data_upload', 'zoom_event', 'add_on_event']
+_plugin_types = ['features', 'timeseries', 'add_on']
 plugin_manager = PluginManager()
 
 
