@@ -332,9 +332,16 @@ var plotController = (function() {
                 updatePlot(data);
             });
 
+            socket.on('add_on_return', function(data){
+                console.log(data.msg)
+            })
+
         },
         getPlotState: function(){
             return plotStateObject;
+        },
+        getSocket: function () {
+            return socket
         }
     };
 })();
@@ -388,6 +395,10 @@ var controller = (function () {
             } else if ($(this).val() === 'none'){
                 Plotly.purge(DOMStrings.plotAddOnsArea)
             }
+            var socket = plotController.getSocket();
+            socket.emit('add_on_event', {
+                ids: $(DOMStrings.tags).val()
+            });
 
         })
 
