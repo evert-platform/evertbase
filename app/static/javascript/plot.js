@@ -271,6 +271,7 @@ var plotController = (function() {
                          }
 
                          var ids = [];
+                         console.log(plotStateObject);
                          names.forEach(function(d, i){
                              ids.push(plotStateObject.tagsMap[d.name]);
                          });
@@ -428,7 +429,7 @@ var controller = (function () {
                 $(DOMStrings.subplotsCheck).trigger("click");
                 $(DOMStrings.linkXaxesValue).attr("checked", plotStateObject.linkedXAxis);
 
-                plotController.createPlot(plotStateObject.traces, plotStateObject.plotLayout);
+                plotController.createPlot(plotStateObject.traces, plotStateObject.plotLayout, plotStateObject.tagsMap);
             }
         }
 
