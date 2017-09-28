@@ -42,3 +42,10 @@ def zoom_event(socket_data):
     print('data emitted')
     return
 
+@socketio.on('add_on_event', namespace='/test')
+def addon_event(socket_data):
+    print('add_on_event')
+    print(socket_data)
+    emit('add_on_return', dict(msg='addon return data'))
+    return
+
