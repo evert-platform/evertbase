@@ -46,6 +46,7 @@
                  <select id="AddOnSelect" class="form-control">
                      <option value='none'>None</option>
                      <option value="gridplot">Grid Plot</option>
+                     <option value="pca">PCA</option>
                  </select>
              </div>
              <div class="checkbox">
@@ -63,5 +64,6 @@
 
 <div id="plot" style="min-height: 600px"></div>
 <div id="plotAddOnsArea" style="min-height: 500px"></div>
+{{ emit_event('plotAddOnScript') }}
 
 {% endblock %}

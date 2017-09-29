@@ -44,8 +44,10 @@ def zoom_event(socket_data):
 
 @socketio.on('add_on_event', namespace='/test')
 def addon_event(socket_data):
-    print('add_on_event')
-    print(socket_data)
+    tags = socket_data['ids']
+    name = socket_data['name']
+    tag_data_ = data.tag_data(tags)
+    plugins.emit_event('add_on_event', tag_data_, name)
     emit('add_on_return', dict(msg='addon return data'))
     return
 

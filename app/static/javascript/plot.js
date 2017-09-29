@@ -337,6 +337,11 @@ var plotController = (function() {
                 console.log(data.msg)
             })
 
+            socket.on('plotAddOnScript', function(data) {
+                console.log('hello')
+                console.log(data.script)
+            })
+
         },
         getPlotState: function(){
             return plotStateObject;
@@ -398,7 +403,8 @@ var controller = (function () {
             }
             var socket = plotController.getSocket();
             socket.emit('add_on_event', {
-                ids: $(DOMStrings.tags).val()
+                ids: $(DOMStrings.tags).val(),
+                name: $(DOMStrings.plotAddOns).val()
             });
 
         })

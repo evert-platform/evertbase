@@ -143,6 +143,10 @@ def emit_feature_data(data, domain, plugin_name):
                   namespace='/test')
     return
 
+def emit_addon_script(addonscript):
+    socketio.emit("addOnScriptEmit", {'script': addonscript}, namespace='/test')
+    return
+
 
 def register_plugin(plugin_name, plugin_type):
     """
