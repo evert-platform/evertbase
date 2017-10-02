@@ -143,8 +143,10 @@ def emit_feature_data(data, domain, plugin_name):
                   namespace='/test')
     return
 
-def emit_addon_script(addonscript):
-    socketio.emit("addOnScriptEmit", {'script': addonscript}, namespace='/test')
+
+def emit_addon_plot_data(data, layout, showlegend=True):
+    socketio.emit("add_on_return_plot_data", {'data': data, 'layout': layout, 'showlegend': showlegend},
+                  namespace='/test')
     return
 
 
