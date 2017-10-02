@@ -33,9 +33,11 @@ def apply_pca(data):
     return skree_script
 
 def _prepare_skree(evr, layout):
+    evr = list(evr)
     addOnAreaID = 'plotAddOnsArea'
     skree_xaxis = ['S{}'.format(i+1) for i in range(len(evr))]
-    skree_cusum = np.cumsum(evr)
+    skree_cusum = list(np.cumsum(evr))
+
 
     skree_bar = {
         'x': skree_xaxis,
@@ -58,14 +60,4 @@ def _prepare_skree(evr, layout):
         'title': 'Principal components'
     }
 
-    string = """
-    <script>
-    var data = {}
-    var layout = {}
-    
-    Plotly.newPlot('{}', data, layout)
-    </script> 
-    """.format(data, layout, addOnAreaID)
-    print(string)
-
-    return string
+    return data, layout
