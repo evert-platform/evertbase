@@ -333,14 +333,18 @@ var plotController = (function() {
                 updatePlot(data);
             });
 
-            socket.on('add_on_return', function(data){
-                console.log(data.msg)
-            })
+            socket.on("add_on_return_plot_data", function(data){
+                // console.log(data.script.replace(/ /g, ''));
+                var layout = data.layout;
+                layout.showlegend = data.showlegend;
 
-            socket.on('plotAddOnScript', function(data) {
-                console.log('hello')
-                console.log(data.script)
-            })
+                var plotData = data.data;
+
+                Plotly.newPlot(DOMStrings.plotAddOnsArea, plotData, layout);
+
+            });
+
+
 
         },
         getPlotState: function(){
