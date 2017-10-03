@@ -335,13 +335,19 @@ var plotController = (function() {
 
             socket.on("add_on_return_plot_data", function(data){
                 // console.log(data.script.replace(/ /g, ''));
-                var layout = data.layout;
-                layout.showlegend = data.showlegend;
+                if (!data.msg){
+                    var layout = data.layout;
+                    layout.showlegend = data.showlegend;
+                    var plotData = data.data;
 
-                var plotData = data.data;
-
-                Plotly.newPlot(DOMStrings.plotAddOnsArea, plotData, layout);
-
+                    Plotly.newPlot(DOMStrings.plotAddOnsArea, plotData, layout);
+                } else if (data.msg) {
+                    $.notify(data.msg, {
+                            position: "top center",
+                            className: "error"
+                        });
+                    $(DOMStrings.plotArea).val("none");
+                }
             });
 
 
@@ -351,7 +357,7 @@ var plotController = (function() {
             return plotStateObject;
         },
         getSocket: function () {
-            return socket
+            return socket;
         }
     };
 })();
@@ -412,7 +418,8 @@ var controller = (function () {
                     var socket = plotController.getSocket();
                     socket.emit("add_on_event", {
                     ids: $(DOMStrings.tags).val(),
-                    name: $(DOMStrings.plotAddOns).val()
+                    name: $(DOMStrings.plotAddOns).val(),
+                    domain: document.getElementById(DOMStrings.plotArea).layout.xaxis.range
                     });
                 }
             } else {
@@ -423,12 +430,7 @@ var controller = (function () {
 
                 $(DOMStrings.plotAddOns).val("none");
             }
-
-
-
-
-        })
-
+        });
     };
 
     return {
