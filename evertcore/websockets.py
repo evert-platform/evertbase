@@ -16,9 +16,6 @@ def joined():
 
 @socketio.on('zoom_event', namespace='/test')
 def zoom_event(socket_data):
-    print('socket zoom event')
-    print(socket_data)
-
     try:
         tmin = datetime.strptime(socket_data['domain'][0], '%Y-%m-%d %H:%M:%S.%f')
     except ValueError:
@@ -44,7 +41,6 @@ def zoom_event(socket_data):
 
 
     emit('zoom_return', dict(success=True, data=data_))
-    print('data emitted')
     return
 
 
