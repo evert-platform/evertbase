@@ -254,7 +254,7 @@ var plotController = (function() {
                     var xmin = e[keys[0]];
                     var xmax = e[keys[1]];
 
-                    if (!$(DOMStrings.subplotsCheck).is(":checked")){
+                    if (!$(DOMStrings.linkXaxesValue).is(":checked")){
                         socket.emit("zoom_event",
                         {
                             domain: [xmin, xmax],
@@ -297,16 +297,47 @@ var plotController = (function() {
         },
 
         uploadFeaturesData: function (data) {
+
+        //     // data coming from websocket after zoom.
+        // var newData = data.data;
+        // // names of the traces that need to be updated
+        // var newDataNames = _.map(newData, function(d){return d.name;});
+        // var plotArea = document.getElementById("plot");
+        // // current data visible on the plot
+        // var currentData = plotArea.data;
+        //
+        // newDataNames.forEach(function(d, i){
+        //     var index = _.findIndex(currentData, ["name", d]);
+        //     currentData[index].x = newData[i].x;
+        //     currentData[index].y = newData[i].y;
+        //
+        // });
+
+        // // redraw plot
+        // Plotly.redraw(DOMStrings.plotArea);
             console.log(data.data);
-
-            var plotArea = document.getElementById('plot');
+            var featureData = data.data;
+            var plotArea = document.getElementById(DOMStrings.plotArea);
             var currentData = plotArea.data;
-            currentData = currentData.concat(data.data);
-            plotArea.data = currentData;
+            var dataCount = $(DOMStrings.tags).val().length;
 
-            console.log(plotArea.data);
+            if (currentData.length === dataCount){
+                currentData = currentData.concat(featureData);
+                plotArea.data = currentData;
+            } else if (currentData.length > dataCount) {
+                var newDataNames = _.map(featureData, function(d){return d.name;});
+                newDataNames.forEach(function(d, i){
+                    var index = _.findIndex(currentData, ["name", d]);
+                    currentData[index].x = featureData[i].x;
+                    currentData[index].y = featureData[i].y;
+                });
+                plotArea.data = currentData;
+                console.log(newDataNames)
+            }
 
-            Plotly.redraw(DOMStrings.plotArea);
+
+            Plotly.redraw(DOMStrings.plotArea, plotArea.data, plotArea.layout);
+
 
 
         },
