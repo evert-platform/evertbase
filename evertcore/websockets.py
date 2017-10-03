@@ -42,6 +42,7 @@ def zoom_event(socket_data):
     print('data emitted')
     return
 
+
 @socketio.on('add_on_event', namespace='/test')
 def addon_event(socket_data):
     tags = socket_data['ids']
