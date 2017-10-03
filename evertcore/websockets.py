@@ -46,7 +46,19 @@ def zoom_event(socket_data):
 def addon_event(socket_data):
     tags = socket_data['ids']
     name = socket_data['name']
-    tag_data_ = data.tag_data(tags)
+    domain = socket_data['domain']
+
+    try:
+        tmin = datetime.strptime(domain[0], '%Y-%m-%d %H:%M:%S.%f')
+    except ValueError:
+        tmin = datetime.strptime(domain[0], '%Y-%m-%d %H:%M:%S')  # Does not contain milliseconds
+
+    try:
+        tmax = datetime.strptime(domain[1], '%Y-%m-%d %H:%M:%S.%f')
+    except ValueError:
+        tmax = datetime.strptime(domain[1], '%Y-%m-%d %H:%M:%S')  # Does not contain milliseconds
+
+    tag_data_ = data.tag_data(tags, tmin, tmax)
     plugins.emit_event('add_on_event', tag_data_, name)
     emit('add_on_return', dict(msg='addon return data'))
     return
