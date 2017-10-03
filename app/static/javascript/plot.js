@@ -149,15 +149,19 @@ var plotController = (function() {
     return {
          // rendering of plot data
         createPlot: function (plotData, layout, tags_map) {
+
+            // resetting the plot state
             plotStateObject.resetState();
-
+            plotStateObject.subplots = $(DOMStrings.subplotsCheck).prop("checked");
+            plotStateObject.linkedXAxis = $(DOMStrings.linkXaxesValue).prop("checked");
+            // resetting the add-on space
             Plotly.purge(DOMStrings.plotAddOnsArea);
-            $(DOMStrings.plotAddOns).val('none');
-
+            $(DOMStrings.plotAddOns).val("none");
+            // adding traces to state
             plotData.forEach(function(d, i) {
                 plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis));
             });
-
+            // capturing data from forms
             plotStateObject.formData = {
                 plant: $(DOMStrings.plant).val(),
                 units: $(DOMStrings.units).val(),
@@ -453,9 +457,11 @@ var controller = (function () {
                 $(DOMStrings.tags).val(formData.tags);
                 $(DOMStrings.tags).trigger("chosen:updated");
 
-                $(DOMStrings.subplotsCheck).attr("checked", plotStateObject.subplots);
-                $(DOMStrings.subplotsCheck).trigger("click");
-                $(DOMStrings.linkXaxesValue).attr("checked", plotStateObject.linkedXAxis);
+                $(DOMStrings.subplotsCheck).prop("checked", plotStateObject.subplots);
+                $(DOMStrings.linkXaxesValue).prop("checked", plotStateObject.linkedXAxis);
+                if (plotStateObject.subplots){
+                    $(DOMStrings.linkXaxisCheckbox).show();
+                }
 
                 plotController.createPlot(plotStateObject.traces, plotStateObject.plotLayout, plotStateObject.tagsMap);
             }
