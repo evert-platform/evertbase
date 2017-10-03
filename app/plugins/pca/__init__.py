@@ -18,8 +18,10 @@ def run_plugin(data, name):
                             format(type(data)))
 
         data, layout = apply_pca(data)
-        emit_addon_plot_data(data, layout, False)
-
+        if not data and not layout:
+            emit_addon_plot_data(data, layout, 'PCA add-on requires more than one dataset')
+        else:
+            emit_addon_plot_data(data, layout, '')
         return
     else:
         return
