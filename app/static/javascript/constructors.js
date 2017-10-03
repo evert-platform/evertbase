@@ -39,7 +39,7 @@ function EvertPlotState(){
         this.plotLayout = state.plotLayout;
         this.formData = state.formData;
         this.tagsMap = state.tagsMap;
-        this.initialRange = state.initialRange
+        this.initialRange = state.initialRange;
     };
 
     this.writeState = function() {
