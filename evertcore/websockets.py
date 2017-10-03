@@ -17,6 +17,7 @@ def joined():
 @socketio.on('zoom_event', namespace='/test')
 def zoom_event(socket_data):
     print('socket zoom event')
+    print(socket_data)
 
     try:
         tmin = datetime.strptime(socket_data['domain'][0], '%Y-%m-%d %H:%M:%S.%f')
@@ -36,7 +37,11 @@ def zoom_event(socket_data):
     fig.prepare_data(tag_data_, threshold=_threshold)
     data_ = fig.return_data()
     window_data = fig.window_data(socket_data['domain'])
-    plugins.emit_event('zoom_event', window_data, fig.domain, int(socket_data['xAxisNo'][0]))
+    try:
+        plugins.emit_event('zoom_event', window_data, fig.domain, int(socket_data['xAxisNo'][0]))
+    except KeyError:
+        plugins.emit_event('zoom_event', window_data, fig.domain, 1)
+
 
     emit('zoom_return', dict(success=True, data=data_))
     print('data emitted')
