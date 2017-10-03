@@ -3,7 +3,7 @@
 {% block title %}Plot{% endblock %}
 {% block head %}
 
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="text/javascript" src="{{ url_for('static', filename='javascript/plotly.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='javascript/lodash.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='javascript/constructors.js') }}"></script>
@@ -38,9 +38,7 @@
          </fieldset>
          <fieldset class="col-xs-7 col-sm-7 col-md-7 col-lg-7" style="display: inline">
              <legend>Plot Options</legend>
-{#             <div style="display: block">#}
-{#                     Plot type: {{ form.selectType(class='form-control') }}#}
-{#             </div>#}
+
              <div>
                  <label for="AddOnSelect">Plot add-ons</label>
                  <select id="AddOnSelect" class="form-control">
@@ -63,6 +61,9 @@
 </div>
 
 <div id="plot" style="min-height: 600px"></div>
-<div id="plotAddOnsArea" style="min-height: 500px"></div>
+<div id="plotAddOnsArea" style="min-height: 500px">
+
+
+</div>
 
 {% endblock %}
