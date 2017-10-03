@@ -28,13 +28,14 @@ def apply_pca(data):
 
 
     layout = dict()
-    skree_script = _prepare_skree(evr, layout)
+    plotdata, layout = _prepare_skree(evr, layout)
 
-    return skree_script
+    plotdata, layout = _prepare_biplot(data, pca, plotdata, layout)
+
+    return plotdata, layout
 
 def _prepare_skree(evr, layout):
     evr = list(evr)
-    addOnAreaID = 'plotAddOnsArea'
     skree_xaxis = ['S{}'.format(i+1) for i in range(len(evr))]
     skree_cusum = list(np.cumsum(evr))
 
@@ -54,10 +55,43 @@ def _prepare_skree(evr, layout):
     data = [skree_line, skree_bar]
 
     layout['yaxis'] = {
-        'title': 'explained variance ratio'
+        'title': 'explained variance ratio',
+        'showline': True
     }
     layout['xaxis'] = {
-        'title': 'Principal components'
+        'title': 'Principal components',
+        'domain': [0, 0.45]
     }
 
     return data, layout
+
+def _prepare_biplot(data, pca, plotdata, layout):
+
+    transformed_data = pca.transform(data.values)
+
+    biplot_data = transformed_data[:, :2]
+    plotdata.append({
+        'x': list(biplot_data[:, 0]),
+        'y': list(biplot_data[:, 1]),
+        'type': 'scatter',
+        'mode': 'markers',
+        'marker': {
+            'color': 'rgba(32, 160, 255, 0.5)'
+        },
+        'xaxis': 'x2',
+        'yaxis': 'y2'
+    })
+
+    layout['xaxis2'] = {
+        'title': 'S1',
+        'domain': [0.55, 1]
+    }
+
+    layout['yaxis2'] = {
+        'title': 'S2',
+        'showline': 1,
+        'anchor': 'x2'
+    }
+    return plotdata, layout
+
+
