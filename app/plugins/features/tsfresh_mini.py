@@ -119,11 +119,15 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, a
 
         lst = {
             'name': header_name + ': ' + feature_name,
-            'x{}'.format(axis): [feature_timestamp[0], feature_timestamp[1]],
-            'y{}'.format(axis): [feature_value, feature_value],
+            'x': [feature_timestamp[0], feature_timestamp[1]],
+            'y': [feature_value, feature_value],
+            'xaxis': 'x{}'.format(axis),
+            'yaxis': 'y{}'.format(axis),
+            'type': 'scatter',
             'mode': 'lines',
             'line': {
-                'dash': 'dashdot'
+                'dash': 'dashdot',
+                'opacity': 0.5
             }
         }
 
@@ -131,10 +135,12 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, a
 
         lst = {
             'name':  header_name + ': ' + feature_name,
-            'x{}'.format(axis): [feature_timestamp],
-            'y{}'.format(axis): [feature_value],
+            'x': [feature_timestamp],
+            'y': [feature_value],
+            'xaxis': 'x{}'.format(axis),
+            'yaxis': 'y{}'.format(axis),
+            'type': 'scatter',
             'mode': 'markers'
-
         }
 
     return lst
