@@ -144,9 +144,13 @@ def emit_feature_data(data, domain, plugin_name):
     return
 
 
-def emit_addon_plot_data(data, layout, showlegend=True):
-    socketio.emit("add_on_return_plot_data", {'data': data, 'layout': layout, 'showlegend': showlegend},
+def emit_addon_plot_data(data, layout, message):
+    if len(message) > 0:
+        socketio.emit("add_on_return_plot_data", {'data': data, 'layout': layout, 'msg': message},
                   namespace='/test')
+    else:
+        socketio.emit("add_on_return_plot_data", {'data': data, 'layout': layout},
+                      namespace='/test')
     return
 
 
