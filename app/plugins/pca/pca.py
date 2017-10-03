@@ -22,21 +22,19 @@ def apply_pca(data):
     pca.fit(data.values)
 
     evr = pca.explained_variance_ratio_
-    pca_components = pca.components_
-    data_transform = pca.transform(data.values)
-    # print(evr, pca_components, np.matrix(pca_components).T*np.matrix(pca_components))
-
-
     layout = dict()
     plotdata, layout = _prepare_skree(evr, layout)
 
-    plotdata, layout = _prepare_biplot(data, pca, plotdata, layout)
+    try:
+        plotdata, layout = _prepare_biplot(data, pca, plotdata, layout)
+        return plotdata, layout
+    except IndexError:
+        return False, False
 
-    return plotdata, layout
 
 def _prepare_skree(evr, layout):
     evr = list(evr)
-    skree_xaxis = ['S{}'.format(i+1) for i in range(len(evr))]
+    skree_xaxis = ['PC{}'.format(i+1) for i in range(len(evr))]
     skree_cusum = list(np.cumsum(evr))
 
 
@@ -64,6 +62,7 @@ def _prepare_skree(evr, layout):
     }
 
     return data, layout
+
 
 def _prepare_biplot(data, pca, plotdata, layout):
 
