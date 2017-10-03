@@ -254,7 +254,7 @@ var plotController = (function() {
                     var xmin = e[keys[0]];
                     var xmax = e[keys[1]];
 
-                    if (!$(DOMStrings.linkXaxesValue).is(":checked")){
+                    if (!$(DOMStrings.subplotsCheck).is(":checked")){
                         socket.emit("zoom_event",
                         {
                             domain: [xmin, xmax],
@@ -279,7 +279,7 @@ var plotController = (function() {
                          names.forEach(function(d, i){
                              ids.push(plotStateObject.tagsMap[d.name]);
                          });
-
+                        console.log(ids, xAxisNumber);
                          socket.emit("zoom_event",
                         {
                             domain: [xmin, xmax],
@@ -297,24 +297,6 @@ var plotController = (function() {
         },
 
         uploadFeaturesData: function (data) {
-
-        //     // data coming from websocket after zoom.
-        // var newData = data.data;
-        // // names of the traces that need to be updated
-        // var newDataNames = _.map(newData, function(d){return d.name;});
-        // var plotArea = document.getElementById("plot");
-        // // current data visible on the plot
-        // var currentData = plotArea.data;
-        //
-        // newDataNames.forEach(function(d, i){
-        //     var index = _.findIndex(currentData, ["name", d]);
-        //     currentData[index].x = newData[i].x;
-        //     currentData[index].y = newData[i].y;
-        //
-        // });
-
-        // // redraw plot
-        // Plotly.redraw(DOMStrings.plotArea);
             console.log(data.data);
             var featureData = data.data;
             var plotArea = document.getElementById(DOMStrings.plotArea);
@@ -332,7 +314,7 @@ var plotController = (function() {
                     currentData[index].y = featureData[i].y;
                 });
                 plotArea.data = currentData;
-                console.log(newDataNames)
+                console.log(newDataNames);
             }
 
 
