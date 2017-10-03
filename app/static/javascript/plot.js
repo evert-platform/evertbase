@@ -400,16 +400,32 @@ var controller = (function () {
 
         // Event listener for plot add-ons
         $(DOMStrings.plotAddOns).on('change', function(){
-            if ($(this).val() === 'gridplot'){
-                gridplot(plotController.getPlotState(), DOMStrings.plotAddOnsArea)
-            } else if ($(this).val() === 'none'){
-                Plotly.purge(DOMStrings.plotAddOnsArea)
+
+            if ($(DOMStrings.linkXaxesValue).is(':checked') || !$(DOMStrings.subplotsCheck).is(':checked')){
+                if ($(this).val() === 'gridplot'){
+                    Plotly.purge(DOMStrings.plotAddOnsArea);
+                    gridplot(plotController.getPlotState(), DOMStrings.plotAddOnsArea);
+                } else if ($(this).val() === 'none'){
+                    Plotly.purge(DOMStrings.plotAddOnsArea);
+                } else {
+                    Plotly.purge(DOMStrings.plotAddOnsArea);
+                    var socket = plotController.getSocket();
+                    socket.emit("add_on_event", {
+                    ids: $(DOMStrings.tags).val(),
+                    name: $(DOMStrings.plotAddOns).val()
+                    });
+                }
+            } else {
+                $.notify("Add ons can only be used with a single plot or subplots with linked x-axes", {
+                            position: "top center",
+                            className: "error"
+                        });
+
+                $(DOMStrings.plotAddOns).val("none");
             }
-            var socket = plotController.getSocket();
-            socket.emit('add_on_event', {
-                ids: $(DOMStrings.tags).val(),
-                name: $(DOMStrings.plotAddOns).val()
-            });
+
+
+
 
         })
 
