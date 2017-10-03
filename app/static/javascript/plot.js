@@ -24,7 +24,7 @@ var dataController = (function () {
         subplotsCheck: "input#subplots-check",
         linkXaxesValue: "input#linkXaxesValue",
         linkXaxisCheckbox: "div#linkXcheckbox",
-        plotAddOns: 'select#AddOnSelect'
+        plotAddOns: "select#AddOnSelect"
     };
 
     return {
@@ -133,16 +133,29 @@ var plotController = (function() {
         var plotArea = document.getElementById("plot");
         // current data visible on the plot
         var currentData = plotArea.data;
+        // current traces in plot state
+        var currentTraces = plotStateObject.traces;
+
 
         newDataNames.forEach(function(d, i){
             var index = _.findIndex(currentData, ["name", d]);
             currentData[index].x = newData[i].x;
             currentData[index].y = newData[i].y;
 
+            // updating current traces
+            var index2 = _.findIndex(currentTraces, ["name", d]);
+            currentTraces[index2].x = newData[i].x;
+            currentTraces[index2].y = newData[i].y;
+
         });
+        // updating plotStateObject
+        plotStateObject.traces = currentTraces;
+        // updating current plot window data
         plotArea.data = currentData;
         // redraw plot
         Plotly.redraw(DOMStrings.plotArea);
+
+        $(DOMStrings.plotAddOns).trigger("change");
 
     };
 
@@ -275,11 +288,9 @@ var plotController = (function() {
                          }
 
                          var ids = [];
-                         console.log(plotStateObject);
                          names.forEach(function(d, i){
                              ids.push(plotStateObject.tagsMap[d.name]);
                          });
-                        console.log(ids, xAxisNumber);
                          socket.emit("zoom_event",
                         {
                             domain: [xmin, xmax],
@@ -297,7 +308,6 @@ var plotController = (function() {
         },
 
         uploadFeaturesData: function (data) {
-            console.log(data.data);
             var featureData = data.data;
             var plotArea = document.getElementById(DOMStrings.plotArea);
             var currentData = plotArea.data;
@@ -314,14 +324,8 @@ var plotController = (function() {
                     currentData[index].y = featureData[i].y;
                 });
                 plotArea.data = currentData;
-                console.log(newDataNames);
             }
-
-
             Plotly.redraw(DOMStrings.plotArea, plotArea.data, plotArea.layout);
-
-
-
         },
         // delete plot from plot area
         deletePlot: function() {
@@ -329,8 +333,8 @@ var plotController = (function() {
         plotStateObject.resetState();
         Plotly.purge(DOMStrings.plotAddOnsArea);
         localStorage.setItem("plotData", undefined);
-        $(DOMStrings.plotAddOns).val('none');
-        // localStorage.setItem('plotDomain', undefined);
+        $(DOMStrings.plotAddOns).val("none");
+        // localStorage.setItem("plotDomain", undefined);
         },
         init: function () {
             var namespace = "/test";
@@ -342,7 +346,6 @@ var plotController = (function() {
 
 
             socket.on("pluginFeaturesEmit", function(data){
-                console.log("pluginfeatures");
                 plotController.uploadFeaturesData(data);
             });
 
@@ -351,7 +354,6 @@ var plotController = (function() {
             });
 
             socket.on("add_on_return_plot_data", function(data){
-                // console.log(data.script.replace(/ /g, ''));
                 if (!data.msg){
                     var layout = data.layout;
                     layout.showlegend = data.showlegend;
@@ -366,9 +368,6 @@ var plotController = (function() {
                     $(DOMStrings.plotArea).val("none");
                 }
             });
-
-
-
         },
         getPlotState: function(){
             return plotStateObject;
@@ -422,13 +421,12 @@ var controller = (function () {
         });
 
         // Event listener for plot add-ons
-        $(DOMStrings.plotAddOns).on('change', function(){
-
-            if ($(DOMStrings.linkXaxesValue).is(':checked') || !$(DOMStrings.subplotsCheck).is(':checked')){
-                if ($(this).val() === 'gridplot'){
+        $(DOMStrings.plotAddOns).on("change", function(){
+            if ($(DOMStrings.linkXaxesValue).is(":checked") || !$(DOMStrings.subplotsCheck).is(":checked")){
+                if ($(this).val() === "gridplot"){
                     Plotly.purge(DOMStrings.plotAddOnsArea);
                     gridplot(plotController.getPlotState(), DOMStrings.plotAddOnsArea);
-                } else if ($(this).val() === 'none'){
+                } else if ($(this).val() === "none"){
                     Plotly.purge(DOMStrings.plotAddOnsArea);
                 } else {
                     Plotly.purge(DOMStrings.plotAddOnsArea);
