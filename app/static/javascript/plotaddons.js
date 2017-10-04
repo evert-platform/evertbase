@@ -55,38 +55,54 @@ function gridplot(plotState, plotAddOnArea) {
             if (j===1 && i===1){
                 layout.xaxis1 = {
                     domain: [frac*(j-1) + 0.09 , frac*(j)],
-                    title: data[j-1].name
+                    title: data[j-1].name,
+                    showline: true,
+                    ticks: 'outside'
                 };
                 layout.yaxis1 = {
                     domain: [frac*(i-1) + 0.09 , frac*(i)],
-                    title: data[i-1].name
+                    title: data[i-1].name,
+                    showline: true,
+                    ticks: 'outside'
                 }
             } else if (i === 1 && j > 1){
                 layout['xaxis'.concat(pos)] = {
                     domain:[frac*(j-1) + 0.09 , frac*(j)],
                     title: data[j-1].name,
+                    showline: true,
+                    ticks: 'outside'
                 };
                 layout['yaxis'.concat(pos)] = {
                     domain: [frac*(i-1) + 0.09 , frac*(i)],
-                    anchor: 'x'.concat(pos)
+                    anchor: 'x'.concat(pos),
+                    showline: true,
+                    ticks: 'outside'
                 }
             } else if (i > 1 && j === 1){
                 layout['xaxis'.concat(pos)] = {
                     domain: [frac*(j-1) + 0.09 , frac*(j)],
-                    anchor: 'y'.concat(pos)
+                    anchor: 'y'.concat(pos),
+                    showline: true,
+                    ticks: 'outside'
                 };
                 layout['yaxis'.concat(pos)] = {
                     domain: [frac*(i-1) + 0.09 , frac*(i)],
-                    title: data[i-1].name
+                    title: data[i-1].name,
+                    showline: true,
+                    ticks: 'outside'
                 }
             } else if (i > 1 && j >  1) {
                 layout['xaxis'.concat(pos)] = {
                     domain: [frac*(j-1) + 0.09 , frac*(j)],
-                    anchor: 'y'.concat(pos)
+                    anchor: 'y'.concat(pos),
+                    showline: true,
+                    ticks: 'outside'
                 };
                 layout['yaxis'.concat(pos)] = {
                     domain: [frac*(i-1) + 0.09 , frac*(i)],
-                    anchor: 'x'.concat(pos)
+                    anchor: 'x'.concat(pos),
+                    showline: true,
+                    ticks: 'outside'
                 };
             }
 
