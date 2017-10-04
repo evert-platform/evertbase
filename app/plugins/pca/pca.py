@@ -69,9 +69,25 @@ def _prepare_biplot(data, pca, plotdata, layout):
     transformed_data = pca.transform(data.values)
 
     biplot_data = transformed_data[:, :2]
+
+
+    maxpc1 = np.max(biplot_data[:, 0])
+    maxpc2 = np.max(biplot_data[:, 1])
+
+    minpc1 = np.min(biplot_data[:, 0])
+    minpc2 = np.min(biplot_data[:, 1])
+
+    std_pc1 = max(abs(minpc1), maxpc1)
+    std_pc2 = max(abs(minpc2), maxpc2)
+
+
+
+    # maxvec = np.reshape([std_pc1, std], (2, 1))
+    components = pca.components_[:2]
+
     plotdata.append({
-        'x': list(biplot_data[:, 0]),
-        'y': list(biplot_data[:, 1]),
+        'x': list(biplot_data[:, 0]/std_pc1),
+        'y': list(biplot_data[:, 1]/std_pc1),
         'type': 'scatter',
         'mode': 'markers',
         'marker': {
@@ -83,7 +99,7 @@ def _prepare_biplot(data, pca, plotdata, layout):
 
     layout['xaxis2'] = {
         'title': 'S1',
-        'domain': [0.55, 1]
+        'domain': [0.55, 1],
     }
 
     layout['yaxis2'] = {
@@ -91,6 +107,45 @@ def _prepare_biplot(data, pca, plotdata, layout):
         'showline': 1,
         'anchor': 'x2'
     }
+
+    end = (components).T
+
+
+    annotations = []
+    for ei, name in zip(end, data.columns):
+        annotations.append({
+            'ax': 0,
+            'ay': 0,
+            'xref': 'x2',
+            'yref': 'y2',
+            'showarrow': True,
+            'arrowhead': 3,
+            'axref': 'x2',
+            'ayref': 'y2',
+            'x': ei[0],
+            'y': ei[1],
+            'xanchor': 'right'
+        })
+
+        annotations.append({
+            'ax': ei[0],
+            'ay': ei[1],
+            'xref': 'x2',
+            'yref': 'y2',
+            'showarrow': True,
+            'arrowhead': 0,
+            'axref': 'x2',
+            'ayref': 'y2',
+            'x': 0,
+            'y': 0,
+            'xanchor': 'left',
+            'text': name
+        })
+
+    layout['annotations'] = annotations
+
+
+
     return plotdata, layout
 
 
