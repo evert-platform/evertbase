@@ -1,10 +1,11 @@
-function EvertTrace(name, x, y, xaxis, yaxis){
+function EvertTrace(name, x, y, xaxis, yaxis, metadata){
     "use strict";
     this.name = name;
     this.x = x;
     this.y = y;
     this.xaxis = xaxis;
     this.yaxis = yaxis;
+    this.metadata = metadata;
 }
 
 function EvertPlotState(){
