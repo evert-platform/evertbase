@@ -172,7 +172,7 @@ var plotController = (function() {
             $(DOMStrings.plotAddOns).val("none");
             // adding traces to state
             plotData.forEach(function(d, i) {
-                plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis));
+                plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis, d.metadata));
             });
             // capturing data from forms
             plotStateObject.formData = {
@@ -356,10 +356,11 @@ var plotController = (function() {
             socket.on("add_on_return_plot_data", function(data){
                 if (!data.msg){
                     var layout = data.layout;
-                    layout.showlegend = data.showlegend;
+                    layout.showlegend = false;
                     var plotData = data.data;
-
+                    console.log('plotting...');
                     Plotly.newPlot(DOMStrings.plotAddOnsArea, plotData, layout);
+                    console.log('plotted...');
                 } else if (data.msg) {
                     $.notify(data.msg, {
                             position: "top center",
