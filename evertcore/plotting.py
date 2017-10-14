@@ -120,7 +120,7 @@ class Fig:
         self.subplots = subplots
         self.link_xaxes = link_xaxes
 
-    def prepare_data(self, data, threshold=0):
+    def prepare_data(self, data, threshold=0, metadata={}):
         """
         Changes the input data to the correct format for plotting.
         
@@ -150,18 +150,18 @@ class Fig:
                                               name=n,
                                               xaxis='x'.format(i),
                                               yaxis='y{}'.format(i),
-                                              metadata={
+                                              metadata={**{
                                                   'dataType': 'data'
-                                              }))
+                                              }, **metadata[i-1]}))
                     else:
                         data_plot.append(dict(x=list(data['timestamp'].values),
                                               y=list(data[n].values),
                                               name=n,
                                               xaxis='x{}'.format(i),
                                               yaxis='y{}'.format(i),
-                                              metadata={
+                                              metadata={**{
                                                   'dataType': 'data'
-                                              }))
+                                              }, **metadata[i-1]}))
                 else:
                     pass
             self.data = data_plot
@@ -169,9 +169,12 @@ class Fig:
 
         elif not self.subplots:
 
-            for n in data_names:
+            for i, n in enumerate(data_names):
                 if n != 'timestamp':
-                    data_plot.append(dict(x=list(data['timestamp'].values), y=list(data[n].values), name=n))
+                    data_plot.append(dict(x=list(data['timestamp'].values), y=list(data[n].values), name=n,
+                                          metadata={
+                                              **{'dataType': 'data'}, **metadata[i-1]
+                                          }))
 
             self.data = data_plot
             return
