@@ -149,13 +149,19 @@ class Fig:
                                               y=list(data[n].values),
                                               name=n,
                                               xaxis='x'.format(i),
-                                              yaxis='y{}'.format(i)))
+                                              yaxis='y{}'.format(i),
+                                              metadata={
+                                                  'dataType': 'data'
+                                              }))
                     else:
                         data_plot.append(dict(x=list(data['timestamp'].values),
                                               y=list(data[n].values),
                                               name=n,
                                               xaxis='x{}'.format(i),
-                                              yaxis='y{}'.format(i)))
+                                              yaxis='y{}'.format(i),
+                                              metadata={
+                                                  'dataType': 'data'
+                                              }))
                 else:
                     pass
             self.data = data_plot
