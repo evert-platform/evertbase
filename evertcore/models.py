@@ -114,6 +114,12 @@ class Tags(BaseMixin, db.Model):
             Tags.query.filter_by(id=tag).update(dict(section=section))
             db.session.commit()
 
+    @staticmethod
+    def get_metadata(ids):
+        metadata = db_session.query(Tags).with_entities(Tags.name, Tags.lower_bound, Tags.upper_bound,
+                                                        Tags.units).filter(Tags.id.in_(ids)).all()
+        return metadata
+
 
 # Model for measurement data table
 class MeasurementData(db.Model):
