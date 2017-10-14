@@ -127,7 +127,9 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, a
             'mode': 'lines',
             'line': {
                 'dash': 'dashdot',
-                'opacity': 0.5
+                'opacity': 0.5},
+            'metadata': {
+                'dataType': 'plugin'
             }
         }
 
@@ -140,7 +142,10 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, a
             'xaxis': 'x{}'.format(axis),
             'yaxis': 'y{}'.format(axis),
             'type': 'scatter',
-            'mode': 'markers'
+            'mode': 'markers',
+            'metadata': {
+                'dataType': 'plugin'
+            }
         }
 
     return lst
