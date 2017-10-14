@@ -24,7 +24,8 @@ var dataController = (function () {
         subplotsCheck: "input#subplots-check",
         linkXaxesValue: "input#linkXaxesValue",
         linkXaxisCheckbox: "div#linkXcheckbox",
-        plotAddOns: "select#AddOnSelect"
+        plotAddOns: "select#AddOnSelect",
+        clearpluginsbtn: 'button#clearplugindata'
     };
 
     return {
@@ -447,6 +448,14 @@ var controller = (function () {
                 $(DOMStrings.plotAddOns).val("none");
             }
         });
+
+        // Event listener for clear plugin data button
+        $(DOMStrings.clearpluginsbtn).on('click', function(){
+            var plot = document.getElementById(DOMStrings.plotArea);
+            plot.data = _.partition(plot.data, ['metadata.dataType', 'data'])[0];
+            console.log(plot.data);
+            Plotly.redraw(DOMStrings.plotArea);
+        })
     };
 
     return {
