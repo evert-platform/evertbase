@@ -17,9 +17,10 @@ def _plotdata():
     linkx = request.args.get('linkXaxes', 'false', type=str)
     linkx = False if linkx == 'false' else True
     tag_data = evert.data.tag_data(tags)
+    metadata = evert.data.get_tag_metadata(tags)
     tag_map = {name_: id_ for id_, name_ in evert.data.get_tag_names(key='id', values=list(map(int,tags)))}
     fig = evert.plotting.Fig(subplots=subplots, link_xaxes=linkx)
-    fig.prepare_data(tag_data, _threshold)
+    fig.prepare_data(tag_data, _threshold, metadata)
     data = fig.return_data()
     # evert.plugins.emit_event('zoom_event', fig.dataFrame, None)
 
