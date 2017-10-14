@@ -453,22 +453,42 @@ var controller = (function () {
             }
         });
 
-        // Event listener for clear plugin data button
-        $(DOMStrings.clearpluginsbtn).on('click', function(){
-            var plot = document.getElementById(DOMStrings.plotArea);
-            plot.data = _.partition(plot.data, ['metadata.dataType', 'data'])[0];
-            console.log(plot.data);
-            Plotly.redraw(DOMStrings.plotArea);
-        });
-
         // event listener for show plugin data checkbox
         $(DOMStrings.showplugindata).on("click", function(){
+            var plot = document.getElementById(DOMStrings.plotArea);
+            var plugins = _.partition(plot.data, ['metadata.dataType', 'plugin'])[0];
+            var indexes = [];
             if ($(this).prop('checked')){
                 $(DOMStrings.clearpluginsbtn).show();
+
+                if (plugins.length > 0){
+
+                    plugins.forEach(function (d, i) {
+                       indexes.push(_.indexOf(plot.data, d))
+                    });
+                    var update = {
+                        visible: true,
+                        showlegend: true
+                    };
+                    console.log(plot.data);
+                    // Plotly.redraw(DOMStrings.plotArea);
+                    Plotly.restyle(DOMStrings.plotArea, update, indexes);
+                }
+
             } else if(!$(this).prop('checked')){
                 $(DOMStrings.clearpluginsbtn).hide();
+                    plugins.forEach(function (d, i) {
+                       indexes.push(_.indexOf(plot.data, d))
+                    });
+                    var update = {
+                        visible: false,
+                        showlegend: false
+                    };
+                    console.log(plot.data);
+                    // Plotly.redraw(DOMStrings.plotArea);
+                    Plotly.restyle(DOMStrings.plotArea, update, indexes);
             }
-        })
+        });
     };
 
     return {
