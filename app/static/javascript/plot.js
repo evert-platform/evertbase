@@ -25,7 +25,8 @@ var dataController = (function () {
         linkXaxesValue: "input#linkXaxesValue",
         linkXaxisCheckbox: "div#linkXcheckbox",
         plotAddOns: "select#AddOnSelect",
-        clearpluginsbtn: 'button#clearplugindata'
+        clearpluginsbtn: 'button#clearplugindata',
+        showplugindata: "input#showPluginCheckbox"
     };
 
     return {
@@ -309,24 +310,26 @@ var plotController = (function() {
         },
 
         uploadFeaturesData: function (data) {
-            var featureData = data.data;
-            var plotArea = document.getElementById(DOMStrings.plotArea);
-            var currentData = plotArea.data;
-            var dataCount = $(DOMStrings.tags).val().length;
+            if ($(DOMStrings.showplugindata).prop("checked")) {
+                var featureData = data.data;
+                var plotArea = document.getElementById(DOMStrings.plotArea);
+                var currentData = plotArea.data;
+                var dataCount = $(DOMStrings.tags).val().length;
 
-            if (currentData.length === dataCount){
-                currentData = currentData.concat(featureData);
-                plotArea.data = currentData;
-            } else if (currentData.length > dataCount) {
-                var newDataNames = _.map(featureData, function(d){return d.name;});
-                newDataNames.forEach(function(d, i){
-                    var index = _.findIndex(currentData, ["name", d]);
-                    currentData[index].x = featureData[i].x;
-                    currentData[index].y = featureData[i].y;
-                });
-                plotArea.data = currentData;
+                if (currentData.length === dataCount){
+                    currentData = currentData.concat(featureData);
+                    plotArea.data = currentData;
+                } else if (currentData.length > dataCount) {
+                    var newDataNames = _.map(featureData, function(d){return d.name;});
+                    newDataNames.forEach(function(d, i){
+                        var index = _.findIndex(currentData, ["name", d]);
+                        currentData[index].x = featureData[i].x;
+                        currentData[index].y = featureData[i].y;
+                    });
+                    plotArea.data = currentData;
+                }
+                Plotly.redraw(DOMStrings.plotArea, plotArea.data, plotArea.layout);
             }
-            Plotly.redraw(DOMStrings.plotArea, plotArea.data, plotArea.layout);
         },
         // delete plot from plot area
         deletePlot: function() {
@@ -440,6 +443,7 @@ var controller = (function () {
                     });
                 }
             } else {
+                // TODO: Fix error when plugin data is updated
                 $.notify("Add ons can only be used with a single plot or subplots with linked x-axes", {
                             position: "top center",
                             className: "error"
@@ -455,6 +459,15 @@ var controller = (function () {
             plot.data = _.partition(plot.data, ['metadata.dataType', 'data'])[0];
             console.log(plot.data);
             Plotly.redraw(DOMStrings.plotArea);
+        });
+
+        // event listener for show plugin data checkbox
+        $(DOMStrings.showplugindata).on("click", function(){
+            if ($(this).prop('checked')){
+                $(DOMStrings.clearpluginsbtn).show();
+            } else if(!$(this).prop('checked')){
+                $(DOMStrings.clearpluginsbtn).hide();
+            }
         })
     };
 
