@@ -336,12 +336,12 @@ var plotController = (function() {
         // delete plot from plot area
         deletePlot: function() {
         Plotly.purge(DOMStrings.plotArea);
-        plotStateObject.resetState();
-        $(DOMStrings.$plotAddOnsArea).hide();
         Plotly.purge(DOMStrings.plotAddOnsArea);
-        localStorage.setItem("plotData", undefined);
+        $(DOMStrings.$plotAddOnsArea).hide();
         $(DOMStrings.plotAddOns).val("none");
-        // localStorage.setItem("plotDomain", undefined);
+
+        plotStateObject.resetState();
+        localStorage.removeItem("plotState");
         },
         init: function () {
             var namespace = "/test";
@@ -365,9 +365,7 @@ var plotController = (function() {
                     var layout = data.layout;
                     layout.showlegend = false;
                     var plotData = data.data;
-                    console.log('plotting...');
                     Plotly.newPlot(DOMStrings.plotAddOnsArea, plotData, layout);
-                    console.log('plotted...');
                     $(DOMStrings.loader).hide();
                 } else if (data.msg) {
                     $.notify(data.msg, {
@@ -401,10 +399,18 @@ var controller = (function () {
     var setupEventListners = function(){
         // Event listener for plot button
         $(DOMStrings.submitBtn).on("click", function () {
-            dataController.getJSONData("/_plotdata", function(d) {
-                plotController.createPlot(d.data, undefined, d.tags_map);
-
-            })});
+            var plottags = $(DOMStrings.tags).val();
+            if (plottags !== null){
+                dataController.getJSONData("/_plotdata", function(d) {
+                    plotController.createPlot(d.data, undefined, d.tags_map);
+                });
+            } else if (plottags === null){
+                $.notify("Please select one or more tags to plot", {
+                            position: "top center",
+                            className: "error"
+                        });
+            }
+        });
 
 
         // Event listener for when units are selected (updates tags)
@@ -508,7 +514,7 @@ var controller = (function () {
             setupEventListners();
 
             console.log("init");
-            if (localStorage.getItem("plotState")||false) {
+            if (localStorage.getItem("plotState") !== null) {
 
                 plotStateObject = new EvertPlotState();
                 plotStateObject.readState(JSON.parse(localStorage.getItem("plotState")));
