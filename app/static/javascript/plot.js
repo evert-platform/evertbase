@@ -299,7 +299,7 @@ var plotController = (function() {
                         {
                             domain: [xmin, xmax],
                             ids: ids,
-                            xAxisNo:  xAxisNumber || 1
+                            xAxisNo:  xAxisNumber || [1]
                         });
                     }
                 }
