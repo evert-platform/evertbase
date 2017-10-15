@@ -458,8 +458,7 @@ var controller = (function () {
                     domain: document.getElementById(DOMStrings.plotArea).layout.xaxis.range
                     });
                 }
-                } else {
-                    // TODO: Fix error when plugin data is updated
+                } else if ($(DOMStrings.plotAddOns).val() !== 'none'){
                     $.notify("Add ons can only be used with a single plot or subplots with linked x-axes", {
                                 position: "top center",
                                 className: "error"
