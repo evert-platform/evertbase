@@ -168,13 +168,17 @@ class Fig:
             return
 
         elif not self.subplots:
-
             for i, n in enumerate(data_names):
                 if n != 'timestamp':
-                    data_plot.append(dict(x=list(data['timestamp'].values), y=list(data[n].values), name=n,
-                                          metadata={
-                                              **{'dataType': 'data'}, **metadata[i-1]
-                                          }))
+                    if metadata == {}:
+                        data_plot.append(dict(x=list(data['timestamp'].values), y=list(data[n].values), name=n,
+                                              metadata={'dataType': 'data'}))
+
+                    elif isinstance(list, metadata):
+                        data_plot.append(dict(x=list(data['timestamp'].values), y=list(data[n].values), name=n,
+                                              metadata={**{
+                                                  'dataType': 'data'
+                                              }, **metadata[i - 1]}))
 
             self.data = data_plot
             return
