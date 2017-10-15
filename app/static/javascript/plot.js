@@ -21,12 +21,14 @@ var dataController = (function () {
         deleteBtn: "button#deleteplot",
         plotArea: "plot",
         plotAddOnsArea: "plotAddOnsArea",
+        $plotAddOnsArea: "#plotAddOnsArea",
         subplotsCheck: "input#subplots-check",
         linkXaxesValue: "input#linkXaxesValue",
         linkXaxisCheckbox: "div#linkXcheckbox",
         plotAddOns: "select#AddOnSelect",
         clearpluginsbtn: 'button#clearplugindata',
-        showplugindata: "input#showPluginCheckbox"
+        showplugindata: "input#showPluginCheckbox",
+        loader: '#loaderWrapper'
     };
 
     return {
@@ -335,6 +337,7 @@ var plotController = (function() {
         deletePlot: function() {
         Plotly.purge(DOMStrings.plotArea);
         plotStateObject.resetState();
+        $(DOMStrings.$plotAddOnsArea).hide();
         Plotly.purge(DOMStrings.plotAddOnsArea);
         localStorage.setItem("plotData", undefined);
         $(DOMStrings.plotAddOns).val("none");
@@ -365,12 +368,15 @@ var plotController = (function() {
                     console.log('plotting...');
                     Plotly.newPlot(DOMStrings.plotAddOnsArea, plotData, layout);
                     console.log('plotted...');
+                    $(DOMStrings.loader).hide();
                 } else if (data.msg) {
                     $.notify(data.msg, {
                             position: "top center",
                             className: "error"
                         });
                     $(DOMStrings.plotArea).val("none");
+                    $(DOMStrings.$plotAddOnsArea).hide();
+                    $(DOMStrings.loader).hide();
                 }
             });
         },
@@ -428,10 +434,15 @@ var controller = (function () {
         // Event listener for plot add-ons
         $(DOMStrings.plotAddOns).on("change", function(){
             if ($(DOMStrings.linkXaxesValue).is(":checked") || !$(DOMStrings.subplotsCheck).is(":checked")){
+
+                $(DOMStrings.$plotAddOnsArea).show();
+                $(DOMStrings.loader).show();
                 if ($(this).val() === "gridplot"){
                     Plotly.purge(DOMStrings.plotAddOnsArea);
                     gridplot(plotController.getPlotState(), DOMStrings.plotAddOnsArea);
+                    $(DOMStrings.loader).hide();
                 } else if ($(this).val() === "none"){
+                    $(DOMStrings.$plotAddOnsArea).hide();
                     Plotly.purge(DOMStrings.plotAddOnsArea);
                 } else {
                     Plotly.purge(DOMStrings.plotAddOnsArea);
