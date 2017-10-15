@@ -8,9 +8,6 @@ div#plugins_toggle, div#plugins_upload{
 .chosen-container {
     padding-bottom: 10px;
 }
-#plotAddOnsArea{
-    border: 1px solid black;
-}
 
 #loaderText {
     position: relative;
