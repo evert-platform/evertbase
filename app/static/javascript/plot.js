@@ -412,7 +412,6 @@ var controller = (function () {
             }
         });
 
-
         // Event listener for when units are selected (updates tags)
         $(DOMStrings.units).on("change", function () {
             dataController.getJSONData("/_unitchange", UIController.updateTags);
@@ -439,8 +438,8 @@ var controller = (function () {
 
         // Event listener for plot add-ons
         $(DOMStrings.plotAddOns).on("change", function(){
-            if ($(DOMStrings.linkXaxesValue).is(":checked") || !$(DOMStrings.subplotsCheck).is(":checked")){
-
+            if ($(DOMStrings.tags).val() !== null){
+                if ($(DOMStrings.linkXaxesValue).is(":checked") || !$(DOMStrings.subplotsCheck).is(":checked")){
                 $(DOMStrings.$plotAddOnsArea).show();
                 $(DOMStrings.loader).show();
                 if ($(this).val() === "gridplot"){
@@ -459,15 +458,22 @@ var controller = (function () {
                     domain: document.getElementById(DOMStrings.plotArea).layout.xaxis.range
                     });
                 }
+                } else {
+                    // TODO: Fix error when plugin data is updated
+                    $.notify("Add ons can only be used with a single plot or subplots with linked x-axes", {
+                                position: "top center",
+                                className: "error"
+                            });
+                    $(DOMStrings.plotAddOns).val("none");
+                }
             } else {
-                // TODO: Fix error when plugin data is updated
-                $.notify("Add ons can only be used with a single plot or subplots with linked x-axes", {
-                            position: "top center",
-                            className: "error"
-                        });
-
+                $.notify("Please create a main plot before attempting to use the addons", {
+                                position: "top center",
+                                className: "error"
+                            });
                 $(DOMStrings.plotAddOns).val("none");
             }
+
         });
 
         // event listener for show plugin data checkbox
