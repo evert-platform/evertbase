@@ -186,6 +186,46 @@ var controller = (function () {
 
             dataController.get('/_plantchangemanage', UIController.updateDataManagement);
         })
+        // Event listener for updating meta data
+        $(DOMButtons.tagmetasubmit).on('click', function(){
+            if ($(DOMStrings.tagsupper).val() && $(DOMStrings.tagslower).val()){
+                if ($(DOMStrings.tagsupper).val() > $(DOMStrings.tagslower).val()){
+                    dataController.get('/_updatemetadata', function(data){
+                        if (data.success) {
+                            $.notify('Meta data updated', {
+                            position: "top center",
+                            className: 'success'
+                            })
+                        } else if (!data.success) {
+                            $.notify('Meta data could not be updated', {
+                            position: "top center",
+                            className: 'error'
+                            })
+                        }
+                    })
+                } else {
+                    $.notify('Tag lower bound must be smaller than upper bound.', {
+                            position: "top center",
+                            className: 'error'
+                        })
+                }
+            } else {
+                dataController.get('/_updatemetadata', function(data){
+                        if (data.success) {
+                            $.notify('Meta data updated', {
+                            position: "top center",
+                            className: 'success'
+                            })
+                        } else if (!data.success) {
+                            $.notify('Meta data could not be updated', {
+                            position: "top center",
+                            className: 'error'
+                            })
+                        }
+                    })
+            }
+
+        })
     };
 
     return {
@@ -220,7 +260,11 @@ var dataController = (function () {
                 tagsDataManage: $(DOMStrings.tagsDataManage).val(),
                 unitTags: $(DOMStrings.unitTags).val(),
                 unitDataManage:$(DOMStrings.unitDataManage).val(),
-                unitTagsDataManage: $(DOMStrings.unitTagsDataManage).val()
+                unitTagsDataManage: $(DOMStrings.unitTagsDataManage).val(),
+                tagsmeta: $(DOMStrings.tagsmeta).val(),
+                taglower: $(DOMStrings.tagslower).val(),
+                tagupper: $(DOMStrings.tagsupper).val(),
+                tagunits: $(DOMStrings.tagsunits).val()
             };
             $.getJSON(url, data, callback);
         },
