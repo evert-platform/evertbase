@@ -21,7 +21,11 @@ var controller = (function () {
         dataManageTab: 'li#manage',
         dataOpenView: 'div#dataopen',
         dataSetupView: 'div#plant_setup',
-        dataManageView: 'div#datamanage'
+        dataManageView: 'div#datamanage',
+        tagsmeta: 'select#tagsmeta',
+        tagslower: 'input#taglowerbound',
+        tagsupper: 'input#tagupperbound',
+        tagsunits: 'input#tagunits'
     };
 
     DOMButtons = {
@@ -35,7 +39,8 @@ var controller = (function () {
         deleteUnitTags: 'input#deleteunittags',
         deleteTags: 'input#deletetags',
         openFile: 'input#open_file',
-        uploadFile: 'input#upload_file'
+        uploadFile: 'input#upload_file',
+        tagmetasubmit: 'input#submitmeta'
     };
 
     // Setting up EventListeners
@@ -268,17 +273,20 @@ var UIController = (function () {
             $(DOMStrings.tags).chosen({width: '100%'});
             $(DOMStrings.units).chosen({width: '100%', max_selected_options:1});
             $(DOMStrings.unitTags).chosen({width: '100%'});
-            $(DOMStrings.unitDataManage).chosen({width: '100%'})
+            $(DOMStrings.unitDataManage).chosen({width: '100%'});
+            $(DOMStrings.tagsmeta).chosen({width: '100%'});
         },
         updateSelect: function (selector, data) {
             updateSelect(selector, data)
 
         },
         updatePlantSetup: function (data) {
+
             var $unitselect = $(DOMStrings.units);
             var $plantname = $(DOMStrings.plantName);
             var $tags = $(DOMStrings.tags);
             var $unitTags = $(DOMStrings.unitTags);
+            var $metaTags = $(DOMStrings.tagsmeta);
 
             try {
                 $plantname.val(data.plant_name[1]);
@@ -294,6 +302,8 @@ var UIController = (function () {
             updateSelect($tags, data.tags);
             // clearing unit tags field
             updateSelect($unitTags, null);
+            // updating meta tag select
+            updateSelect($metaTags, data.alltags);
 
             $(DOMStrings.plant).trigger('chosen:updated');
             $(DOMStrings.tags).trigger('chosen:updated');
