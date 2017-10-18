@@ -145,7 +145,10 @@ function showBounds() {
                 dash: 'longdash',
                 width: 1
             },
-            legendgroup: 'bounds'
+            metadata:{
+                dataType: 'bounds'
+            }
+
         },{
             name: d.name + ': upper bound',
             x: xbounds,
@@ -157,6 +160,9 @@ function showBounds() {
             line: {
                 dash: 'longdash',
                 width: 1
+            },
+            metadata:{
+                dataType: 'bounds'
             }
         });
         } else if (lowerbound && !upperbound){
@@ -171,6 +177,9 @@ function showBounds() {
             line: {
                 dash: 'longdash',
                 width: 1
+            },
+            metadata:{
+                dataType: 'bounds'
             }
             })
         } else if (!lowerbound && upperbound) {
@@ -185,6 +194,9 @@ function showBounds() {
             line: {
                 dash: 'longdash',
                 width: 1
+            },
+            metadata:{
+                dataType: 'bounds'
             }
             })
         }
