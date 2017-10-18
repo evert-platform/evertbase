@@ -28,7 +28,8 @@ var dataController = (function () {
         plotAddOns: "select#AddOnSelect",
         clearpluginsbtn: 'button#clearplugindata',
         showplugindata: "input#showPluginCheckbox",
-        loader: '#loaderWrapper'
+        loader: '#loaderWrapper',
+        showboundsCheckbox: 'input#showDataBounds'
     };
 
     return {
@@ -481,7 +482,7 @@ var controller = (function () {
             var plugins = _.partition(plot.data, ['metadata.dataType', 'plugin'])[0];
             var indexes = [];
             if ($(this).prop('checked')){
-                $(DOMStrings.clearpluginsbtn).show();
+
 
                 if (plugins.length > 0){
 
@@ -492,13 +493,10 @@ var controller = (function () {
                         visible: true,
                         showlegend: true
                     };
-                    console.log(plot.data);
-                    // Plotly.redraw(DOMStrings.plotArea);
                     Plotly.restyle(DOMStrings.plotArea, update, indexes);
                 }
 
             } else if(!$(this).prop('checked')){
-                $(DOMStrings.clearpluginsbtn).hide();
                     plugins.forEach(function (d, i) {
                        indexes.push(_.indexOf(plot.data, d))
                     });
@@ -506,11 +504,39 @@ var controller = (function () {
                         visible: false,
                         showlegend: false
                     };
-                    console.log(plot.data);
-                    // Plotly.redraw(DOMStrings.plotArea);
                     Plotly.restyle(DOMStrings.plotArea, update, indexes);
             }
         });
+
+        // Event listener fo show data bounds checkbox
+        $(DOMStrings.showboundsCheckbox).on('click', function () {
+            var plot = document.getElementById(DOMStrings.plotArea);
+            var bounds = _.partition(plot.data, ['metadata.dataType', 'bounds'])[0];
+            var indexes = [];
+            if ($(this).prop('checked')){
+                if (bounds.length > 0) {
+                    bounds.forEach(function (d, i) {
+                       indexes.push(_.indexOf(plot.data, d))
+                    });
+                    var update = {
+                        visible: true,
+                        showlegend: true
+                    };
+                    Plotly.restyle(DOMStrings.plotArea, update, indexes);
+                } else {
+                    showBounds();
+                }
+            } else if (!$(this).prop('checked')){
+                bounds.forEach(function (d, i) {
+                       indexes.push(_.indexOf(plot.data, d))
+                    });
+                    var update = {
+                        visible: false,
+                        showlegend: false
+                    };
+                    Plotly.restyle(DOMStrings.plotArea, update, indexes);
+            }
+        })
     };
 
     return {
