@@ -105,9 +105,102 @@ function gridplot(plotState, plotAddOnArea) {
                     ticks: 'outside'
                 };
             }
-
-
         }
     }
     Plotly.plot(plotAddOnArea, traces, layout);
 }
+
+function showBounds() {
+    var plot = document.getElementById('plot');
+    var currentData = plot.data;
+    var currentLayout = plot.layout;
+
+    var bounds = [];
+
+    var dataTraces = _.partition(currentData, ['metadata.dataType', 'data'])[0];
+
+    dataTraces.forEach(function (d) {
+        var xbounds;
+        var xaxis = d.xaxis;
+        var yaxis = d.yaxis;
+        var xaxisnumber = xaxis.match(/\d+/g);
+        if (xaxisnumber === null){
+            xbounds = currentLayout['xaxis'].range
+        } else {
+            xbounds = currentLayout['xaxis'.concat(xaxisnumber[0])].range
+        }
+        var lowerbound = d.metadata.min;
+        var upperbound = d.metadata.max;
+
+        if (lowerbound && upperbound){
+            bounds.push({
+            name: d.name + ': lower bound',
+            x: xbounds,
+            y: [d.metadata.min, d.metadata.min],
+            xaxis: xaxis,
+            yaxis:yaxis,
+            type: 'scatter',
+            mode: 'lines',
+            line: {
+                dash: 'longdash',
+                width: 1
+            },
+            legendgroup: 'bounds'
+        },{
+            name: d.name + ': upper bound',
+            x: xbounds,
+            y: [d.metadata.max, d.metadata.max],
+            xaxis: xaxis,
+            yaxis:yaxis,
+            type: 'scatter',
+            mode: 'lines',
+            line: {
+                dash: 'longdash',
+                width: 1
+            }
+        });
+        } else if (lowerbound && !upperbound){
+            bounds.push({
+            name: d.name + ': lower bound',
+            x: xbounds,
+            y: [d.metadata.min, d.metadata.min],
+            xaxis: xaxis,
+            yaxis:yaxis,
+            type: 'scatter',
+            mode: 'lines',
+            line: {
+                dash: 'longdash',
+                width: 1
+            }
+            })
+        } else if (!lowerbound && upperbound) {
+            bounds.push({
+            name: d.name + ': upper bound',
+            x: xbounds,
+            y: [d.metadata.max, d.metadata.max],
+            xaxis: xaxis,
+            yaxis:yaxis,
+            type: 'scatter',
+            mode: 'lines',
+            line: {
+                dash: 'longdash',
+                width: 1
+            }
+            })
+        }
+
+
+    });
+    if (bounds.length > 0){
+        Plotly.addTraces('plot', bounds)
+    } else {
+        $.notify('No bounds available for selected data sets.', {
+                position: "top center",
+                className: "error"
+        });
+    }
+
+}
+
+
+
