@@ -57,12 +57,15 @@
         <form class='form form-horizontal' enctype="multipart/form-data" action="" method="post" role="form">
             <fieldset class="container col-sm-12 col-md-12 col-lg-12">
                     {{ form2.hidden_tag() }}
+                    <h3>Plant Setup</h3>
                     <div class="col-sm-6 col-md-6 col-lg-6">
                         {{ form2.plant_select.label(class='form-select-label') }} {{ form2.plant_select
                         (class='form-control plant_setup') }}<br>
                         {{ form2.plant_name.label(class='form-text-label') }} {{ form2.plant_name(class='form-control') }}
                         <input type="button" value="Update" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px"
                                id="updateplantname"><br>
+                        <hr/>
+                        <h3>Unit Setup</h3>
                         {{ form2.unit_name.label(class='form-select-label') }}{{ form2.unit_name(class='form-control plant_setup') }}
                         <input type="button" value="Update" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px" id="updateunit">
                         <input type="button" value="Add" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px" id="addunit">
@@ -72,20 +75,40 @@
 
                     <br>
 
-                    <div class="col-sm-5 col-md-4 col-lg-5">
+                    <div class="col-sm-6 col-md-6 col-lg-6">
                         {{ form2.unit_select.label(class='form-select-label') }}<br>{{ form2.unit_select(class='form-control plant_setup') }}
                     </div>
-                    <div class="col-sm-4 col-md-4 col-lg-4">
+                    <div class="col-sm-6 col-md-6 col-lg-6">
                         {{ form2.tags.label(class='form-select-label') }}{{ form2.tags(class='form-control plant_setup') }}
                         <input type="button" value="Set" class="btn btn-primary" style="margin-top: 10px" id="settags"><br>
                     </div>
                     <div class="col-sm-12 col-md-12 col-lg-12"></div>
 
-                    <div class="col-sm-4 col-md-4 col-lg-4" style="display: inline">
+                    <div class="col-sm-6 col-md-6 col-lg-6" style="display: inline">
                         {{ form2.unit_tags.label(class='form-select-label') }}{{ form2.unit_tags(class='form-control plant_setup') }}
                         <input type="button" value="Delete" class="btn btn-primary" style="margin-top: 10px;" id="removetags">
                     </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12"><hr/></div>
 
+
+                    <br/>
+                    <div style='display: block' class="col-sm-6 col-md-6 col-lg-6">
+                        <h3>Tag Meta Data</h3>
+                        <label class="form-select-label" for="tagsmeta">Select Tags</label>
+                        <select class="form-control plant_setup" id="tagsmeta" multiple></select>
+
+                        <label class="form-select-label" for="taglowerbound">Lower Bound</label>
+                        <input type="text" class="form-control" id="taglowerbound">
+
+                        <label class="form-select-label" for="tagupperbound">Upper Bound</label>
+                        <input type="text" class="form-control" id="tagupperbound">
+
+                        <label class="form-select-label" for="tagunits">Units</label>
+                        <input type="text" class="form-control" id="tagunits">
+
+                        <input type="button" value="Submit" class="btn btn-primary" style="margin-top: 10px" id="submitmeta">
+
+                    </div>
 
             </fieldset>
         </form>
@@ -93,7 +116,7 @@
     <div id="datamanage" hidden="hidden">
         <form class="form form-horizontal" enctype="multipart/form-data" action="" role="form">
             {{ form2.hidden_tag() }}
-            <div class="col-sm-6 col-md-6 col-lg-6">
+            <div class="row col-sm-6 col-md-6 col-lg-6">
                 {{ form2.plant_select.label(class='form-select-label') }} {{ form2.plant_select(class='form-control
                 datamanage
                 ') }}<br>
