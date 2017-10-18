@@ -380,6 +380,15 @@ def update_plant_name(plant_id, name):
     return Plants.get_names()
 
 
+def update_tag_metadata(ids, lower, upper, units):
+
+    for t in ids:
+        Tags.query.filter_by(id=t).update(dict(lower_bound=lower, upper_bound=upper, units=units))
+
+    db.session.commit()
+    return
+
+
 def update_section_name(section_id, name):
     """
     Updates section name.
