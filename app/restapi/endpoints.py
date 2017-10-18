@@ -5,7 +5,7 @@ import pandas as pd
 from . import restapi
 import evertcore as evert
 from datetime import datetime
-_threshold = 700
+_threshold = 500
 
 # this retrieves the data that needs to be plotted and returns the data
 @restapi.route('/_plotdata', methods=['GET'])
@@ -279,6 +279,19 @@ def _deleteunittags():
         data = evert.data.delete_tags(tags, plant)
 
     return jsonify(success=True, data=dict(data))
+
+@restapi.route('/_updatemetadata')
+def updatetagmeta():
+    tags = list(map(int, request.args.getlist('tagsmeta[]')))
+    lowerbound = request.args.get('taglower', type=float)
+    upperbound = request.args.get('tagupper', type=float)
+    units = request.args.get('tagunits', type=str)
+
+    try:
+        evert.data.update_tag_metadata(tags, lowerbound, upperbound, units)
+        return jsonify(success=True)
+    except:
+        return jsonify(success=False)
 
 
 @restapi.route('/_viewdata')
