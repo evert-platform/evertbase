@@ -206,6 +206,7 @@ function showBounds() {
     if (bounds.length > 0){
         Plotly.addTraces('plot', bounds)
     } else {
+        $('input#showDataBounds').prop('checked', false);
         $.notify('No bounds available for selected data sets.', {
                 position: "top center",
                 className: "error"
