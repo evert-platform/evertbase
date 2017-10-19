@@ -215,48 +215,79 @@ function showBounds() {
 
 }
 
-function multipleYAxes(DOMStrings){
+function multipleYAxes(DOMStrings, show, plotController){
     var plot = document.getElementById('plot');
     var currentData = plot.data;
     var currentLayout = plot.layout;
 
     var colors = ['#ff7f0e', '#2c9f2c', '1f77b4', 'd62728', '#9467BD', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'];
+    if(show){
+        if (currentData.length <= colors.length){
+            currentData.forEach(function(d, i){
+                d.yaxis = 'y'.concat(i + 1);
 
-    if (currentData.length <= colors.length){
-        currentData.forEach(function(d, i){
-            d.yaxis = 'y'.concat(i + 1);
+                currentLayout['yaxis'.concat(i + 1)] = {
+                    title: d.name,
+                    anchor: 'free',
+                    side: 'left',
+                    position: 0.08 * i,
+                    overlaying: i+1 > 1 ? 'y':undefined,
+                    showline: true,
+                    ticks: 'outside',
+                    tickfont: {color: colors[i]},
+                    color: colors[i]
+                }
+            });
 
-            currentLayout['yaxis'.concat(i + 1)] = {
-                title: d.name,
-                anchor: 'free',
-                side: 'left',
-                position: 0.08 * i,
-                overlaying: i+1 > 1 ? 'y':undefined,
+            currentLayout.xaxis = {
+                domain: [0.08*(currentData.length-1), 1],
                 showline: true,
-                ticks: 'outside',
-                tickfont: {color: colors[i]},
-                color: colors[i]
-            }
+                ticks: 'outside'
+            };
+            currentLayout.showlegend = false;
+            delete currentLayout.yaxis;
+
+
+            plot.data = currentData;
+            plot.layout = currentLayout;
+            Plotly.redraw('plot')
+            } else {
+            $.notify('No more than ' + colors.length + ' tags allowed for multiple axes', {
+                position: 'top center',
+                type: 'error'
+            })
+        }
+
+    } else if (!show){
+        console.log('remove multiple yaxes');
+
+        // currentLayout.yaxis = {
+        //             showline: true,
+        //             ticks: 'outside'
+        // };
+
+        currentData.forEach(function (d, i) {
+            delete d.xaxis;
+            delete d.yaxis;
         });
 
-        currentLayout.xaxis = {
-            domain: [0.08*(currentData.length-1), 1],
-            showline: true,
-            ticks: 'outside'
+        currentLayout = {
+            xaxis: {
+                showline: true,
+                ticks: 'outside'
+            },
+            yaxis: {
+                showline: true,
+                ticks: 'outside'
+            },
+            showlegend: true
         };
-        currentLayout.showlegend = false;
-        delete currentLayout.yaxis;
 
+        Plotly.newPlot('plot', currentData, currentLayout);
+        link_zoom_event(plotController.getSocket(), DOMStrings, plotController.getPlotState())
 
-        plot.data = currentData;
-        plot.layout = currentLayout;
-        Plotly.redraw('plot')
-        } else {
-        $.notify('No more than ' + colors.length + ' tags allowed for multiple axes', {
-            position: 'top center',
-            type: 'error'
-        })
     }
+
 }
 
 
