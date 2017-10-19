@@ -1,8 +1,9 @@
 $(document).ready(function () {
     "use strict";
+    plotController.init();
     controller.init();
 
-    plotController.init();
+
 });
 
 // Data controller for plotting page
@@ -29,7 +30,8 @@ var dataController = (function () {
         clearpluginsbtn: 'button#clearplugindata',
         showplugindata: "input#showPluginCheckbox",
         loader: '#loaderWrapper',
-        showboundsCheckbox: 'input#showDataBounds'
+        showboundsCheckbox: 'input#showDataBounds',
+        multipleYCheckbox: 'input#multipleYAxes'
     };
 
     return {
@@ -260,55 +262,13 @@ var plotController = (function() {
                     modeBarButtonsToRemove: ["autoScale2d", "resetScale2d", "sendDataToCloud"],
                     doubleClick: false
                 });
+
+            console.log(socket)
             // Event listener for when plot is zoomed. Must be called after plot is created.
-            var plotArea = document.getElementById("plot");
-            plotArea.on("plotly_relayout", function(e){
-                var keys = Object.keys(e);
-                var names;
+            link_zoom_event(socket, DOMStrings, plotStateObject);
 
-                if (keys.length > 0 && keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g) &&
-                    keys[1].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)){
 
-                    var xmin = e[keys[0]];
-                    var xmax = e[keys[1]];
 
-                    if (!$(DOMStrings.subplotsCheck).is(":checked")){
-                        socket.emit("zoom_event",
-                        {
-                            domain: [xmin, xmax],
-                            ids: $(DOMStrings.tags).val()
-                        });
-                    } else {
-                         var xAxis = keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)[0];
-                         var xAxisNumber = xAxis.match(/([0-9])/g);
-                         if (!xAxisNumber) {
-                            names = _.partition(plotArea.data, function(d){
-                                return _.includes(["x"], d.xaxis);
-                            })[0];
-
-                         } else if (xAxisNumber){
-                             names = _.partition(plotArea.data, function(d){
-                                 return _.includes(["x".concat(xAxisNumber)], d.xaxis);
-                           })[0];
-                         }
-
-                         var ids = [];
-                         names.forEach(function(d, i){
-                             ids.push(plotStateObject.tagsMap[d.name]);
-                         });
-                         socket.emit("zoom_event",
-                        {
-                            domain: [xmin, xmax],
-                            ids: ids,
-                            xAxisNo:  xAxisNumber || [1]
-                        });
-                    }
-                }
-
-                plotStateObject.plotLayout = plotArea.layout;
-            });
-
-            plotStateObject.initialRange = plotArea.layout.xaxis.range;
             localStorage.setItem("plotState", JSON.stringify(plotStateObject.writeState()));
         },
 
@@ -535,6 +495,14 @@ var controller = (function () {
                         showlegend: false
                     };
                     Plotly.restyle(DOMStrings.plotArea, update, indexes);
+            }
+        })
+        //Event listener for multiple Y-Axes checkbox
+        $(DOMStrings.multipleYCheckbox).on('click', function () {
+            if ($(this).prop('checked')) {
+                multipleYAxes(DOMStrings, true, plotController)
+            } else {
+                multipleYAxes(DOMStrings, false, plotController)
             }
         })
     };
