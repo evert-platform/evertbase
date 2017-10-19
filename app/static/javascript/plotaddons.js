@@ -121,8 +121,8 @@ function showBounds() {
 
     dataTraces.forEach(function (d) {
         var xbounds;
-        var xaxis = d.xaxis;
-        var yaxis = d.yaxis;
+        var xaxis = d.xaxis || 'x';
+        var yaxis = d.yaxis || 'y';
         var xaxisnumber = xaxis.match(/\d+/g);
         if (xaxisnumber === null){
             xbounds = currentLayout['xaxis'].range
