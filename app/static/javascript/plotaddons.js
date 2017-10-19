@@ -215,5 +215,48 @@ function showBounds() {
 
 }
 
+function multipleYAxes(DOMStrings){
+    var plot = document.getElementById('plot');
+    var currentData = plot.data;
+    var currentLayout = plot.layout;
+
+    var colors = ['#ff7f0e', '#2c9f2c', '1f77b4', 'd62728', '#9467BD', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'];
+
+    if (currentData.length <== colors.length){
+        currentData.forEach(function(d, i){
+            d.yaxis = 'y'.concat(i + 1);
+
+            currentLayout['yaxis'.concat(i + 1)] = {
+                title: d.name,
+                anchor: 'free',
+                side: 'left',
+                position: 0.08 * i,
+                overlaying: i+1 > 1 ? 'y':undefined,
+                showline: true,
+                ticks: 'outside',
+                tickfont: {color: colors[i]},
+                color: colors[i]
+            }
+        });
+
+        currentLayout.xaxis = {
+            domain: [0.08*(currentData.length-1), 1],
+            showline: true,
+            ticks: 'outside'
+        };
+        delete currentLayout.yaxis;
+
+
+        plot.data = currentData;
+        plot.layout = currentLayout;
+        Plotly.redraw('plot')
+        } else {
+        $.notify('No more than ' + colors.length + ' tags allowed for multiple axes', {
+            position: 'top center',
+            type: 'error'
+        })
+    }
+}
+
 
 
