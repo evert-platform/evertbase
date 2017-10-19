@@ -174,7 +174,7 @@ class Fig:
                         data_plot.append(dict(x=list(data['timestamp'].values), y=list(data[n].values), name=n,
                                               metadata={'dataType': 'data'}))
 
-                    elif isinstance(list, metadata):
+                    elif isinstance(metadata, list):
                         data_plot.append(dict(x=list(data['timestamp'].values), y=list(data[n].values), name=n,
                                               metadata={**{
                                                   'dataType': 'data'
