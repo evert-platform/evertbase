@@ -222,7 +222,7 @@ function multipleYAxes(DOMStrings){
 
     var colors = ['#ff7f0e', '#2c9f2c', '1f77b4', 'd62728', '#9467BD', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'];
 
-    if (currentData.length <== colors.length){
+    if (currentData.length <= colors.length){
         currentData.forEach(function(d, i){
             d.yaxis = 'y'.concat(i + 1);
 
@@ -244,6 +244,7 @@ function multipleYAxes(DOMStrings){
             showline: true,
             ticks: 'outside'
         };
+        currentLayout.showlegend = false;
         delete currentLayout.yaxis;
 
 
