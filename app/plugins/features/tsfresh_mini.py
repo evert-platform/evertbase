@@ -129,7 +129,8 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, a
                 'dash': 'dashdot',
                 'opacity': 0.5},
             'metadata': {
-                'dataType': 'plugin'
+                'dataType': 'plugin',
+                'baseData': header_name
             }
         }
 
@@ -144,7 +145,8 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, a
             'type': 'scatter',
             'mode': 'markers',
             'metadata': {
-                'dataType': 'plugin'
+                'dataType': 'plugin',
+                'baseData': header_name
             }
         }
 
