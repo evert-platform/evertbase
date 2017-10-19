@@ -216,6 +216,7 @@ function showBounds() {
 }
 
 function multipleYAxes(DOMStrings, show, plotController){
+    // TODO: add handling of plugin data
     var plot = document.getElementById('plot');
     var currentData = plot.data;
     var currentLayout = plot.layout;
@@ -259,12 +260,6 @@ function multipleYAxes(DOMStrings, show, plotController){
         }
 
     } else if (!show){
-        console.log('remove multiple yaxes');
-
-        // currentLayout.yaxis = {
-        //             showline: true,
-        //             ticks: 'outside'
-        // };
 
         currentData.forEach(function (d, i) {
             delete d.xaxis;
