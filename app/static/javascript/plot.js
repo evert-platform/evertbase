@@ -393,7 +393,6 @@ var controller = (function () {
                },
                function(){}
            );
-
         });
 
         // Event listener for subplots check button
