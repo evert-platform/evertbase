@@ -216,16 +216,19 @@ function showBounds() {
 }
 
 function multipleYAxes(DOMStrings, show, plotController){
-    // TODO: add handling of plugin data
     var plot = document.getElementById('plot');
     var currentData = plot.data;
     var currentLayout = plot.layout;
+    var dataTraces = _.partition(currentData, ['metadata.dataType', 'data'])[0];
+    var otherData = _.partition(currentData, ['metadata.dataType', 'data'])[1];
+    var range = currentLayout.xaxis.range;
 
     var colors = ['#1f77b4','#ff7f0e', '#2c9f2c', '#d62728', '#9467BD', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'];
     if(show){
-        if (currentData.length <= colors.length){
-            currentData.forEach(function(d, i){
+        if (dataTraces.length <= colors.length){
+            dataTraces.forEach(function(d, i){
                 d.yaxis = 'y'.concat(i + 1);
+                d.showlegend = false;
 
                 currentLayout['yaxis'.concat(i + 1)] = {
                     title: d.name,
@@ -240,16 +243,33 @@ function multipleYAxes(DOMStrings, show, plotController){
                 }
             });
 
+
+
             currentLayout.xaxis = {
-                domain: [0.08*(currentData.length-1), 1],
+                domain: [0.08*(dataTraces.length-1), 1],
                 showline: true,
-                ticks: 'outside'
+                ticks: 'outside',
+                range: range
             };
-            currentLayout.showlegend = false;
+
+            var correctedOtherData = [];
+
+            otherData.forEach(function(d, i) {
+                var baseDataName = d.metadata.baseData;
+                var baseDataObject = _.find(dataTraces, ['name', baseDataName]);
+                var baseXAxis = baseDataObject.xaxis || 'x1';
+                var baseYAxis = baseDataObject.yaxis || 'y1';
+
+                d.xaxis = baseXAxis;
+                d.yaxis = baseYAxis;
+                correctedOtherData.push(d)
+            });
+            dataTraces = dataTraces.concat(correctedOtherData);
+            // currentLayout.showlegend = false;
             delete currentLayout.yaxis;
 
 
-            plot.data = currentData;
+            plot.data = dataTraces;
             plot.layout = currentLayout;
             Plotly.redraw('plot')
             } else {
@@ -264,12 +284,14 @@ function multipleYAxes(DOMStrings, show, plotController){
         currentData.forEach(function (d, i) {
             delete d.xaxis;
             delete d.yaxis;
+            d.showlegend = true;
         });
 
         currentLayout = {
             xaxis: {
                 showline: true,
-                ticks: 'outside'
+                ticks: 'outside',
+                range: range
             },
             yaxis: {
                 showline: true,
