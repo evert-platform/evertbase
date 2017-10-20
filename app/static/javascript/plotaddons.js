@@ -221,7 +221,7 @@ function multipleYAxes(DOMStrings, show, plotController){
     var currentData = plot.data;
     var currentLayout = plot.layout;
 
-    var colors = ['#ff7f0e', '#2c9f2c', '1f77b4', 'd62728', '#9467BD', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'];
+    var colors = ['#1f77b4','#ff7f0e', '#2c9f2c', '#d62728', '#9467BD', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'];
     if(show){
         if (currentData.length <= colors.length){
             currentData.forEach(function(d, i){
