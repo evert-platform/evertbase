@@ -267,9 +267,9 @@ var plotController = (function() {
             // Event listener for when plot is zoomed. Must be called after plot is created.
             link_zoom_event(socket, DOMStrings, plotStateObject);
             // Check whether user wants multiple  Y axes
-            multipleYAxes(DOMStrings, $(DOMStrings.multipleYCheckbox).prop('checked'), this);
-
-
+            if (!$(DOMStrings.subplotsCheck).prop('checked')){
+                multipleYAxes(DOMStrings, $(DOMStrings.multipleYCheckbox).prop('checked'), this);
+            }
             localStorage.setItem("plotState", JSON.stringify(plotStateObject.writeState()));
         },
 
@@ -393,9 +393,11 @@ var controller = (function () {
         $(DOMStrings.subplotsCheck).on("click", function(){
             if ($(this).is(":checked")){
                 $(DOMStrings.linkXaxisCheckbox).show();
+                $(DOMStrings.multipleYCheckbox).prop('disabled', true);
                 plotStateObject.subplots = true;
             } else {
                 $(DOMStrings.linkXaxisCheckbox).hide();
+                $(DOMStrings.multipleYCheckbox).prop('disabled', false);
                 plotStateObject.subplots = false;
             }
         });
@@ -525,6 +527,7 @@ var controller = (function () {
                 $(DOMStrings.tags).trigger("chosen:updated");
 
                 $(DOMStrings.subplotsCheck).prop("checked", plotStateObject.subplots);
+                $(DOMStrings.multipleYCheckbox).prop('disabled', plotStateObject.subplots);
                 $(DOMStrings.linkXaxesValue).prop("checked", plotStateObject.linkedXAxis);
                 if (plotStateObject.subplots){
                     $(DOMStrings.linkXaxisCheckbox).show();
