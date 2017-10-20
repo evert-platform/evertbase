@@ -192,35 +192,20 @@ var controller = (function () {
                 if ($(DOMStrings.tagsupper).val() > $(DOMStrings.tagslower).val()){
                     dataController.get('/_updatemetadata', function(data){
                         if (data.success) {
-                            $.notify('Meta data updated', {
-                            position: "top center",
-                            className: 'success'
-                            })
+                            alertify.success('Meta data updated');
                         } else if (!data.success) {
-                            $.notify('Meta data could not be updated', {
-                            position: "top center",
-                            className: 'error'
-                            })
+                            alertify.error('Meta data could not be updated');
                         }
                     })
                 } else {
-                    $.notify('Tag lower bound must be smaller than upper bound.', {
-                            position: "top center",
-                            className: 'error'
-                        })
+                    alertify.error('Tag lower bound must be smaller than upper bound.');
                 }
             } else {
                 dataController.get('/_updatemetadata', function(data){
                         if (data.success) {
-                            $.notify('Meta data updated', {
-                            position: "top center",
-                            className: 'success'
-                            })
+                            alertify.success('Meta data updated');
                         } else if (!data.success) {
-                            $.notify('Meta data could not be updated', {
-                            position: "top center",
-                            className: 'error'
-                            })
+                            alertify.error('Meta data could not be updated');
                         }
                     })
             }
@@ -282,15 +267,9 @@ var dataController = (function () {
                         UIController.updateSelect($plantselect, data.plants);
                     });
                     if (data.success){
-                        $.notify('File ready to be used', {
-                            position: "top center",
-                            className: 'success'
-                        })
+                        alertify.success('File ready to be used')
                     } else {
-                        $.notify('File upload failed', {
-                            position: "top center",
-                            className: 'error'
-                        })
+                        alertify.error('File upload failed');
                     }
 
                 }
