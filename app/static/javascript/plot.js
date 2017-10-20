@@ -385,7 +385,16 @@ var controller = (function () {
         });
 
         // Event listener for delete button
-        $(DOMStrings.deleteBtn).on("click", plotController.deletePlot);
+        $(DOMStrings.deleteBtn).on("click", function(){
+
+           alertify.confirm('Are you sure?', 'Deleting plot deletes all information.',
+               function(){
+                    plotController.deletePlot();
+               },
+               function(){}
+           );
+
+        });
 
         // Event listener for subplots check button
         $(DOMStrings.subplotsCheck).on("click", function(){
