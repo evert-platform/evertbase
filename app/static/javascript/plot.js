@@ -263,10 +263,11 @@ var plotController = (function() {
                     doubleClick: false
                 });
 
-            console.log(socket)
+
             // Event listener for when plot is zoomed. Must be called after plot is created.
             link_zoom_event(socket, DOMStrings, plotStateObject);
-
+            // Check whether user wants multiple  Y axes
+            multipleYAxes(DOMStrings, $(DOMStrings.multipleYCheckbox).prop('checked'), this);
 
 
             localStorage.setItem("plotState", JSON.stringify(plotStateObject.writeState()));
