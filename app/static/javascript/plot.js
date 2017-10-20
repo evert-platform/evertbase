@@ -330,10 +330,7 @@ var plotController = (function() {
                     Plotly.newPlot(DOMStrings.plotAddOnsArea, plotData, layout);
                     $(DOMStrings.loader).hide();
                 } else if (data.msg) {
-                    $.notify(data.msg, {
-                            position: "top center",
-                            className: "error"
-                        });
+                    alertify.error(data.msg);
                     $(DOMStrings.plotArea).val("none");
                     $(DOMStrings.$plotAddOnsArea).hide();
                     $(DOMStrings.loader).hide();
@@ -367,10 +364,7 @@ var controller = (function () {
                     plotController.createPlot(d.data, undefined, d.tags_map);
                 });
             } else if (plottags === null){
-                $.notify("Please select one or more tags to plot", {
-                            position: "top center",
-                            className: "error"
-                        });
+                alertify.error("Please select one or more tags to plot")
             }
         });
 
@@ -429,17 +423,11 @@ var controller = (function () {
                     });
                 }
                 } else if ($(DOMStrings.plotAddOns).val() !== 'none'){
-                    $.notify("Add ons can only be used with a single plot or subplots with linked x-axes", {
-                                position: "top center",
-                                className: "error"
-                            });
+                    alertify.error("Add-ons can only be used with a single plot or subplots with linked x-axes");
                     $(DOMStrings.plotAddOns).val("none");
                 }
             } else {
-                $.notify("Please create a main plot before attempting to use the addons", {
-                                position: "top center",
-                                className: "error"
-                            });
+                alertify.error("Please create a main plot before attempting to use the addons");
                 $(DOMStrings.plotAddOns).val("none");
             }
 
