@@ -207,10 +207,7 @@ function showBounds() {
         Plotly.addTraces('plot', bounds)
     } else {
         $('input#showDataBounds').prop('checked', false);
-        $.notify('No bounds available for selected data sets.', {
-                position: "top center",
-                className: "error"
-        });
+        allertify.error('No bounds available for selected data sets.');
     }
 
 }
@@ -273,10 +270,7 @@ function multipleYAxes(DOMStrings, show, plotController){
             plot.layout = currentLayout;
             Plotly.redraw('plot')
             } else {
-            $.notify('No more than ' + colors.length + ' tags allowed for multiple axes', {
-                position: 'top center',
-                type: 'error'
-            })
+            alertify.error('No more than ' + colors.length + ' tags allowed for multiple axes');
         }
 
     } else if (!show){
