@@ -38,7 +38,8 @@ function link_zoom_event(socket, DOMStrings, plotStateObject) {
                     {
                         domain: [xmin, xmax],
                         ids: ids,
-                        xAxisNo: xAxisNumber || [1]
+                        xAxisNo: xAxisNumber || [1],
+                        axisMap: plotStateObject.axisMap
                     });
             }
         }
