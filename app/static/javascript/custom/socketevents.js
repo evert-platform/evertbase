@@ -14,7 +14,8 @@ function link_zoom_event(socket, DOMStrings, plotStateObject) {
                 socket.emit("zoom_event",
                     {
                         domain: [xmin, xmax],
-                        ids: $(DOMStrings.tags).val()
+                        ids: $(DOMStrings.tags).val(),
+                        axisMap: plotStateObject.axisMap
                     });
             } else {
                 var xAxis = keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)[0];
@@ -38,7 +39,6 @@ function link_zoom_event(socket, DOMStrings, plotStateObject) {
                     {
                         domain: [xmin, xmax],
                         ids: ids,
-                        xAxisNo: xAxisNumber || [1],
                         axisMap: plotStateObject.axisMap
                     });
             }
