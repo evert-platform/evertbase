@@ -293,11 +293,21 @@ var plotController = (function() {
                     plotArea.data = currentData;
                 } else if (currentData.length > dataCount) {
                     var newDataNames = _.map(featureData, function(d){return d.name;});
+
+                    var concatData = [];
+
                     newDataNames.forEach(function(d, i){
-                        var index = _.findIndex(currentData, ["name", d]);
-                        currentData[index].x = featureData[i].x;
-                        currentData[index].y = featureData[i].y;
+                        var test = _.find(currentData, ['name', d]);
+                        if (!test){
+                            concatData.push(featureData[i])
+                        } else {
+                            var index = _.findIndex(currentData, ["name", d]);
+                            currentData[index].x = featureData[i].x;
+                            currentData[index].y = featureData[i].y;
+                        }
+
                     });
+                    currentData = currentData.concat(concatData);
                     plotArea.data = currentData;
                 }
                 Plotly.redraw(DOMStrings.plotArea, plotArea.data, plotArea.layout);
