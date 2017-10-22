@@ -188,6 +188,7 @@ var controller = (function () {
         })
         // Event listener for updating meta data
         $(DOMButtons.tagmetasubmit).on('click', function(){
+
             if ($(DOMStrings.tagsupper).val() && $(DOMStrings.tagslower).val()){
                 if ($(DOMStrings.tagsupper).val() > $(DOMStrings.tagslower).val()){
                     dataController.get('/_updatemetadata', function(data){
@@ -201,6 +202,7 @@ var controller = (function () {
                     alertify.error('Tag lower bound must be smaller than upper bound.');
                 }
             } else {
+                console.log($(DOMStrings.tagsupper).val(), $(DOMStrings.tagsupper).val(), $(DOMStrings.tagsupper).val())
                 dataController.get('/_updatemetadata', function(data){
                         if (data.success) {
                             alertify.success('Meta data updated');
@@ -208,6 +210,30 @@ var controller = (function () {
                             alertify.error('Meta data could not be updated');
                         }
                     })
+            }
+
+        });
+
+        // Event listner for selecting tags for metadata update
+        $(DOMStrings.tagsmeta).on('change', function(){
+            if ($(this).val()){
+                if ($(this).val().length === 1) {
+                dataController.get('/_gettagmeta', function(data){
+                    console.log(data.data)
+                    var tagmeta = data.data[0];
+                    $(DOMStrings.tagslower).val(tagmeta.lower);
+                    $(DOMStrings.tagsupper).val(tagmeta.upper);
+                    $(DOMStrings.tagsunits).val(tagmeta.units);
+                })
+                } else if($(this).val().length > 1){
+                    $(DOMStrings.tagslower).val(null);
+                    $(DOMStrings.tagsupper).val(null);
+                    $(DOMStrings.tagsunits).val(null);
+                }
+            } else {
+                $(DOMStrings.tagslower).val(null);
+                $(DOMStrings.tagsupper).val(null);
+                $(DOMStrings.tagsunits).val(null);
             }
 
         })
