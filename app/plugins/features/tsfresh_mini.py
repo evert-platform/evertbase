@@ -113,7 +113,7 @@ def _mean_(dataframe):
     return points
 
 
-def _format_data_(header_name, feature_name, feature_timestamp, feature_value, axis, **kwargs):
+def _format_data_(header_name, feature_name, feature_timestamp, feature_value, axis_map, **kwargs):
 
     if 'line' in kwargs:
 
@@ -121,8 +121,8 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, a
             'name': header_name + ': ' + feature_name,
             'x': [feature_timestamp[0], feature_timestamp[1]],
             'y': [feature_value, feature_value],
-            'xaxis': 'x{}'.format(axis),
-            'yaxis': 'y{}'.format(axis),
+            'xaxis': '{}'.format(axis_map[header_name]['xaxis']),
+            'yaxis': '{}'.format(axis_map[header_name]['yaxis']),
             'type': 'scatter',
             'mode': 'lines',
             'line': {
@@ -140,8 +140,8 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, a
             'name':  header_name + ': ' + feature_name,
             'x': [feature_timestamp],
             'y': [feature_value],
-            'xaxis': 'x{}'.format(axis),
-            'yaxis': 'y{}'.format(axis),
+            'xaxis': '{}'.format(axis_map[header_name]['xaxis']),
+            'yaxis': '{}'.format(axis_map[header_name]['yaxis']),
             'type': 'scatter',
             'mode': 'markers',
             'metadata': {
@@ -153,7 +153,7 @@ def _format_data_(header_name, feature_name, feature_timestamp, feature_value, a
     return lst
 
 
-def extract_features(_initialdf_, config, axis):
+def extract_features(_initialdf_, config, axis_map):
     """
     Extracts data features from a set of timeseries data.
     :param _initialdf_: A pandas.Dataframe containing timestamps as the first column, and timeseries as further columns
@@ -169,6 +169,8 @@ def extract_features(_initialdf_, config, axis):
         ))
     if not isinstance(config, dict):
         raise TypeError('Expected input of type: dict for argument: config, instead got: {}'.format(type(config)))
+
+    print(axis_map)
 
     features = []
     DF_nostamp = deepcopy(_initialdf_)
@@ -186,16 +188,18 @@ def extract_features(_initialdf_, config, axis):
 
     _features_ = []
     _features_ += _global_max_(DF_nostamp) + _global_min_(DF_nostamp) + _median_(DF_nostamp) + _mean_(DF_nostamp)
-    for i in _features_:
-        if i[1] == "line":
-            feature = _format_data_(feature_name=i[-1],
+
+    for i, f in enumerate(_features_):
+
+        if f[1] == "line":
+            feature = _format_data_(feature_name=f[-1],
                                     feature_timestamp=[_initialdf_['timestamp'].iloc[0],
                                                        _initialdf_['timestamp'].iloc[-1]],
-                                    feature_value=i[2], header_name=i[0], line=True, axis=axis)
+                                    feature_value=f[2], header_name=f[0], line=True, axis_map=axis_map)
         else:
-            feature = _format_data_(feature_name=i[-1],
-                                    feature_timestamp=_initialdf_['timestamp'].iloc[int(i[1])],
-                                    feature_value=i[2], header_name=i[0], axis=axis)
+            feature = _format_data_(feature_name=f[-1],
+                                    feature_timestamp=_initialdf_['timestamp'].iloc[int(f[1])],
+                                    feature_value=f[2], header_name=f[0], axis_map=axis_map)
         features.append(feature)
 
     return features
