@@ -1,8 +1,10 @@
 function link_zoom_event(socket, DOMStrings, plotStateObject) {
     var plotArea = document.getElementById("plot");
+    var plugintimeout;
     plotArea.on("plotly_relayout", function (e) {
         var keys = Object.keys(e);
         var names;
+        clearTimeout(plugintimeout);
 
         if (keys.length > 0 && keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g) &&
             keys[1].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)) {
@@ -17,16 +19,14 @@ function link_zoom_event(socket, DOMStrings, plotStateObject) {
                         ids: $(DOMStrings.tags).val()
                     });
 
-                setTimeout(function(){
+                plugintimeout = setTimeout(function(){
                     socket.emit("update_plugins_event",
                     {
                         domain: [xmin, xmax],
                         ids: $(DOMStrings.tags).val(),
                         axisMap: plotStateObject.axisMap
                     });
-                }, 300)
-
-
+                }, 2000)
 
             } else {
                 var xAxis = keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)[0];
@@ -53,14 +53,14 @@ function link_zoom_event(socket, DOMStrings, plotStateObject) {
                         axisMap: plotStateObject.axisMap
                     });
 
-                setTimeout(function(){
+                plugintimeout = setTimeout(function(){
                     socket.emit("update_plugins_event",
                     {
                         domain: [xmin, xmax],
-                        ids: $(DOMStrings.tags).val(),
+                        ids: ids,
                         axisMap: plotStateObject.axisMap
                     });
-                }, 300)
+                }, 2000)
             }
         }
 
