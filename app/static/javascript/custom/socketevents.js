@@ -14,9 +14,20 @@ function link_zoom_event(socket, DOMStrings, plotStateObject) {
                 socket.emit("zoom_event",
                     {
                         domain: [xmin, xmax],
+                        ids: $(DOMStrings.tags).val()
+                    });
+
+                setTimeout(function(){
+                    socket.emit("update_plugins_event",
+                    {
+                        domain: [xmin, xmax],
                         ids: $(DOMStrings.tags).val(),
                         axisMap: plotStateObject.axisMap
                     });
+                }, 300)
+
+
+
             } else {
                 var xAxis = keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)[0];
                 var xAxisNumber = xAxis.match(/([0-9])/g);
@@ -41,9 +52,27 @@ function link_zoom_event(socket, DOMStrings, plotStateObject) {
                         ids: ids,
                         axisMap: plotStateObject.axisMap
                     });
+
+                setTimeout(function(){
+                    socket.emit("update_plugins_event",
+                    {
+                        domain: [xmin, xmax],
+                        ids: $(DOMStrings.tags).val(),
+                        axisMap: plotStateObject.axisMap
+                    });
+                }, 300)
             }
         }
 
         plotStateObject.plotLayout = plotArea.layout;
+    });
+}
+function zoom_return_event(socket, DOMStrings, plotStateObject, plotController) {
+    socket.on("zoom_return", function(data){
+        console.log('zoom_return');
+        plotController.updatePlot(data);
+
+
+
     });
 }
