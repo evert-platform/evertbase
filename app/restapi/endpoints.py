@@ -293,6 +293,13 @@ def updatetagmeta():
     except:
         return jsonify(success=False)
 
+@restapi.route('/_gettagmeta')
+def gettagmeta():
+    tags = list(map(int, request.args.getlist('tagsmeta[]')))
+
+    meta = evert.data.get_tag_metadata(tags)
+    return jsonify(success=True, data=meta)
+
 
 @restapi.route('/_viewdata')
 def _viewdata():
