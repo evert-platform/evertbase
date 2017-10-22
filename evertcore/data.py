@@ -184,7 +184,7 @@ def get_tag_names(**kwargs):
 def get_tag_metadata(ids):
 
     ids = list(map(int, ids))
-    meta = [dict(name=t[0], min=t[1], max=t[2], units=t[3]) for t in Tags.get_metadata(ids)]
+    meta = [dict(name=t[0], lower=t[1], upper=t[2], units=None if t[3] == '' else t[3]) for t in Tags.get_metadata(ids)]
     return meta
 
 
@@ -383,16 +383,7 @@ def update_plant_name(plant_id, name):
 def update_tag_metadata(ids, lower, upper, units):
 
     for t in ids:
-        if lower is not None:
-            Tags.query.filter_by(id=t).update(dict(lower_bound=lower))
-
-        if upper is not None:
-            Tags.query.filter_by(id=t).update(dict(upper_bound=upper))
-        if units is not None:
-            Tags.query.filter_by(id=t).update(dict(units=units))
-
-        if lower is None and upper is None and units is None:
-            Tags.query.filter_by(id=t).update(dict(lower_bound=lower, upper_bound=upper, units=units))
+        Tags.query.filter_by(id=t).update(dict(lower_bound=lower, upper_bound=upper, units=units))
 
     db.session.commit()
     return
