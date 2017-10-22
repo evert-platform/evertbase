@@ -44,7 +44,9 @@ function link_zoom_event(socket, DOMStrings, plotStateObject) {
 
                 var ids = [];
                 names.forEach(function (d, i) {
-                    ids.push(plotStateObject.tagsMap[d.name]);
+                    if (plotStateObject.tagsMap[d.name]){
+                        ids.push(plotStateObject.tagsMap[d.name]);
+                    }
                 });
                 socket.emit("zoom_event",
                     {
