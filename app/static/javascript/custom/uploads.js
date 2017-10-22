@@ -219,7 +219,6 @@ var controller = (function () {
             if ($(this).val()){
                 if ($(this).val().length === 1) {
                 dataController.get('/_gettagmeta', function(data){
-                    console.log(data.data)
                     var tagmeta = data.data[0];
                     $(DOMStrings.tagslower).val(tagmeta.lower);
                     $(DOMStrings.tagsupper).val(tagmeta.upper);
