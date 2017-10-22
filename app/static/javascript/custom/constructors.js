@@ -17,6 +17,7 @@ function EvertPlotState(){
     this.formData = {};
     this.tagsMap = {};
     this.initialRange = [];
+    this.axisMap = {};
 
 
     this.addTrace = function(trace){
@@ -31,6 +32,7 @@ function EvertPlotState(){
         this.formData = {};
         this.tagsMap = {};
         this.initialRange = [];
+        this.axisMap = {};
     };
 
     this.readState = function(state){
@@ -41,6 +43,7 @@ function EvertPlotState(){
         this.formData = state.formData;
         this.tagsMap = state.tagsMap;
         this.initialRange = state.initialRange;
+        this.axisMap = state.axisMap;
     };
 
     this.writeState = function() {
@@ -51,7 +54,8 @@ function EvertPlotState(){
             plotLayout: this.plotLayout,
             formData: this.formData,
             tagsMap: this.tagsMap,
-            initialRange: this.initialRange
+            initialRange: this.initialRange,
+            axisMap: this.axisMap
         };
     };
 }
