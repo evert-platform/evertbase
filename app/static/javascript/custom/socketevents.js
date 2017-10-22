@@ -69,12 +69,4 @@ function link_zoom_event(socket, DOMStrings, plotStateObject) {
         plotStateObject.plotLayout = plotArea.layout;
     });
 }
-function zoom_return_event(socket, DOMStrings, plotStateObject, plotController) {
-    socket.on("zoom_return", function(data){
-        console.log('zoom_return');
-        plotController.updatePlot(data);
 
-
-
-    });
-}
