@@ -177,10 +177,18 @@ var plotController = (function() {
             // resetting the add-on space
             Plotly.purge(DOMStrings.plotAddOnsArea);
             $(DOMStrings.plotAddOns).val("none");
+
+            var axismap = {};
             // adding traces to state
             plotData.forEach(function(d, i) {
                 plotStateObject.addTrace(new EvertTrace(d.name, d.x, d.y, d.xaxis, d.yaxis, d.metadata));
+
+                axismap[d.name] = {
+                    xaxis: d.xaxis || 'x1',
+                    yaxis: d.yaxis || 'y1'
+                }
             });
+            plotStateObject.axisMap = axismap;
             // capturing data from forms
             plotStateObject.formData = {
                 plant: $(DOMStrings.plant).val(),
@@ -312,7 +320,6 @@ var plotController = (function() {
             socket.on("connect", function() {
                         console.log("connected");
                     });
-
 
             socket.on("pluginFeaturesEmit", function(data){
                 plotController.uploadFeaturesData(data);
