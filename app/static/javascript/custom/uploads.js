@@ -111,33 +111,53 @@ var controller = (function () {
         });
         // Event listener for deleting a plant
         $(DOMButtons.deletePlant).on('click', function () {
-            dataController.get('/_deleteplant', function (data) {
-                var $plantselect = $(DOMStrings.plant);
-                UIController.updateSelect($plantselect, data.plants);
-                $(DOMStrings.plantDataManage).trigger('change');
-            })
+
+            alertify.confirm('Are you sure?',
+                             'Deleted data cannot be recovered. Continue?',
+                             function(){
+                                dataController.get('/_deleteplant', function (data) {
+                                    var $plantselect = $(DOMStrings.plant);
+                                    UIController.updateSelect($plantselect, data.plants);
+                                    $(DOMStrings.plantDataManage).trigger('change');
+                                })
+                             }, function () {})
+
         });
         // Event listener for deleting unit data
         $(DOMButtons.deleteUnit).on('click', function () {
-            dataController.get('/_deleteunit', function (data) {
-                var $unitselect = $(DOMStrings.unit);
-                UIController.updateSelect($unitselect, data.units);
-                $(DOMStrings.plant).trigger('change');
-            })
+            alertify.confirm('Are you sure?',
+                             'Deleted data cannot be recovered. Continue?',
+                             function(){
+                                dataController.get('/_deleteunit', function (data) {
+                                    var $unitselect = $(DOMStrings.unit);
+                                    UIController.updateSelect($unitselect, data.units);
+                                    $(DOMStrings.plant).trigger('change');
+                                })
+                             }, function () {})
+
         });
         // Event listener for deleting unit tags data
         $(DOMButtons.deleteUnitTags).on('click', function () {
-            dataController.get('/_deleteunittags', function (data) {
-                var $unitTagsDataManage = $(DOMStrings.unitTagsDataManage);
-                UIController.updateSelect($unitTagsDataManage, data.data)
-            })
+            alertify.confirm('Are you sure?',
+                             'Deleted data cannot be recovered. Continue?',
+                             function(){
+                                dataController.get('/_deleteunittags', function (data) {
+                                    var $unitTagsDataManage = $(DOMStrings.unitTagsDataManage);
+                                    UIController.updateSelect($unitTagsDataManage, data.data)
+                                })
+                             }, function () {})
+
         });
         // Event listener for deleting unassigned tags
         $(DOMButtons.deleteTags).on('click', function () {
-            dataController.get('/_deletetags', function (data) {
-                var $tagsDataManage = $(DOMStrings.tagsDataManage);
-                UIController.updateSelect($tagsDataManage, data.data)
-            })
+            alertify.confirm('Are you sure?',
+                             'Deleted data cannot be recovered. Continue?',
+                             function(){
+                                dataController.get('/_deletetags', function (data) {
+                                    var $tagsDataManage = $(DOMStrings.tagsDataManage);
+                                    UIController.updateSelect($tagsDataManage, data.data)
+                                })
+                             }, function () {})
         });
         // Event listener for opening a file
         $(DOMButtons.openFile).on('click', function (event) {
