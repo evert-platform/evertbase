@@ -1,10 +1,13 @@
 function link_zoom_event(socket, DOMStrings, plotStateObject) {
     var plotArea = document.getElementById("plot");
     var plugintimeout;
+    var previousKeys = [];
     plotArea.on("plotly_relayout", function (e) {
         var keys = Object.keys(e);
         var names;
-        clearTimeout(plugintimeout);
+        if (keys === previousKeys){
+            clearTimeout(plugintimeout);
+        }
 
         if (keys.length > 0 && keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g) &&
             keys[1].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)) {
