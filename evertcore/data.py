@@ -383,7 +383,16 @@ def update_plant_name(plant_id, name):
 def update_tag_metadata(ids, lower, upper, units):
 
     for t in ids:
-        Tags.query.filter_by(id=t).update(dict(lower_bound=lower, upper_bound=upper, units=units))
+        if lower is not None:
+            Tags.query.filter_by(id=t).update(dict(lower_bound=lower))
+
+        if upper is not None:
+            Tags.query.filter_by(id=t).update(dict(upper_bound=upper))
+        if units is not None:
+            Tags.query.filter_by(id=t).update(dict(units=units))
+
+        if lower is None and upper is None and units is None:
+            Tags.query.filter_by(id=t).update(dict(lower_bound=lower, upper_bound=upper, units=units))
 
     db.session.commit()
     return
