@@ -387,6 +387,7 @@ function scatterPlot() {
     };
 
     var scatterplot = document.getElementById('scatterplotArea');
+    currentData = _.partition(currentData, ['metadata.dataType', 'data'])[0];
     var names = currentData.map(function(d){return d.name});
     if (scatterplot === null){
         $('div#plotAddOnsArea').append(
