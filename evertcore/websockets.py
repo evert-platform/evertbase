@@ -1,5 +1,5 @@
 from flask_socketio import emit, SocketIO
-from datetime import datetime
+from dateutil.parser import parse
 
 from . import data, plotting, plugins
 
@@ -15,17 +15,8 @@ def joined():
 
 @socketio.on('zoom_event', namespace='/test')
 def zoom_event(socket_data):
-
-    try:
-        tmin = datetime.strptime(socket_data['domain'][0], '%Y-%m-%d %H:%M:%S.%f')
-    except ValueError:
-        tmin = datetime.strptime(socket_data['domain'][0], '%Y-%m-%d %H:%M:%S')  # Does not contain milliseconds
-
-    try:
-        tmax = datetime.strptime(socket_data['domain'][1], '%Y-%m-%d %H:%M:%S.%f')
-    except ValueError:
-        tmax = datetime.strptime(socket_data['domain'][1], '%Y-%m-%d %H:%M:%S')  # Does not contain milliseconds
-
+    tmin = parse(socket_data['domain'][0])
+    tmax = parse(socket_data['domain'][1])
     tags = socket_data['ids']
 
     tag_data_ = data.tag_data(tags, tmin, tmax)
@@ -39,16 +30,8 @@ def zoom_event(socket_data):
 
 @socketio.on('update_plugins_event', namespace='/test')
 def update_plugin_data(socket_data):
-    try:
-        tmin = datetime.strptime(socket_data['domain'][0], '%Y-%m-%d %H:%M:%S.%f')
-    except ValueError:
-        tmin = datetime.strptime(socket_data['domain'][0], '%Y-%m-%d %H:%M:%S')  # Does not contain milliseconds
-
-    try:
-        tmax = datetime.strptime(socket_data['domain'][1], '%Y-%m-%d %H:%M:%S.%f')
-    except ValueError:
-        tmax = datetime.strptime(socket_data['domain'][1], '%Y-%m-%d %H:%M:%S')  # Does not contain milliseconds
-
+    tmin = parse(socket_data['domain'][0])
+    tmax = parse(socket_data['domain'][1])
     tags = socket_data['ids']
 
     tag_data_ = data.tag_data(tags, tmin, tmax)
@@ -63,17 +46,8 @@ def update_plugin_data(socket_data):
 def addon_event(socket_data):
     tags = socket_data['ids']
     name = socket_data['name']
-    domain = socket_data['domain']
-
-    try:
-        tmin = datetime.strptime(domain[0], '%Y-%m-%d %H:%M:%S.%f')
-    except ValueError:
-        tmin = datetime.strptime(domain[0], '%Y-%m-%d %H:%M:%S')  # Does not contain milliseconds
-
-    try:
-        tmax = datetime.strptime(domain[1], '%Y-%m-%d %H:%M:%S.%f')
-    except ValueError:
-        tmax = datetime.strptime(domain[1], '%Y-%m-%d %H:%M:%S')  # Does not contain milliseconds
+    tmin = parse(socket_data['domain'][0])
+    tmax = parse(socket_data['domain'][1])
 
     tag_data_ = data.tag_data(tags, tmin, tmax)
     plugins.emit_event('add_on_event', tag_data_, name)
