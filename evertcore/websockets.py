@@ -15,7 +15,6 @@ def joined():
 
 @socketio.on('zoom_event', namespace='/test')
 def zoom_event(socket_data):
-    print(socket_data)
 
     try:
         tmin = datetime.strptime(socket_data['domain'][0], '%Y-%m-%d %H:%M:%S.%f')
