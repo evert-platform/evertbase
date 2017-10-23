@@ -119,6 +119,7 @@ var controller = (function () {
                                     var $plantselect = $(DOMStrings.plant);
                                     UIController.updateSelect($plantselect, data.plants);
                                     $(DOMStrings.plantDataManage).trigger('change');
+                                     alertify.success('Data has been deleted');
                                 })
                              }, function () {})
 
@@ -132,6 +133,7 @@ var controller = (function () {
                                     var $unitselect = $(DOMStrings.unit);
                                     UIController.updateSelect($unitselect, data.units);
                                     $(DOMStrings.plant).trigger('change');
+                                     alertify.success('Data has been deleted');
                                 })
                              }, function () {})
 
@@ -143,7 +145,8 @@ var controller = (function () {
                              function(){
                                 dataController.get('/_deleteunittags', function (data) {
                                     var $unitTagsDataManage = $(DOMStrings.unitTagsDataManage);
-                                    UIController.updateSelect($unitTagsDataManage, data.data)
+                                    UIController.updateSelect($unitTagsDataManage, data.data);
+                                    alertify.success('Data has been deleted');
                                 })
                              }, function () {})
 
@@ -156,6 +159,7 @@ var controller = (function () {
                                 dataController.get('/_deletetags', function (data) {
                                     var $tagsDataManage = $(DOMStrings.tagsDataManage);
                                     UIController.updateSelect($tagsDataManage, data.data)
+                                     alertify.success('Data has been deleted');
                                 })
                              }, function () {})
         });
