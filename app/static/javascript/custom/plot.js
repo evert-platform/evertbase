@@ -435,9 +435,11 @@ var controller = (function () {
                     } else {
                         alertify.error('Grid plot requires at least 2 tags to be selected.');
                         $(DOMStrings.plotAddOns).val('none');
+                         $(DOMStrings.$plotAddOnsArea).hide();
                     }
 
                     $(DOMStrings.loader).hide();
+
                 } else if ($(this).val() === 'scatterplot'){
                     scatterPlot()
                 }
