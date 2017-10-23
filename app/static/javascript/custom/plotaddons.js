@@ -47,6 +47,9 @@ function gridplot(plotState, plotAddOnArea) {
                     yaxis: 'y'.concat(pos),
                     marker: {
                         opacity: 0.6
+                    },
+                    metadata: {
+                        dataType: 'addons'
                     }
                 })
             }
@@ -107,6 +110,11 @@ function gridplot(plotState, plotAddOnArea) {
             }
         }
     }
+    layout.margin = {
+        l:20,
+        t: 20
+    };
+
     Plotly.plot(plotAddOnArea, traces, layout);
     $('div#loaderWrapper').hide();
 }
@@ -315,59 +323,91 @@ function scatterPlot() {
     var plotData = function(xname, yname){
         var xdata = _.find(currentData, ['name', xname]).y;
         var ydata = _.find(currentData, ['name', yname]).y;
+        var data, layout;
 
-        var trace = {
-            name: 'scatter',
-            x: [1, 2, 3,4 ],
-            y:[1, 2, 3,4 ],
-            type: 'scatter',
-            mode: 'markers'
+        if (xdata === ydata) {
+            data = {
+                x: ydata,
+                type: 'histogram',
+                mode: 'markers',
+                    marker: {
+                        line: {
+                            color: "rgba(191, 191, 191, 0.8)",
+                            width: 1
+                        }
+                    }
+            };
 
-        };
-
-        var layout = {
-            showlegend: false,
-            xaxis: {
-                showline: true,
-                ticks: 'outside',
-                title: xname
-            },
-            yaxis: {
-                showline: true,
-                ticks: 'outside',
-                title: yname
+            layout = {
+                showlegend: false,
+                xaxis: {
+                    showline: true,
+                    ticks: 'outside',
+                    title: xname + ' Data Distribution'
+                },
+                yaxis: {
+                    showline: true,
+                    ticks: 'outside'
+                },
+                margin: {
+                    t:20
+                }
             }
-        };
 
-        Plotly.plot('plotAddOnsArea', trace);
+        } else {
+            data = {
+                name: 'scatter',
+                x: xdata,
+                y: ydata,
+                type: 'scatter',
+                mode: 'markers'
+            };
+
+            layout = {
+                showlegend: false,
+                xaxis: {
+                    showline: true,
+                    ticks: 'outside',
+                    title: xname
+                },
+                yaxis: {
+                    showline: true,
+                    ticks: 'outside',
+                    title: yname
+                },
+                margin: {
+                    t:20
+                }
+            };
+        }
+
+        Plotly.newPlot('scatterplotArea', [data], layout);
 
 
     };
 
-
+    var scatterplot = document.getElementById('scatterplotArea');
     var names = currentData.map(function(d){return d.name});
-    plotData(names[0], names[1])
-
-
-
-    $('div#plotAddOnsArea').append(
-         "<div class='col-sm-3 col-md-3 col-lg-3'>"+
-        "<div>" +
-        "<label for='xaxis'>X-Axis</label>" +
-        "<select class='form-control' id='xaxis'>" +
-         "<option>hello</option>" +
-         "</select>" +
-        "" +
-        "</div>"+
-        "<div>" +
-        "<label for='yaxis'>Y-Axis</label>" +
-        "<select class='form-control' id='yaxis'>" +
-         "<option>hello</option>" +
-         "</select>" +
-        "" +
-        "</div>"+
+    if (scatterplot === null){
+        $('div#plotAddOnsArea').append(
+        "<div id='scatterplotHTML' class='container row'>"+
+             "<div class='col-sm-3 col-md-3 col-lg-3'>"+
+                "<div>" +
+                    "<label for='xaxis'>X-Axis:</label>" +
+                    "<select class='form-control' id='xaxis'></select>" +
+                "</div>"+
+                "<div>" +
+                    "<label for='yaxis'>Y-Axis:</label>" +
+                    "<select class='form-control' id='yaxis'></select>" +
+                "</div>"+
+             "</div>" +
+            "<div style='min-height: 500px' id='scatterplotArea' class='col-sm-9 col-md-9 col-lg-9'></div>" +
          "</div>"
     );
+
+    var $selectyaxis = $('select#yaxis');
+    var $selectxaxis = $('select#xaxis');
+
 
     var updateSelect = function (selector, data) {
             selector.empty();
@@ -375,19 +415,43 @@ function scatterPlot() {
                 selector.append($("<option class=></option>")
                     .attr("value", key).text(key))
             });
-        };
-
-    var $selectyaxis = $('select#yaxis');
-    var $selectxaxis = $('select#xaxis');
+    };
 
     updateSelect($selectyaxis, names);
     updateSelect($selectxaxis, names);
 
-    $selectxaxis.val(names[0]);
-    $selectyaxis.val(names[1]);
+    if (names.length > 1){
+        $selectxaxis.val(names[0]);
+        $selectyaxis.val(names[1]);
+        plotData(names[0], names[1]);
+    } else if (names.length === 1){
+        $selectxaxis.val(names[0]);
+        $selectyaxis.val(names[0]);
+        plotData(names[0], names[0]);
+    }
+
+    } else {
+        var $selectyaxis = $('select#yaxis');
+        var $selectxaxis = $('select#xaxis');
+
+        plotData($selectxaxis.val(), $selectyaxis.val())
+    }
+
+
+
+    $selectxaxis.on('change', function(){
+        var x = $selectxaxis.val();
+        var y = $selectyaxis.val();
+        plotData(x, y);
+    });
+
+    $selectyaxis.on('change', function(){
+        var x = $selectxaxis.val();
+        var y = $selectyaxis.val();
+        plotData(x, y);
+    });
 
     $('div#loaderWrapper').hide()
-
 
 }
 
