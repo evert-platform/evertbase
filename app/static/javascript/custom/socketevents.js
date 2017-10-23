@@ -16,6 +16,9 @@ function link_zoom_event(socket, DOMStrings, plotStateObject) {
             var xmax = e[keys[1]];
 
             if (!$(DOMStrings.subplotsCheck).is(":checked")) {
+
+
+
                 socket.emit("zoom_event",
                     {
                         domain: [xmin, xmax],
@@ -29,7 +32,7 @@ function link_zoom_event(socket, DOMStrings, plotStateObject) {
                         ids: $(DOMStrings.tags).val(),
                         axisMap: plotStateObject.axisMap
                     });
-                }, 2000)
+                }, 2100)
 
             } else {
                 var xAxis = keys[0].match(/(xaxis[0-9]*)(?=\.range\[[0-9]\])/g)[0];
@@ -65,7 +68,7 @@ function link_zoom_event(socket, DOMStrings, plotStateObject) {
                         ids: ids,
                         axisMap: plotStateObject.axisMap
                     });
-                }, 2000)
+                }, 2100)
             }
         }
 
