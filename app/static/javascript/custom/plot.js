@@ -423,11 +423,20 @@ var controller = (function () {
         $(DOMStrings.plotAddOns).on("change", function(){
             if ($(DOMStrings.tags).val() !== null){
                 if ($(DOMStrings.linkXaxesValue).is(":checked") || !$(DOMStrings.subplotsCheck).is(":checked")){
+
                 $(DOMStrings.$plotAddOnsArea).show();
                 $(DOMStrings.loader).show();
+
                 if ($(this).val() === "gridplot"){
-                    Plotly.purge(DOMStrings.plotAddOnsArea);
-                    gridplot(plotController.getPlotState(), DOMStrings.plotAddOnsArea);
+                    if ($(DOMStrings.tags).val().length > 1){
+                        Plotly.purge(DOMStrings.plotAddOnsArea);
+                        $(DOMStrings.$plotAddOnsArea).contents(':not('+DOMStrings.loader+')').remove();
+                        gridplot(plotController.getPlotState(), DOMStrings.plotAddOnsArea);
+                    } else {
+                        alertify.error('Grid plot requires at least 2 tags to be selected.');
+                        $(DOMStrings.plotAddOns).val('none');
+                    }
+
                     $(DOMStrings.loader).hide();
                 } else if ($(this).val() === 'scatterplot'){
                     scatterPlot()
@@ -436,8 +445,10 @@ var controller = (function () {
                 else if ($(this).val() === "none"){
                     $(DOMStrings.$plotAddOnsArea).hide();
                     Plotly.purge(DOMStrings.plotAddOnsArea);
+                    $(DOMStrings.$plotAddOnsArea).contents(':not('+DOMStrings.loader+')').remove();
                 } else {
                     Plotly.purge(DOMStrings.plotAddOnsArea);
+                    $(DOMStrings.$plotAddOnsArea).contents(':not('+DOMStrings.loader+')').remove();
                     var socket = plotController.getSocket();
                     socket.emit("add_on_event", {
                     ids: $(DOMStrings.tags).val(),
