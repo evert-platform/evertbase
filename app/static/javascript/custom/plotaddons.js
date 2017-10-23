@@ -108,6 +108,7 @@ function gridplot(plotState, plotAddOnArea) {
         }
     }
     Plotly.plot(plotAddOnArea, traces, layout);
+    $('div#loaderWrapper').hide();
 }
 
 function showBounds() {
@@ -298,6 +299,95 @@ function multipleYAxes(DOMStrings, show, plotController){
         link_zoom_event(plotController.getSocket(), DOMStrings, plotController.getPlotState())
 
     }
+
+}
+
+function scatterPlot() {
+
+    var currentPlot = document.getElementById('plot');
+    var currentData = currentPlot.data;
+
+    currentData.forEach(function(d, i){
+        delete d.xaxis;
+        delete d.yaxis;
+    });
+
+    var plotData = function(xname, yname){
+        var xdata = _.find(currentData, ['name', xname]).y;
+        var ydata = _.find(currentData, ['name', yname]).y;
+
+        var trace = {
+            name: 'scatter',
+            x: [1, 2, 3,4 ],
+            y:[1, 2, 3,4 ],
+            type: 'scatter',
+            mode: 'markers'
+
+        };
+
+        var layout = {
+            showlegend: false,
+            xaxis: {
+                showline: true,
+                ticks: 'outside',
+                title: xname
+            },
+            yaxis: {
+                showline: true,
+                ticks: 'outside',
+                title: yname
+            }
+        };
+
+        Plotly.plot('plotAddOnsArea', trace);
+
+
+    };
+
+
+    var names = currentData.map(function(d){return d.name});
+    plotData(names[0], names[1])
+
+
+
+    $('div#plotAddOnsArea').append(
+         "<div class='col-sm-3 col-md-3 col-lg-3'>"+
+        "<div>" +
+        "<label for='xaxis'>X-Axis</label>" +
+        "<select class='form-control' id='xaxis'>" +
+         "<option>hello</option>" +
+         "</select>" +
+        "" +
+        "</div>"+
+        "<div>" +
+        "<label for='yaxis'>Y-Axis</label>" +
+        "<select class='form-control' id='yaxis'>" +
+         "<option>hello</option>" +
+         "</select>" +
+        "" +
+        "</div>"+
+         "</div>"
+    );
+
+    var updateSelect = function (selector, data) {
+            selector.empty();
+            $.each(data, function (value, key) {
+                selector.append($("<option class=></option>")
+                    .attr("value", key).text(key))
+            });
+        };
+
+    var $selectyaxis = $('select#yaxis');
+    var $selectxaxis = $('select#xaxis');
+
+    updateSelect($selectyaxis, names);
+    updateSelect($selectxaxis, names);
+
+    $selectxaxis.val(names[0]);
+    $selectyaxis.val(names[1]);
+
+    $('div#loaderWrapper').hide()
+
 
 }
 

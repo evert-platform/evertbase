@@ -429,7 +429,11 @@ var controller = (function () {
                     Plotly.purge(DOMStrings.plotAddOnsArea);
                     gridplot(plotController.getPlotState(), DOMStrings.plotAddOnsArea);
                     $(DOMStrings.loader).hide();
-                } else if ($(this).val() === "none"){
+                } else if ($(this).val() === 'scatterplot'){
+                    scatterPlot()
+                }
+
+                else if ($(this).val() === "none"){
                     $(DOMStrings.$plotAddOnsArea).hide();
                     Plotly.purge(DOMStrings.plotAddOnsArea);
                 } else {
