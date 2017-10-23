@@ -427,10 +427,11 @@ var controller = (function () {
 
                 $(DOMStrings.$plotAddOnsArea).show();
                 $(DOMStrings.loader).show();
+                Plotly.purge(DOMStrings.plotAddOnsArea);
 
                 if ($(this).val() === "gridplot"){
                     if ($(DOMStrings.tags).val().length > 1){
-                        Plotly.purge(DOMStrings.plotAddOnsArea);
+
                         $(DOMStrings.$plotAddOnsArea).contents(':not('+DOMStrings.loader+')').remove();
                         gridplot(plotController.getPlotState(), DOMStrings.plotAddOnsArea);
                     } else {
