@@ -217,7 +217,7 @@ var plotController = (function() {
                                 showline: true,
                                 ticks: "outside",
                                 fixedrange: true,
-                                title: d.name,
+                                title: d.metadata.units ? d.name + ' [ '+ d.metadata.units +' ]': d.name,
                                 domain: [frac*i + 0.09 , frac*(i+1)]
                             };
                         });
@@ -232,11 +232,12 @@ var plotController = (function() {
                             };
 
                         plotData.forEach(function(d, i) {
+                            console.log(d.metadata.units)
                             layout["yaxis".concat(i + 1)]= {
                                 showline: true,
                                 ticks: "outside",
                                 fixedrange: true,
-                                title: d.name,
+                                title: d.metadata.units ? d.name + ' [ '+ d.metadata.units +' ]': d.name,
                                 domain: [frac*i + 0.09 , frac*(i+1)]
                             };
                         });
