@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block head %}
+    <link href="{{ url_for('static', filename='css/dropzone.css') }}" rel="stylesheet" type="text/css">
+    <script src="{{ url_for('static', filename='javascript/libraries/dropzone.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/custom/uploads.js') }}"></script>
 {% endblock %}
 
@@ -37,19 +39,10 @@
             </p>
         </div>
 
-        <form class='form form-horizontal' enctype="multipart/form-data" action="" method="post" role="form"
-              id="datafile">
-
-            <fieldset class="container col-sm-6 col-md-6 col-lg-6" id="datafileform">
-                <hr>
-                <div class="form-inline">
-                    {{ form.hidden_tag() }}
-                    {{ form.file.label(class='form-file-label') }} {{ form.file(class='form-file', id='datafile') }}
-                    <br>
-                </div>
-                <input type="submit" class="btn btn-default" value="Open" id="open_file">
-                <input type="submit" class="btn btn-default" value="Upload" id="upload_file">
-            </fieldset>
+        <form action="/_dataopen" class="dropzone" id="dataupload">
+          <div class="fallback">
+            <input name="file" type="file" multiple />
+          </div>
         </form>
     </div>
 

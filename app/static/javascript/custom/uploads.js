@@ -272,7 +272,25 @@ var controller = (function () {
                 var $plantselect = $(DOMStrings.plant);
                 UIController.updateSelect($plantselect, data.plants)
             });
+
+
             setupEventListners();
+
+            Dropzone.options.dataupload = {
+                init: function() {
+                    this.on('success', function(file, server){
+                        if (server.success) {
+                            alertify.success(file.name + ' has been uploaded')
+                            this.removeFile(file);
+                        } else if (!server.success){
+                            alertify.error(file.name + ' could not be uploaded')
+                        }
+
+
+                    });
+
+                }
+            }
         }
     }
 })();
