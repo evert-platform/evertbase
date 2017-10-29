@@ -138,14 +138,15 @@ function showBounds() {
         } else {
             xbounds = currentLayout['xaxis'.concat(xaxisnumber[0])].range
         }
-        var lowerbound = d.metadata.min;
-        var upperbound = d.metadata.max;
+        var lowerbound = d.metadata.lower;
+        var upperbound = d.metadata.upper;
 
-        if (lowerbound && upperbound){
+
+        if (lowerbound !== null && upperbound !== null){
             bounds.push({
             name: d.name + ': lower bound',
             x: xbounds,
-            y: [d.metadata.min, d.metadata.min],
+            y: [lowerbound, lowerbound],
             xaxis: xaxis,
             yaxis:yaxis,
             type: 'scatter',
@@ -161,7 +162,7 @@ function showBounds() {
         },{
             name: d.name + ': upper bound',
             x: xbounds,
-            y: [d.metadata.max, d.metadata.max],
+            y: [upperbound, upperbound],
             xaxis: xaxis,
             yaxis:yaxis,
             type: 'scatter',
@@ -174,11 +175,11 @@ function showBounds() {
                 dataType: 'bounds'
             }
         });
-        } else if (lowerbound && !upperbound){
+        } else if (lowerbound !== null && upperbound === null){
             bounds.push({
             name: d.name + ': lower bound',
             x: xbounds,
-            y: [d.metadata.min, d.metadata.min],
+            y: [lowerbound, upperbound],
             xaxis: xaxis,
             yaxis:yaxis,
             type: 'scatter',
@@ -191,11 +192,11 @@ function showBounds() {
                 dataType: 'bounds'
             }
             })
-        } else if (!lowerbound && upperbound) {
+        } else if (lowerbound === null && upperbound !== null) {
             bounds.push({
             name: d.name + ': upper bound',
             x: xbounds,
-            y: [d.metadata.max, d.metadata.max],
+            y: [upperbound, upperbound],
             xaxis: xaxis,
             yaxis:yaxis,
             type: 'scatter',
@@ -216,7 +217,7 @@ function showBounds() {
         Plotly.addTraces('plot', bounds)
     } else {
         $('input#showDataBounds').prop('checked', false);
-        allertify.error('No bounds available for selected data sets.');
+        alertify.error('No bounds available for selected data sets.');
     }
 
 }
