@@ -31,7 +31,8 @@ var dataController = (function () {
         showplugindata: "input#showPluginCheckbox",
         loader: '#loaderWrapper',
         showboundsCheckbox: 'input#showDataBounds',
-        multipleYCheckbox: 'input#multipleYAxes'
+        multipleYCheckbox: 'input#multipleYAxes',
+        showlogYaxis: 'input#showlogAxis'
     };
 
     return {
@@ -279,6 +280,9 @@ var plotController = (function() {
             if (!$(DOMStrings.subplotsCheck).prop('checked')){
                 multipleYAxes(DOMStrings, $(DOMStrings.multipleYCheckbox).prop('checked'), this);
             }
+            // Check for log Axis checkbox
+            logAxis(DOMStrings, plotStateObject, $(DOMStrings.showlogYaxis).prop('checked'));
+            // Writing plotstate to browser local storage
             localStorage.setItem("plotState", JSON.stringify(plotStateObject.writeState()));
         },
 
@@ -531,7 +535,7 @@ var controller = (function () {
                     };
                     Plotly.restyle(DOMStrings.plotArea, update, indexes);
             }
-        })
+        });
         //Event listener for multiple Y-Axes checkbox
         $(DOMStrings.multipleYCheckbox).on('click', function () {
             if ($(this).prop('checked')) {
@@ -539,7 +543,11 @@ var controller = (function () {
             } else {
                 multipleYAxes(DOMStrings, false, plotController)
             }
-        })
+        });
+        // Event listener for logarithmic y-axis
+        $(DOMStrings.showlogYaxis).on('click', function() {
+            logAxis(DOMStrings, plotController.getPlotState(), $(this).prop('checked'))
+        });
     };
 
     return {
