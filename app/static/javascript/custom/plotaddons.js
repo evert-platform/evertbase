@@ -229,6 +229,7 @@ function multipleYAxes(DOMStrings, show, plotController){
     var dataTraces = _.partition(currentData, ['metadata.dataType', 'data'])[0];
     var otherData = _.partition(currentData, ['metadata.dataType', 'data'])[1];
     var range = currentLayout.xaxis.range;
+    var yaxisType = currentLayout.yaxis.type;
 
     var colors = ['#1f77b4','#ff7f0e', '#2c9f2c', '#d62728', '#9467BD', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'];
     if(show){
@@ -246,7 +247,8 @@ function multipleYAxes(DOMStrings, show, plotController){
                     showline: true,
                     ticks: 'outside',
                     tickfont: {color: colors[i]},
-                    color: colors[i]
+                    color: colors[i],
+                    type: yaxisType
                 }
             });
 
@@ -299,7 +301,8 @@ function multipleYAxes(DOMStrings, show, plotController){
             },
             yaxis: {
                 showline: true,
-                ticks: 'outside'
+                ticks: 'outside',
+                type: yaxisType
             },
             showlegend: true
         };
@@ -458,4 +461,24 @@ function scatterPlot() {
 }
 
 
+function logAxis(DOMStrings, plotStateObject, show){
 
+    if (!plotStateObject.subplots){
+        var currentLayoutKeys = Object.keys(document.getElementById(DOMStrings.plotArea).layout);
+        var yaxes = _.remove(currentLayoutKeys, function(d){return d.match(/(yaxis)/g)});
+
+        var updateLayout = {};
+
+        yaxes.forEach(function(d, i){
+           updateLayout[d.concat('.type')] = show ? 'log': '-';
+        });
+
+
+
+
+        Plotly.relayout(DOMStrings.plotArea, updateLayout)
+    } else if (plotStateObject.subplots) {
+        alertify.error('Logarithmic y-axes is not available on subplots');
+        $(DOMStrings.showlogYaxis).prop('checked', false);
+    }
+}
