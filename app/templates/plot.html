@@ -3,8 +3,8 @@
 {% block title %}Plot{% endblock %}
 {% block head %}
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='javascript/libraries/plotly.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='javascript/libraries/lodash.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='javascript/custom/constructors.js') }}"></script>
@@ -22,22 +22,26 @@
          <fieldset class="col-xs-5 col-sm-5 col-md-5 col-lg-5" style="display: inline;">
              <legend>Plot Data</legend>
               <div class="form-row row" style="display: block">
-                Select Plant: {{ form.selectPlant(class='form-control') }}
-                Select Units: {{ form.selectUnits(class='form-control') }}
-                Select Tags: {{ form.selectTags(class='form-control') }}
-             </div>
-              <div class="form-group col-xs-12 col-md-12 col-sm-12 col-lg-12" style="padding-top: 20px">
-                 <input type="button" class="btn btn-primary" id='Submit' value="Plot">
-                 <button type="button" class="btn btn-default" id="deleteplot">
-                    <span class="glyphicon glyphicon-trash"></span>&nbsp;
+                  <label for="plotPlant">Select Plant:</label> {{ form.selectPlant(class='form-control') }}
+                  <label for="plotUnits">Select Units:</label> {{ form.selectUnits(class='form-control') }}
+                  <label for="plotTags">Select Tags:</label> {{ form.selectTags(class='form-control') }}
+
+                  <button type="button" class="btn btn-default pull-right" id="deleteplot" style="margin-left: 10px">
+                    <i class="fa fa-trash-o" aria-hidden="true"></i> Clear
                  </button>
-              </div>
+
+                  <button type="button" class="btn btn-primary pull-right" id="Submit">
+                      <i class="fa fa-line-chart" aria-hidden="true"></i> Plot
+                  </button>
+
+             </div>
+
          </fieldset>
          <fieldset class="col-xs-7 col-sm-7 col-md-7 col-lg-7" style="display: inline">
              <legend>Plot Options</legend>
 
              <div>
-                 <label for="AddOnSelect">Plot add-ons</label>
+                 <label for="AddOnSelect">Plot add-ons:</label>
                  <select id="AddOnSelect" class="form-control">
                      <option value='none'>None</option>
                      <option value="gridplot">Grid Plot</option>
