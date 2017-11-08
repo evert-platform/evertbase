@@ -96,6 +96,7 @@ var UIController = (function () {
             $(DOMStrings.units).chosen({width: "100%"});
             $(DOMStrings.tags).chosen({width: "100%"});
             $(DOMStrings.type).chosen({width: "100%"});
+            $(DOMStrings.plotAddOns).chosen({width: "100%"});
 
         },
         // setup of all select elements when plant is changed
