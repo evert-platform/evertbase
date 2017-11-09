@@ -18,7 +18,7 @@ var dataController = (function () {
         units: "select#plotUnits",
         tags: "select#plotTags",
         type: "select#plotType",
-        submitBtn: "input#Submit",
+        submitBtn: "button#Submit",
         deleteBtn: "button#deleteplot",
         plotArea: "plot",
         plotAddOnsArea: "plotAddOnsArea",
