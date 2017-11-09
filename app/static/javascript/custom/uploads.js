@@ -29,11 +29,11 @@ var controller = (function () {
     };
 
     DOMButtons = {
-        updatePlantName: 'input#updateplantname',
-        addUnit: 'input#addunit',
-        updateUnitName: 'input#updateunit',
-        assignTags: 'input#settags',
-        removeTags: 'input#removetags',
+        updatePlantName: 'button#updateplantname',
+        addUnit: 'button#addunit',
+        updateUnitName: 'button#updateunit',
+        assignTags: 'button#settags',
+        removeTags: 'button#removetags',
         deletePlant: 'input#deleteplant',
         deleteUnit: 'input#deleteunit',
         deleteUnitTags: 'input#deleteunittags',
