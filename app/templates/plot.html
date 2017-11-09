@@ -14,31 +14,28 @@
 
 {% endblock %}
 {% block page_content %}
-<div class="page-header">
-    <h1>Data Plotting</h1>
-</div>
 <div class="container-fluid">
      <form class='form form-horizontal' enctype="multipart/form-data" action="" role="form">
-         <fieldset class="col-xs-5 col-sm-5 col-md-5 col-lg-5" style="display: inline;">
-             <legend>Plot Data</legend>
+         <fieldset class="col-xs-6 col-sm-5 col-md-5 col-lg-5" style="display: inline;">
+
               <div class="form-row row" style="display: block">
+                  <legend>Select Data to Plot</legend>
                   <label for="plotPlant">Select Plant:</label> {{ form.selectPlant(class='form-control') }}
                   <label for="plotUnits">Select Units:</label> {{ form.selectUnits(class='form-control') }}
                   <label for="plotTags">Select Tags:</label> {{ form.selectTags(class='form-control') }}
 
-                  <button type="button" class="btn btn-danger pull-right" id="deleteplot" style="margin-left: 10px">
+                  <button type="button" class="btn btn-default pull-right" id="deleteplot" style="margin-left: 10px">
                     <i class="fa fa-trash-o" aria-hidden="true"></i> Clear
                  </button>
 
                   <button type="button" class="btn btn-primary pull-right" id="Submit">
                       <i class="fa fa-line-chart" aria-hidden="true"></i> Plot
                   </button>
-
              </div>
 
          </fieldset>
-         <fieldset class="col-xs-7 col-sm-7 col-md-7 col-lg-7" style="display: inline">
-             <legend>Plot Options</legend>
+         <fieldset class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="display: inline">
+             <legend>Plotting Options</legend>
 
              <div>
                  <label for="AddOnSelect">Plot add-ons:</label>
