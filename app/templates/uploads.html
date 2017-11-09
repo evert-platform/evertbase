@@ -13,9 +13,14 @@
     </div>
 
     <ul class="nav nav-tabs">
-         <li id="open" class="active"><a href="#"><span class="glyphicon glyphicon-folder-open">&nbsp;Open/Upload</span></a></li>
-        <li id="setup"><a href="#" ><span class="glyphicon glyphicon-cog"></span>&nbsp; Plant setup</a></li>
-        <li id="manage"><a href="#"><span class="glyphicon glyphicon-tasks"></span>&nbsp; Data management</a></li>
+         <li id="open" class="active"><a href="#"><i class="fa fa-folder-open-o" aria-hidden="true"></i>
+            Upload</a></li>
+        <li id="setup">
+            <a href="#" ><i class="fa fa-cogs" aria-hidden="true"></i> Plant setup</a>
+        </li>
+        <li id="manage">
+            <a href="#"><i class="fa fa-database" aria-hidden="true"></i>&nbsp;Data management</a>
+        </li>
     </ul>
     <br>
 
@@ -51,35 +56,43 @@
             <fieldset class="container col-sm-12 col-md-12 col-lg-12">
                     {{ form2.hidden_tag() }}
                     <h3>Plant Setup</h3>
-                    <div class="col-sm-6 col-md-6 col-lg-6">
+                    <div class="col-sm-7 col-md-7 col-lg-7">
                         {{ form2.plant_select.label(class='form-select-label') }} {{ form2.plant_select
                         (class='form-control plant_setup') }}<br>
                         {{ form2.plant_name.label(class='form-text-label') }} {{ form2.plant_name(class='form-control') }}
-                        <input type="button" value="Update" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px"
-                               id="updateplantname"><br>
-                        <hr/>
-                        <h3>Unit Setup</h3>
+                        <button id="updateplantname" class="btn btn-primary pull-right" type="button"
+                                style="margin-top: 10px; margin-bottom: 10px">
+                            <i class="fa fa-pencil" aria-hidden="true"></i> Update
+                        </button>
+                    </div>
+                        <hr class="col-sm-12 col-md-12 col-lg-12"/>
+                    <div class="col-sm-7 col-md-7 col-lg-7">
+                        <h3 style="margin-top: 20px">Unit Setup</h3>
+                        {{ form2.unit_select.label(class='form-select-label') }}{{ form2.unit_select(class='form-control plant_setup') }}
                         {{ form2.unit_name.label(class='form-select-label') }}{{ form2.unit_name(class='form-control plant_setup') }}
-                        <input type="button" value="Update" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px" id="updateunit">
-                        <input type="button" value="Add" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px" id="addunit">
+
+                        <button id="addunit" class="btn btn-primary pull-right" type="button"
+                                style="margin-top: 10px; margin-bottom: 10px; margin-left: 10px">
+                            <i class="fa fa-pencil" aria-hidden="true"></i> Add
+                        </button>
+                        <button id="updateunit" class="btn btn-primary pull-right" type="button"
+                                style="margin-top: 10px; margin-bottom: 10px">
+                            <i class="fa fa-plus" aria-hidden="true"></i> Update
+                        </button>
                     </div>
-
-                    <div class="col-sm-12 col-md-12 col-lg-12"></div>
-
-                    <br>
-
-                    <div class="col-sm-6 col-md-6 col-lg-6">
-                        {{ form2.unit_select.label(class='form-select-label') }}<br>{{ form2.unit_select(class='form-control plant_setup') }}
-                    </div>
-                    <div class="col-sm-6 col-md-6 col-lg-6">
+                    <div class="col-sm-7 col-md-7 col-lg-7">
                         {{ form2.tags.label(class='form-select-label') }}{{ form2.tags(class='form-control plant_setup') }}
-                        <input type="button" value="Set" class="btn btn-primary" style="margin-top: 10px" id="settags"><br>
-                    </div>
-                    <div class="col-sm-12 col-md-12 col-lg-12"></div>
+                        <button class="btn btn-primary pull-right" id="settags" type="button">
+                            <i class="fa fa-link" aria-hidden="true"></i> Link Tags
+                        </button>
 
-                    <div class="col-sm-6 col-md-6 col-lg-6" style="display: inline">
+                    </div>
+
+                    <div class="col-sm-7 col-md-7 col-lg-7" style="display: inline">
                         {{ form2.unit_tags.label(class='form-select-label') }}{{ form2.unit_tags(class='form-control plant_setup') }}
-                        <input type="button" value="Delete" class="btn btn-primary" style="margin-top: 10px;" id="removetags">
+                        <button class="btn btn-primary pull-right" id="removetags">
+                            <i class="fa fa-trash-o" aria-hidden="true"></i> Remove Link
+                        </button>
                     </div>
                     <div class="col-sm-12 col-md-12 col-lg-12"><hr/></div>
 
