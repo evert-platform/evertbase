@@ -204,7 +204,8 @@ var plotController = (function() {
                 if ($(DOMStrings.subplotsCheck).is(":checked")){
                     var frac = 1/plotData.length;
                     layout = {
-                        showlegend: true
+                        showlegend: false,
+                        height: $(DOMStrings.plotArea).height()
                     };
 
                     if (!$(DOMStrings.linkXaxesValue).is(":checked")){
@@ -213,14 +214,16 @@ var plotController = (function() {
                                 title: i === 0 ? "Timestamp": undefined,
                                 showline: true,
                                 ticks: "outside",
-                                anchor: "y"+(i+1)
+                                anchor: "y"+(i+1),
+                                zeroline: false
                             };
                             layout["yaxis".concat(i+1)]= {
                                 showline: true,
                                 ticks: "outside",
                                 fixedrange: true,
                                 title: d.metadata.units ? d.name + ' [ '+ d.metadata.units +' ]': d.name,
-                                domain: [frac*i + 0.09 , frac*(i+1)]
+                                domain: [frac*i + 0.09 , frac*(i+1)],
+                                zeroline: false
                             };
                         });
 
@@ -229,18 +232,20 @@ var plotController = (function() {
                         layout["xaxis"] = {
                                 title: "Timestamp",
                                 showline: true,
-                                ticks: "outside"
+                                ticks: "outside",
+                                zeroline: false
 
                             };
 
                         plotData.forEach(function(d, i) {
-                            console.log(d.metadata.units)
                             layout["yaxis".concat(i + 1)]= {
                                 showline: true,
                                 ticks: "outside",
                                 fixedrange: true,
                                 title: d.metadata.units ? d.name + ' [ '+ d.metadata.units +' ]': d.name,
-                                domain: [frac*i + 0.09 , frac*(i+1)]
+                                domain: [frac*i + 0.09 , frac*(i+1)],
+                                zeroline: false
+
                             };
                         });
                     }
@@ -251,12 +256,15 @@ var plotController = (function() {
                         xaxis : {
                             title: "timestamp",
                             showline: true,
-                            ticks: "outside"
+                            ticks: "outside",
+                            zeroline: false
                         },
                         yaxis: {
                             showline: true,
                             ticks: "outside",
-                            fixedrange: true
+                            fixedrange: true,
+                            zeroline: false,
+                            title: 'Timestamp'
                         }
                     };
                 }
@@ -270,8 +278,24 @@ var plotController = (function() {
                     showLink: false,
                     displayLogo: false,
                     showTips: false,
-                    modeBarButtonsToRemove: ["autoScale2d", "resetScale2d", "sendDataToCloud"],
-                    doubleClick: false
+                    doubleClick: false,
+                    modeBarButtonsToAdd: [
+                        {
+                            name:'saveSVG',
+                            title: 'Save Figure',
+                            icon: Plotly.Icons.disk,
+                            click: function(gd){
+                                Plotly.downloadImage(gd,
+                                    {
+                                        format: 'svg',
+                                        height: 600,
+                                        width: 1000
+                                    })
+                            }
+
+                        }
+                    ],
+                    modeBarButtonsToRemove: ['sendDataToCloud', 'toImage', 'lasso2d', 'autoScale2d', 'resetScale2d']
                 });
 
 
