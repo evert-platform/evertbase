@@ -10,15 +10,18 @@
 
     <h1>Data Viewer</h1>
     <div class="container col-sm-6 col-md-6 col-lg-6">
-          <div class="form-row row" style="display: block">
-            Select Plant: {{ form.selectPlant(class='form-control') }}
-            Select Units: {{ form.selectUnits(class='form-control') }}
-            Select Tags: {{ form.selectTags(class='form-control') }}
-         </div>
 
-         <input type="button" class="btn btn-primary" id='dataView' value="View">
-         <button type="button" class="btn btn-default" id="deleteView">
-            <span class="glyphicon glyphicon-trash"></span>&nbsp;
+        <label for="dataPlant">Select Plant:</label> {{ form.selectPlant(class='form-control') }}
+        <label for="dataUnits">Select Units:</label> {{ form.selectUnits(class='form-control') }}
+        <label for="dataTags">Select Tags:</label> {{ form.selectTags(class='form-control') }}
+
+
+         <button type="button" class="btn btn-default pull-right" id="deleteView">
+            <i class="fa fa-trash-o" aria-hidden="true"></i> Delete Table
+         </button>
+
+        <button type="button" class="btn btn-primary pull-right" id="dataView">
+            <i class="fa fa-table" aria-hidden="true"></i> View Table
          </button>
 
     </div>
