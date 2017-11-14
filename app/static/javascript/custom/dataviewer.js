@@ -12,8 +12,9 @@ var controller = (function () {
                 viewPort: 'div#dataViewPort'
             };
     DOMButtons = {
-        viewData: 'input#dataView',
+        viewData: 'button#dataView',
         deleteView: 'button#deleteView'
+
     };
 
     var setupEventListeners = function () {
@@ -28,7 +29,24 @@ var controller = (function () {
         });
         //Event listener for view button
         $(DOMButtons.viewData).on('click', function () {
-            dataController.get('/_viewdata', UIController.renderTable)
+
+            if ($(DOMStrings.tags).val() !== null){
+                dataController.get('/_viewdata', UIController.renderTable)
+            } else {
+                alertify.error('Please select a tag before continuing')
+            }
+
+
+        });
+        // Event listener for delete table button
+        $(DOMButtons.deleteView).on('click', function(){
+
+            alertify.confirm('Are you sure?',
+                             'The table cannot be recovered once deleted. Continue?',
+            function(){
+                UIController.getTable().destroy();
+                $(DOMStrings.dataTable).empty();
+            }, function(){})
         })
 
     };
@@ -67,7 +85,7 @@ var dataController = (function () {
 })();
 
 var UIController = (function () {
-    var DOMStrings;
+    var DOMStrings, table;
     DOMStrings = controller.getDOMStrings();
     var updateSelect = function (selector, data) {
             selector.empty();
@@ -86,7 +104,7 @@ var UIController = (function () {
         },
         renderTable: function (data) {
             $(DOMStrings.viewPort).empty().append('<hr><table class="table table-striped table-bordered" id="dataview"></table>')
-            var table = $(DOMStrings.dataTable).DataTable({
+            table = $(DOMStrings.dataTable).DataTable({
                 data: data.data,
                 columns: data.headers,
                 pagingType: 'simple',
@@ -114,6 +132,9 @@ var UIController = (function () {
             } else {
                 updateSelect($plotTags, data.alltags)
             }
+        },
+        getTable: function(){
+            return table
         }
     }
 })();
