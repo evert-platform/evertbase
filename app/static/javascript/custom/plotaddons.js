@@ -1,9 +1,9 @@
 function gridplot(plotState, plotAddOnArea) {
-
+    var colors = ['#1f77b4','#ff7f0e', '#2c9f2c', '#d62728', '#9467BD', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF']
     var data = [];
     var traces = [];
     var layout = {showlegend: false};
-
+    console.log('gridplot')
 
     plotState.traces.forEach(function(d, i){
         data.push({
@@ -18,6 +18,7 @@ function gridplot(plotState, plotAddOnArea) {
         for (var j=1; j < data.length + 1; j++) {
             pos++;
              var datai = data[j - 1];
+
              // setting up gridplot traces
             if (pos === diag) {
                 traces.push({
@@ -26,10 +27,12 @@ function gridplot(plotState, plotAddOnArea) {
                     type: 'histogram',
                     mode: 'markers',
                     marker: {
+                        color: colors[j-1],
                         line: {
                             color: "rgba(191, 191, 191, 0.8)",
                             width: 1
                         }
+
                     },
                     xaxis: 'x'.concat(pos),
                     yaxis: 'y'.concat(pos)
@@ -115,7 +118,31 @@ function gridplot(plotState, plotAddOnArea) {
         t: 20
     };
 
-    Plotly.plot(plotAddOnArea, traces, layout);
+    Plotly.plot(plotAddOnArea, traces, layout, {
+                    scrollZoom: true,
+                    boxZoom: false,
+                    showLink: false,
+                    displayLogo: false,
+                    showTips: false,
+                    doubleClick: false,
+                    modeBarButtonsToAdd: [
+                        {
+                            name:'saveSVG',
+                            title: 'Save Figure',
+                            icon: Plotly.Icons.disk,
+                            click: function(gd){
+                                Plotly.downloadImage(gd,
+                                    {
+                                        format: 'svg',
+                                        height: 600,
+                                        width: 1000
+                                    })
+                            }
+
+                        }
+                    ],
+                    modeBarButtonsToRemove: ['sendDataToCloud', 'toImage', 'lasso2d', 'autoScale2d', 'resetScale2d']
+                });
     $('div#loaderWrapper').hide();
 }
 
@@ -307,7 +334,33 @@ function multipleYAxes(DOMStrings, show, plotController){
             showlegend: true
         };
 
-        Plotly.newPlot('plot', currentData, currentLayout);
+        Plotly.newPlot('plot', currentData, currentLayout,
+            {
+                    scrollZoom: true,
+                    boxZoom: false,
+                    showLink: false,
+                    displayLogo: false,
+                    showTips: false,
+                    doubleClick: false,
+                    modeBarButtonsToAdd: [
+                        {
+                            name:'saveSVG',
+                            title: 'Save Figure',
+                            icon: Plotly.Icons.disk,
+                            click: function(gd){
+                                Plotly.downloadImage(gd,
+                                    {
+                                        format: 'svg',
+                                        height: 600,
+                                        width: 1000
+                                    })
+                            }
+
+                        }
+                    ],
+                    modeBarButtonsToRemove: ['sendDataToCloud', 'toImage', 'lasso2d', 'autoScale2d', 'resetScale2d']
+                }
+            );
         link_zoom_event(plotController.getSocket(), DOMStrings, plotController.getPlotState())
 
     }
@@ -347,11 +400,13 @@ function scatterPlot() {
                 xaxis: {
                     showline: true,
                     ticks: 'outside',
-                    title: xname + ' Data Distribution'
+                    title: xname + ' Data Distribution',
+                    zeroline: false
                 },
                 yaxis: {
                     showline: true,
-                    ticks: 'outside'
+                    ticks: 'outside',
+                    zeroline: false
                 },
                 margin: {
                     t:20
@@ -372,12 +427,14 @@ function scatterPlot() {
                 xaxis: {
                     showline: true,
                     ticks: 'outside',
-                    title: xname
+                    title: xname,
+                    zeroline:false
                 },
                 yaxis: {
                     showline: true,
                     ticks: 'outside',
-                    title: yname
+                    title: yname,
+                    zeroline: false
                 },
                 margin: {
                     t:20
@@ -385,7 +442,32 @@ function scatterPlot() {
             };
         }
 
-        Plotly.newPlot('scatterplotArea', [data], layout);
+        Plotly.newPlot('scatterplotArea', [data], layout,
+            {
+                    scrollZoom: true,
+                    boxZoom: false,
+                    showLink: false,
+                    displayLogo: false,
+                    showTips: false,
+                    doubleClick: false,
+                    modeBarButtonsToAdd: [
+                        {
+                            name:'saveSVG',
+                            title: 'Save Figure',
+                            icon: Plotly.Icons.disk,
+                            click: function(gd){
+                                Plotly.downloadImage(gd,
+                                    {
+                                        format: 'svg',
+                                        height: 600,
+                                        width: 1000
+                                    })
+                            }
+
+                        }
+                    ],
+                    modeBarButtonsToRemove: ['sendDataToCloud', 'toImage', 'lasso2d', 'autoScale2d', 'resetScale2d']
+                });
 
 
     };
