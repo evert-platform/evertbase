@@ -338,7 +338,7 @@
       border-radius: 8px;
       overflow: hidden; }
       .dropzone .dz-preview .dz-progress .dz-upload {
-        background: #333;
+        background: #06711d;
         background: linear-gradient(to bottom, #666, #444);
         position: absolute;
         top: 0;
@@ -353,7 +353,7 @@
     .dropzone .dz-preview.dz-error .dz-error-message {
       display: block; }
     .dropzone .dz-preview.dz-error:hover .dz-error-message {
-      opacity: 1;
+      opacity: 0;
       pointer-events: auto; }
     .dropzone .dz-preview .dz-error-message {
       pointer-events: none;
