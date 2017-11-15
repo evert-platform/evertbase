@@ -103,7 +103,9 @@ var UIController = (function () {
 
         },
         renderTable: function (data) {
-            $(DOMStrings.viewPort).empty().append('<hr><table class="table table-striped table-bordered" id="dataview"></table>')
+            $(DOMStrings.viewPort).empty().append('<hr><table style="width: 100%" class="table table-striped' +
+                ' table-bordered"' +
+                ' id="dataview"></table>')
             table = $(DOMStrings.dataTable).DataTable({
                 data: data.data,
                 columns: data.headers,
