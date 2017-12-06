@@ -163,20 +163,7 @@ var controller = (function () {
                                 })
                              }, function () {})
         });
-        // Event listener for opening a file
-        $(DOMButtons.openFile).on('click', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            var formdata = new FormData($('#datafile')[0]);
-            dataController.postForm('/_dataopen', formdata, 'File uploaded and ready to use')
-        });
-        // Event listener for uploading file
-        $(DOMButtons.uploadFile).on('click', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            var formdata = new FormData($('#datafile')[0]);
-            dataController.postForm('/_dataupload', formdata, 'File uploaded to Evert');
-        });
+
         // Event listeners for UI interfacing
         //Event listener for open tab
         $(DOMStrings.dataOpenTab).on('click', function () {
@@ -332,28 +319,6 @@ var dataController = (function () {
                 tagunits: $(DOMStrings.tagsunits).val()
             };
             $.getJSON(url, data, callback);
-        },
-        postForm: function (url, formData, successMessage) {
-            $.ajax({
-            url: url,
-            type: 'POST',
-            processData: false,
-            contentType: false,
-            data: formData,
-            dataType: 'json',
-            success: function(data) {
-                    $.getJSON('/_plantupload',{}, function (data) {
-                        var $plantselect = $(DOMStrings.plant);
-                        UIController.updateSelect($plantselect, data.plants);
-                    });
-                    if (data.success){
-                        alertify.success('File ready to be used')
-                    } else {
-                        alertify.error('File upload failed');
-                    }
-
-                }
-            });
         }
     }
 })();
