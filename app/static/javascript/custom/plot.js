@@ -374,7 +374,32 @@ var plotController = (function() {
                     var layout = data.layout;
                     layout.showlegend = false;
                     var plotData = data.data;
-                    Plotly.newPlot(DOMStrings.plotAddOnsArea, plotData, layout);
+                    Plotly.newPlot(DOMStrings.plotAddOnsArea, plotData, layout, {
+                    scrollZoom: true,
+                    boxZoom: false,
+                    showLink: false,
+                    displayLogo: false,
+                    showTips: false,
+                    doubleClick: false,
+                    modeBarButtonsToAdd: [
+                        {
+                            name:'saveSVG',
+                            title: 'Save Figure',
+                            icon: Plotly.Icons.disk,
+                            click: function(gd){
+                                Plotly.downloadImage(gd,
+                                    {
+                                        format: 'svg',
+                                        height: 600,
+                                        width: 1000
+                                    })
+                            }
+
+                        }
+                    ],
+                    modeBarButtonsToRemove: ['sendDataToCloud', 'toImage', 'lasso2d', 'autoScale2d', 'resetScale2d']
+                }
+                        );
                     $(DOMStrings.loader).hide();
                 } else if (data.msg) {
                     alertify.error(data.msg);
