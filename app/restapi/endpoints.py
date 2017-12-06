@@ -1,10 +1,8 @@
 from flask_plugins import PluginManager, get_plugin_from_all
-from zipfile import ZipFile, BadZipFile
-from flask import jsonify, request, current_app
-import pandas as pd
+from flask import jsonify, request
 from . import restapi
 import evertcore as evert
-from datetime import datetime
+
 _threshold = 500
 
 # this retrieves the data that needs to be plotted and returns the data
@@ -49,27 +47,6 @@ def _disable_plugins():
     except KeyError:
         pass
     return jsonify(success=True)
-
-
-# this function handles the ajax upload of plugin zip files
-@restapi.route('/_uploadp', methods=['GET', 'POST'])
-def _upload_plugins():
-    success = True
-    msg = None
-    if request.method == 'POST':
-        zip_file = request.files['file']
-        try:
-            zipfile = ZipFile(zip_file)
-            zipfile.extractall(current_app.config['UPLOADED_PLUGIN_DEST'])
-            success = True
-            msg = 'Success: Plugin uploaded successfully'
-
-        except BadZipFile:
-            success = False
-            msg = 'Error: Ensure file is a zip file'
-
-    return jsonify(success=success, msg=msg)
-
 
 # open/upload data files
 @restapi.route('/_dataopen', methods=['GET', 'POST'])
