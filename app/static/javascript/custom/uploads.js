@@ -34,13 +34,13 @@ var controller = (function () {
         updateUnitName: 'button#updateunit',
         assignTags: 'button#settags',
         removeTags: 'button#removetags',
-        deletePlant: 'input#deleteplant',
-        deleteUnit: 'input#deleteunit',
-        deleteUnitTags: 'input#deleteunittags',
-        deleteTags: 'input#deletetags',
+        deletePlant: 'button#deleteplant',
+        deleteUnit: 'button#deleteunit',
+        deleteUnitTags: 'button#deleteunittags',
+        deleteTags: 'button#deletetags',
         openFile: 'input#open_file',
         uploadFile: 'input#upload_file',
-        tagmetasubmit: 'input#submitmeta'
+        tagmetasubmit: 'button#submitmeta'
     };
 
     // Setting up EventListeners
@@ -277,18 +277,31 @@ var controller = (function () {
             setupEventListners();
 
             Dropzone.options.dataupload = {
-                init: function() {
+                addRemoveLinks: true,
+                createImageThumbnails: false,
+                 init: function() {
                     this.on('success', function(file, server){
                         if (server.success) {
-                            alertify.success(file.name + ' has been uploaded')
+                            alertify.success(file.name + ' has been uploaded');
                             this.removeFile(file);
+                            $.getJSON('/_plantupload',{}, function (data) {
+                            var $plantselect = $(DOMStrings.plant);
+                            UIController.updateSelect($plantselect, data.plants);
+                    })
                         } else if (!server.success){
-                            alertify.error(file.name + ' could not be uploaded')
+                            alertify.error(file.name + ' could not be uploaded');
+                            file.previewElement.classList.add('dz-error');
                         }
-
-
                     });
 
+                },
+                accept: function(file, done){
+
+                    if (file.name.split('.')[1] === 'csv'){
+                        done()
+                    } else {
+                        done('')
+                    }
                 }
             }
         }
