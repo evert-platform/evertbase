@@ -187,7 +187,13 @@
   .dropzone.dz-started .dz-message {
     display: none; }
   .dropzone.dz-drag-hover {
-    border-style: solid; }
+    background-color: #0eb147;
+    font-size: 25pt;
+    opacity: 0.2;
+    color: white;
+    border: 4pt dashed #a5a8a5;
+
+  }
     .dropzone.dz-drag-hover .dz-message {
       opacity: 0.5; }
   .dropzone .dz-message {
