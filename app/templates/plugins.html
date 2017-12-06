@@ -10,42 +10,38 @@
     </div>
 
     <div class="page-header">
-        <h1>Available plugins</h1>
+        <h1>Plugin Management</h1>
     </div>
-
-    <ul class="nav nav-tabs">
-        <li id="toggle"><a  href="#">Toggle</a> </li>
-        <li id="upload"><a href="#" >Upload</a></li>
-    </ul>
-
 
     <div class="container col-md-12 col-lg-12 col-sm-12" id="plugins_toggle">
-        <div class="form-group col-md-6 col-sm-5 col-lg-6">
+        <div class="form-group col-md-7 col-sm-7 col-lg-7">
             {{ form.hidden_tag() }}
-            {{ form.select_disabled.label(class='col-form-label') }}
-            {{ form.select_disabled(class='form-control')}}
-            {{ form.select_enabled.label(class='col-form-label') }}
-            {{ form.select_enabled(class='form-control') }}
+            <div class="row">
+                <label for="select_disabled">Select plugin to enable:</label>
+                {{ form.select_disabled(class='form-control')}}
+                 <button type="button" class="btn btn-primary pull-right" id="enable">
+                   <i class="fa fa-plus" aria-hidden="true"></i> Enable
+                </button>
+            </div>
+            <div class="row">
+                <label style="margin-top: 10px" for="select_enabled">Select plugin to disable:</label>
+                {{ form.select_enabled(class='form-control') }}
+
+                <button type="button" class="btn btn-primary pull-right" id="disable">
+                   <i class="fa fa-minus" aria-hidden="true"></i> Disable
+                </button>
+            </div>
+
         </div>
-        <div class="container form-group col-md-12 col-sm-12 col-lg-12">
-            <input type="submit" class="btn btn-default" value="Enable" id="enable">
-            <input type="submit" class="btn btn-default" value="Disable" id="disable">
+        <div class="container form-group col-md-7 col-sm-7 col-lg-7">
+
+
+
+
+
         </div>
         <br class="container col-md-12 col-lg-12 col-sm-12">
         <hr class="container col-md-12 col-lg-12 col-sm-12">
 
-    </div>
-
-    <div class="container col-md-12 col-lg-12 col-sm-12" id="plugins_upload">
-        <div class="form-group col-md-6 col-sm-5 col-lg-6">
-            <form class="form" enctype="multipart/form-data" method="post" role="form" id="uploadplugin">
-                {{ form2.hidden_tag() }}
-                {{ form2.file.label(class='col-form-label') }}
-                {{ form2.file(class='btn btn-defualt btn-file', required=true) }}
-            <input type="submit" class="btn btn-default" value="Upload" id="plugin_submit">
-            </form>
-        </div>
-        <br class="container col-md-12 col-lg-12 col-sm-12">
-        <hr class="container col-md-12 col-lg-12 col-sm-12">
     </div>
 {% endblock %}
