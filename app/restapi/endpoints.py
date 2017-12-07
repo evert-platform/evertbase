@@ -222,7 +222,7 @@ def _settags():
 @restapi.route('/_deleteplant', methods=['GET'])
 def _deleteplant():
     # getting request args
-    plant = request.args.get('plant', None, type=int)
+    plant = request.args.get('plantDataManage', None, type=int)
     # deleting plant and retrieving remaining plants
     remaining_plants = evert.data.delete_plant(plant)
 
