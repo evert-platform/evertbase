@@ -261,12 +261,13 @@ function multipleYAxes(DOMStrings, show, plotController){
     var colors = ['#1f77b4','#ff7f0e', '#2c9f2c', '#d62728', '#9467BD', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'];
     if(show){
         if (dataTraces.length <= colors.length){
+
             dataTraces.forEach(function(d, i){
                 d.yaxis = 'y'.concat(i + 1);
                 d.showlegend = false;
 
                 currentLayout['yaxis'.concat(i + 1)] = {
-                    title: d.name,
+                    title: d.name.concat(d.metadata.units !== null ? ' ['+d.metadata.units+']': ''),
                     anchor: 'free',
                     side: 'left',
                     position: 0.08 * i,
@@ -275,7 +276,8 @@ function multipleYAxes(DOMStrings, show, plotController){
                     ticks: 'outside',
                     tickfont: {color: colors[i]},
                     color: colors[i],
-                    type: yaxisType
+                    type: yaxisType,
+                    zeroline: false
                 }
             });
 

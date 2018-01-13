@@ -384,7 +384,7 @@ var plotController = (function() {
                     modeBarButtonsToAdd: [
                         {
                             name:'saveSVG',
-                            title: 'Save Figure',
+                            title: 'Save Add-on Figure',
                             icon: Plotly.Icons.disk,
                             click: function(gd){
                                 Plotly.downloadImage(gd,
@@ -397,7 +397,7 @@ var plotController = (function() {
 
                         }
                     ],
-                    modeBarButtonsToRemove: ['sendDataToCloud', 'toImage', 'lasso2d', 'autoScale2d', 'resetScale2d']
+                    modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'autoScale2d', 'resetScale2d']
                 }
                         );
                     $(DOMStrings.loader).hide();
