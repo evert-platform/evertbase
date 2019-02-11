@@ -1,7 +1,8 @@
 language: python
 python:
-  - "3.4"
   - "3.5"
+  - "3.6"
+  - "3.7"
 
 env:
  - FLASK_CONFIG = "testing"
@@ -21,7 +22,7 @@ install:
   - source activate Evert
 
 script:
-  - py.test --cov-config .coveragerc --cov=app  app/tests
+  - pytest --cov-config .coveragerc --cov=app  app/tests
 
 after_success:
   - coveralls
@@ -29,6 +30,3 @@ after_success:
 addons:
   - coveralls:
      repo_token: vJNg5mw9sSdyMaszVlsvGV9tfyAhDKNK1
-
-
-
