@@ -1,8 +1,6 @@
 language: python
 python:
   - "3.5"
-  - "3.6"
-  - "3.7"
 
 env:
  - FLASK_CONFIG = "testing"
@@ -18,7 +16,8 @@ before_install:
   - mkdir "$HOME/Documents"
 
 install:
-  - conda env create --file environment.yml python=$TRAVIS_PYTHON_VERSION
+  # Note: conda appears to ignore the python spec
+  - conda env create --file environment.yml # python=$TRAVIS_PYTHON_VERSION
   - source activate Evert
 
 script:
