@@ -53,6 +53,6 @@ The application can be started in an IDE or in the command line using the follow
 
 After the above command has been entered and run paste the following in your web browser:
 
-`http://127.0.0.1:5000/plugins`
+`http://127.0.0.1:5000`
 
 This should open Evert in your web browser. If an error is displayed keep on refreshing the page.
