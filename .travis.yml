@@ -1,6 +1,5 @@
 language: python
 python:
-  - "3.4"
   - "3.5"
 
 env:
@@ -17,7 +16,8 @@ before_install:
   - mkdir "$HOME/Documents"
 
 install:
-  - conda env create --file environment.yml python=$TRAVIS_PYTHON_VERSION
+  # Note: conda appears to ignore the python spec
+  - conda env create --file environment.yml # python=$TRAVIS_PYTHON_VERSION
   - source activate Evert
 
 script:
@@ -29,6 +29,3 @@ after_success:
 addons:
   - coveralls:
      repo_token: vJNg5mw9sSdyMaszVlsvGV9tfyAhDKNK1
-
-
-

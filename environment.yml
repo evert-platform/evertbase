@@ -3,6 +3,7 @@ channels:
 - defaults
 - conda-forge
 dependencies:
+- python=3.5
 - coveralls
 - coverage=4.3.4
 - cycler=0.10.0
