@@ -13,6 +13,7 @@ function EvertPlotState(){
     this.traces = [];
     this.subplots = false;
     this.linkedXAxis = false;
+    this.logAxis = false;
     this.plotLayout = {};
     this.formData = {};
     this.tagsMap = {};
@@ -28,6 +29,7 @@ function EvertPlotState(){
         this.traces = [];
         this.subplots = false;
         this.linkedXAxis = false;
+        this.logAxis = false;
         this.plotLayout = {};
         this.formData = {};
         this.tagsMap = {};
@@ -39,6 +41,7 @@ function EvertPlotState(){
         this.traces = state.traces;
         this.subplots = state.subplots;
         this.linkedXAxis = state.linkedXAxis;
+        this.logAxis = state.logAxis;
         this.plotLayout = state.plotLayout;
         this.formData = state.formData;
         this.tagsMap = state.tagsMap;
