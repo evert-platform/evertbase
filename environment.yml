@@ -7,7 +7,6 @@ dependencies:
 - coveralls
 - coverage=4.3.4
 - cycler=0.10.0
-- eventlet=0.21.0
 - flask=0.12
 - flask-migrate=2.0.3
 - flask-script=2.0.5

@@ -561,7 +561,7 @@ function logAxis(DOMStrings, plotStateObject, show){
 
 
         Plotly.relayout(DOMStrings.plotArea, updateLayout)
-    } else if (plotStateObject.subplots) {
+    } else if (plotStateObject.subplots && show) {
         alertify.error('Logarithmic y-axes is not available on subplots');
         $(DOMStrings.showlogYaxis).prop('checked', false);
     }
