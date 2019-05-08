@@ -13,8 +13,8 @@ before_install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - /home/travis/miniconda/envs/Evert/lib/python3.5/site-packages/easy-install.pth
   - mkdir "$HOME/Documents"
+  - touch ./home/travis/miniconda/envs/Evert/lib/python3.5/site-packages/easy-install.pth
 
 install:
   # Note: conda appears to ignore the python spec
