@@ -2,7 +2,7 @@ $(document).ready(function() {
     controller.init();
 });
 
-var controller = function () {
+var controller = (function () {
     var DOMStrings, DOMButtons;
 
     DOMStrings = {
@@ -50,9 +50,12 @@ var controller = function () {
                 var $plantselect = $(DOMStrings.plant);
                 UIController.updateSelect($plantselect, data.plants)
             });
+
+            pluginEventListeners();
+
         }
     }
-};
+})();
 
 
 var dataController = ( function () {
@@ -67,23 +70,32 @@ var dataController = ( function () {
                 pluginDisabled: $(DOMStrings.pluginDisabled).val()
             };
             $.getJSON(url, data, callback);
-            
+
         }
     }
-});
+})();
 
 var UIController = (function () {
     var DOMStrings = controller.getDOMStrings();
 
-        var updateSelect = function (selector, data) {
-            selector.empty();
-            $.each(data, function (value, key) {
-                selector.append($("<option class='active-result'></option>")
-                    .attr("value", value).text(key))
-            });
-            selector.trigger('chosen:updated');
-        };
-});
+    var updateSelect;
+    updateSelect = (function (selector, data) {
+        selector.empty();
+        $.each(data, function (value, key) {
+            selector.append($("<option class='active-result'></option>")
+                .attr("value", value).text(key))
+        });
+        selector.trigger('chosen:updated');
+    })();
+
+    return {
+        init: function () {
+            $(DOMStrings.pluginEnabled).chosen({width: '100%'});
+            $(DOMStrings.pluginDisabled).chosen({width: '100%'});
+        },
+    }
+
+})();
 
     // var $disabled_select = $('select#select_disabled').children('option');
     // var $enabled_select = $('select#select_enabled').children('option');
