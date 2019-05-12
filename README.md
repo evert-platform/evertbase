@@ -42,6 +42,7 @@ After activating the environment the following packages need to be installed usi
 * `eventlet`
 * `kombu`
 
+Evert uses `RabbitMQ` for message queues communication. Install `RabbitMQ` from https://www.rabbitmq.com/
 
 ### Start Up 
 
