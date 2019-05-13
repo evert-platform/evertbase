@@ -19,6 +19,7 @@ install:
   # Note: conda appears to ignore the python spec
   - conda env create --file environment.yml # python=$TRAVIS_PYTHON_VERSION
   - source activate Evert
+  - pip install -r piprequirements
 
 script:
   - py.test --cov-config .coveragerc --cov=app  app/tests

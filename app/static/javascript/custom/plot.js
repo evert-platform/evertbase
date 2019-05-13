@@ -6,11 +6,44 @@ $(document).ready(function () {
 
 });
 
+
+// An example function to display message with a time delay
+function plotSuccess() {
+    setTimeout(function(){alert("Plot Success");}, 1000);
+}
+
+
+//Function to help add understand how to change/add elements on the current plot.
+//Can be used in the dev tools console to run.
+function addDot(type) {
+    var plotArea = document.getElementById("plot");
+    var currentData = plotArea.data;
+
+    var dot = [{
+        x : [currentData[0].x[0]],
+        y : [0.5],
+        type: 'scatter',
+    }];
+
+    var  update = {
+            'marker.color': 'red'
+        };
+    if (type=="plot") {
+        Plotly.plot(plotArea, dot, plotArea.layout);
+    }else if (type=="update") {
+        Plotly.update(plotArea, update);
+    }else if (type=="restyle"){
+        Plotly.restyle(plotArea, update);
+    }else {
+        Plotly.plot(plotArea, dot, plotArea.layout);
+    }
+}
+
 // Data controller for plotting page
 var dataController = (function () {
     "use strict";
     var data, DOMStrings, plotState;
-    // plotState = plotController.getPlotState();
+    //plotState = plotController.getPlotState();
 
     // jQuery selectors for DOM objects
     DOMStrings = {
@@ -52,7 +85,9 @@ var dataController = (function () {
         // return the DOMStrings object
         getDOMStrings: function () {
             return DOMStrings;
-        }, timeFormat: function(domain){
+        },
+
+        timeFormat: function(domain){
             var min = domain[0], max = domain[1];
             var diff = max - min;
             var format;

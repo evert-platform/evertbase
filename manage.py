@@ -9,4 +9,4 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 socketio.init_app(app, message_queue=app.config['MESSAGE_QUEUE'])
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, debug=True)
