@@ -78,20 +78,24 @@ var dataController = ( function () {
 var UIController = (function () {
     var DOMStrings = controller.getDOMStrings();
 
-    var updateSelect;
-    updateSelect = (function (selector, data) {
+    var updateSelect = function (selector, data) {
         selector.empty();
         $.each(data, function (value, key) {
             selector.append($("<option class='active-result'></option>")
                 .attr("value", value).text(key))
         });
         selector.trigger('chosen:updated');
-    })();
+    };
 
     return {
         init: function () {
             $(DOMStrings.pluginEnabled).chosen({width: '100%'});
             $(DOMStrings.pluginDisabled).chosen({width: '100%'});
+        },
+
+        updateSelect: function (selector, data) {
+            updateSelect(selector, data)
+
         },
     }
 
