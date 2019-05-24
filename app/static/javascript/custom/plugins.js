@@ -22,20 +22,37 @@ var controller = (function () {
     $('div#plugins_toggle').show();
     $('div#plugins_upload').hide();
 
+    function reload_server() {
+      // Reload Server
+      $.ajax({
+        url: "/reload-server/"
+      });
+      // Wait 1 second and reload page
+      setTimeout(function(){
+        window.location = document.URL;
+      }, 1000);
+    }
+
     var pluginEventListeners = function () {
         //Event handlers for the plugin disable and enable tab
         //Event Listener when plugin is enabled
         $(DOMButtons.enablePlugin).on('click', function () {
-            var plugin = $(DOMStrings.pluginDisabled)
-
-
+            dataController.get('/_enable_plugin',function (data) {
+                var $disabledplugin = $(DOMStrings.pluginDisabled);
+                var $enabledplugin =  $(DOMStrings.pluginEnabled);
+                UIController.updateSelect($disabledplugin, data.disabledplugin);
+                UIController.updateSelect($enabledplugin, data.enabledplugin);
+            });
         })
 
-        //Event Listener when plugin is enabled
+        //Event Listener when plugin is disabled
         $(DOMButtons.disablePlugin).on('click', function () {
-            var plugin = $(DOMStrings.pluginEnabled)
-
-
+            dataController.get('/_disable_plugin',function (data) {
+                var $disabledplugin = $(DOMStrings.pluginDisabled);
+                var $enabledplugin =  $(DOMStrings.pluginEnabled);
+                UIController.updateSelect($disabledplugin, data.disabledplugin);
+                UIController.updateSelect($enabledplugin, data.enabledplugin);
+            });
         })
     };
 
@@ -45,12 +62,6 @@ var controller = (function () {
         },
         init: function () {
             UIController.init();
-
-            dataController.get('/_enable_plugin', function (data) {
-                var $plantselect = $(DOMStrings.plant);
-                UIController.updateSelect($plantselect, data.plants)
-            });
-
             pluginEventListeners();
 
         }
@@ -95,8 +106,8 @@ var UIController = (function () {
 
         updateSelect: function (selector, data) {
             updateSelect(selector, data)
-
         },
+
     }
 
 })();
