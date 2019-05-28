@@ -59,3 +59,9 @@ def dataview():
 def shutdown():
     funcs.shutdown_server()
     return render_template('shutdown.html')
+
+#
+# @main.route('/reload-server/')
+# def restart_server():
+#     main.kill(main.getpid(), signal.SIGHUP)
+#     plugins()

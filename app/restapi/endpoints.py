@@ -28,10 +28,11 @@ def _plotdata():
 # this functions enables the plugin selected in the enable plugin select element on the plugins page
 @restapi.route('/_enable_plugin', methods=['GET', 'POST'])
 def _enable_plugins():
-    plugin = request.args.get('enableplugins', 0, type=str)
+    plugin = request.args.get('pluginDisabled', 0, type=str)
     pluginsmanager = PluginManager()
+    val = get_plugin_from_all(plugin)
     try:
-        pluginsmanager.enable_plugins([get_plugin_from_all(plugin)])
+        pluginsmanager.enable_plugins(val)
     except KeyError:
         pass
     return jsonify(success=True)
@@ -40,7 +41,7 @@ def _enable_plugins():
 # this functions disables the plugin selected in the disable plugin select element on the plugins page
 @restapi.route('/_disable_plugin', methods=['GET', 'POST'])
 def _disable_plugins():
-    plugin = request.args.get('disableplugins', 0, type=str)
+    plugin = request.args.get('pluginEnabled', 0, type=str)
     pluginsmanager = PluginManager()
     try:
         pluginsmanager.disable_plugins([get_plugin_from_all(plugin)])

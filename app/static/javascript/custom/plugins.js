@@ -6,7 +6,7 @@ var controller = (function () {
     var DOMStrings, DOMButtons;
 
     DOMStrings = {
-        pluginEnabled: 'select#select_enabled',
+        pluginEnabled:'select#select_enabled' ,
         pluginDisabled: 'select#select_disabled'
     };
 
@@ -14,7 +14,16 @@ var controller = (function () {
         enablePlugin: 'button#enable',
         disablePlugin: 'button#disable'
     };
-
+    //
+    // if ($(disabled_select.html()) == 'All plugins enabled'){
+    //     $($disabled_select.parent()).attr('disabled', true);
+    //     $($enable_button).attr('disabled', true);
+    // }
+    //
+    // else if ($(enabled_select.html()) == 'No active plugins') {
+    //     $($enabled_select.parent()).attr('disabled', true);
+    //     $($disable_button).attr('disabled', true);
+    // }
 
     var $toggle = $('li#toggle');
     var $upload = $('li#upload');
@@ -37,11 +46,17 @@ var controller = (function () {
         //Event handlers for the plugin disable and enable tab
         //Event Listener when plugin is enabled
         $(DOMButtons.enablePlugin).on('click', function () {
-            dataController.get('/_enable_plugin',function (data) {
+            dataController.get('/_enable_plugin', function (data) {
                 var $disabledplugin = $(DOMStrings.pluginDisabled);
                 var $enabledplugin =  $(DOMStrings.pluginEnabled);
-                UIController.updateSelect($disabledplugin, data.disabledplugin);
-                UIController.updateSelect($enabledplugin, data.enabledplugin);
+                try {
+                    $disabledplugin.val();
+                } catch(err) {
+                    $disabledplugin.val('');
+                }
+                UIController.updateSelect($disabledplugin, data.pluginDisabled);
+                UIController.updateSelect($enabledplugin, data.pluginEnabled);
+                alertify.success('Plugin enabled');
             });
         })
 
@@ -50,8 +65,8 @@ var controller = (function () {
             dataController.get('/_disable_plugin',function (data) {
                 var $disabledplugin = $(DOMStrings.pluginDisabled);
                 var $enabledplugin =  $(DOMStrings.pluginEnabled);
-                UIController.updateSelect($disabledplugin, data.disabledplugin);
-                UIController.updateSelect($enabledplugin, data.enabledplugin);
+                UIController.updateSelect($disabledplugin, data.pluginDisabled);
+                UIController.updateSelect($enabledplugin, data.pluginEnabled);
             });
         })
     };
