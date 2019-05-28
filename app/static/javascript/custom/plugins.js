@@ -7,7 +7,9 @@ var controller = (function () {
 
     DOMStrings = {
         pluginEnabled:'select#select_enabled' ,
-        pluginDisabled: 'select#select_disabled'
+        pluginDisabled: 'select#select_disabled',
+        pluginUploadTab: 'li#upload',
+        pluginToggleTab: 'li#toggle'
     };
 
     DOMButtons = {
@@ -24,12 +26,6 @@ var controller = (function () {
     //     $($enabled_select.parent()).attr('disabled', true);
     //     $($disable_button).attr('disabled', true);
     // }
-
-    var $toggle = $('li#toggle');
-    var $upload = $('li#upload');
-    $($toggle).addClass('active');
-    $('div#plugins_toggle').show();
-    $('div#plugins_upload').hide();
 
     function reload_server() {
       // Reload Server
@@ -68,6 +64,23 @@ var controller = (function () {
                 UIController.updateSelect($disabledplugin, data.pluginDisabled);
                 UIController.updateSelect($enabledplugin, data.pluginEnabled);
             });
+        })
+
+        //Event listeners for UI interfacing
+        //Event listener for Plugin management tab
+        $(DOMStrings.pluginToggleTab).on('click',function () {
+            $(this).addClass('active');
+            $(DOMStrings.pluginUploadTab).removeClass('active');
+            $(DOMStrings.pluginToggleTab).show();
+            $(DOMStrings.pluginUploadTab).hide();
+        })
+
+        //Event listener for Plugin Upload Tab
+        $(DOMStrings.pluginUploadTab).on('click',function () {
+            $(this).addClass('active');
+            $(DOMStrings.pluginToggleTab).removeClass('active');
+            $(DOMStrings.pluginToggleTab).hide();
+            $(DOMStrings.pluginUploadTab).show();
         })
     };
 
@@ -127,12 +140,6 @@ var UIController = (function () {
 
 })();
 
-    // var $disabled_select = $('select#select_disabled').children('option');
-    // var $enabled_select = $('select#select_enabled').children('option');
-    //
-    // var $enable_button = $('input#enable');
-    // var $disable_button = $('input#disable');
-
     // if ($disabled_select.html() == 'All plugins enabled'){
     //     $($disabled_select.parent()).attr('disabled', true);
     //     $($enable_button).attr('disabled', true);
@@ -162,28 +169,7 @@ var UIController = (function () {
     // })
     // });
 
-    // $(function() {
-    //   $('input#enable').on('click', function() {
-    //     $.getJSON('/_enable_plugin', {
-    //       enableplugins: $('select[id="select_disabled"]').val()
-    //     }, function(data) {
-    //         $.notify('Plugin enabled', 'success',
-    //             {position: 'top-center'})
-    //     });
-    //     return false;
-    //   });
-    // });
-    //
-    // $(function() {
-    //   $('input#disable').on('click', function() {
-    //     $.getJSON('/_disable_plugin', {
-    //       disableplugins: $('select[id="select_enabled"]').val()
-    //     }, function(data) {
-    //     });
-    //     return false;
-    //   });
-    // });
-    //
+
     // $(function() {
     //   $('input#plugin_submit').on('click', function() {
     //     event.preventDefault();
