@@ -9,7 +9,9 @@ var controller = (function () {
         pluginEnabled:'select#select_enabled' ,
         pluginDisabled: 'select#select_disabled',
         pluginUploadTab: 'li#upload',
-        pluginToggleTab: 'li#toggle'
+        pluginToggleTab: 'li#toggle',
+        pluginUploadView: 'div#plugins_upload',
+        pluginToggleView: 'div#plugins_toggle'
     };
 
     DOMButtons = {
@@ -71,16 +73,16 @@ var controller = (function () {
         $(DOMStrings.pluginToggleTab).on('click',function () {
             $(this).addClass('active');
             $(DOMStrings.pluginUploadTab).removeClass('active');
-            $(DOMStrings.pluginToggleTab).show();
-            $(DOMStrings.pluginUploadTab).hide();
+            $(DOMStrings.pluginToggleView).show();
+            $(DOMStrings.pluginUploadView).hide();
         })
 
         //Event listener for Plugin Upload Tab
         $(DOMStrings.pluginUploadTab).on('click',function () {
             $(this).addClass('active');
             $(DOMStrings.pluginToggleTab).removeClass('active');
-            $(DOMStrings.pluginToggleTab).hide();
-            $(DOMStrings.pluginUploadTab).show();
+            $(DOMStrings.pluginToggleView).hide();
+            $(DOMStrings.pluginUploadView).show();
         })
     };
 
@@ -92,6 +94,34 @@ var controller = (function () {
             UIController.init();
             pluginEventListeners();
 
+            Dropzone.options.dataupload = {
+                addRemoveLinks: true,
+                createImageThumbnails: false,
+                 init: function() {
+                    this.on('success', function(file, server){
+                        if (server.success) {
+                            alertify.success(file.name + ' has been uploaded');
+                            this.removeFile(file);
+                            $.getJSON('/_plantupload',{}, function (data) {
+                            var $plantselect = $(DOMStrings.plant);
+                            UIController.updateSelect($plantselect, data.plants);
+                    })
+                        } else if (!server.success){
+                            alertify.error(file.name + ' could not be uploaded');
+                            file.previewElement.classList.add('dz-error');
+                        }
+                    });
+
+                },
+                accept: function(file, done){
+
+                    if (file.name.split('.')[1] === 'csv'){
+                        done()
+                    } else {
+                        done('')
+                    }
+                }
+            }
         }
     }
 })();
