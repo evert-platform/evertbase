@@ -49,6 +49,12 @@ def _disable_plugins():
         pass
     return jsonify(success=True)
 
+# @restapi.route('/_pluginupload', methods=['GET', 'POST'])
+# def _update_plugin():
+#     plugin = evert.data.get_plant_names()
+#
+#     return jsonify(success=True, plants=dict(plant))
+
 # open/upload data files
 @restapi.route('/_dataopen', methods=['GET', 'POST'])
 @restapi.route('/_dataupload', methods=['GET', 'POST'])
