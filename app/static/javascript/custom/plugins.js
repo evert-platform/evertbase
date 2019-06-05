@@ -92,9 +92,11 @@ var controller = (function () {
         },
         init: function () {
             UIController.init();
+
+            dataController.get('/_dataupload')
             pluginEventListeners();
 
-            Dropzone.options.dataupload = {
+            Dropzone.options.pluginupload = {
                 addRemoveLinks: true,
                 createImageThumbnails: false,
                  init: function() {
@@ -102,9 +104,9 @@ var controller = (function () {
                         if (server.success) {
                             alertify.success(file.name + ' has been uploaded');
                             this.removeFile(file);
-                            $.getJSON('/_plantupload',{}, function (data) {
-                            var $plantselect = $(DOMStrings.plant);
-                            UIController.updateSelect($plantselect, data.plants);
+                            $.getJSON('/_dataupload',{}, function (data) {
+                            var $plugindisabled = $(DOMStrings.pluginDisabled);
+                            UIController.updateSelect($plugindisabled, data.pluginDisabled);
                     })
                         } else if (!server.success){
                             alertify.error(file.name + ' could not be uploaded');
