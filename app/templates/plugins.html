@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% block title %}Plugins{% endblock %}
 {% block head %}
+    <link href="{{ url_for('static', filename='css/dropzone.css') }}" rel="stylesheet" type="text/css">
+    <script src="{{ url_for('static', filename='javascript/libraries/dropzone.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/custom/plugins.js') }}?v=9"></script>
 {% endblock %}
+{% block title %}Plugins{% endblock %}
 {% block page_content %}
     <div id="alerts">
 
@@ -50,7 +52,7 @@
 
 
     <div id="plugins_upload" hidden="hidden">
-        <div  id="uploadplugin">
+        <div  id="uploaddesc">
             <p>
                 Upload plugin folder to Evert
             </p>

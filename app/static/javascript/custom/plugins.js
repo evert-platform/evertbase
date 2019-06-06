@@ -11,7 +11,7 @@ var controller = (function () {
         pluginUploadTab: 'li#upload',
         pluginToggleTab: 'li#toggle',
         pluginUploadView: 'div#plugins_upload',
-        pluginToggleView: 'div#plugins_toggle'
+        pluginToggleView: 'div#plugins_toggle',
     };
 
     DOMButtons = {
@@ -93,7 +93,11 @@ var controller = (function () {
         init: function () {
             UIController.init();
 
-            dataController.get('/_dataupload')
+            dataController.get('/_plantupload', function (data) {
+                var $plantselect = $(DOMStrings.plant);
+                UIController.updateSelect($plantselect, data.plants)
+            });
+
             pluginEventListeners();
 
             Dropzone.options.pluginupload = {
