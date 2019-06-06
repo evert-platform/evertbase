@@ -24,6 +24,7 @@ class PlotDataSelectForm(FlaskForm):
     selectUnits = SelectMultipleField('', choices='', id='plotUnits')
     selectTags = SelectMultipleField('', choices='', id='plotTags')
     selectType = SelectField('', choices=[('Scatter', 'Scatter'), ('Line', 'Line')], id='plotType')
+    select_enabled = SelectField('Select plugin to disable', choices='', id='select_enabled')
 
 
 # form for disabling and enabling of plugins
