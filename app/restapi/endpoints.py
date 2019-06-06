@@ -30,9 +30,8 @@ def _plotdata():
 def _enable_plugins():
     plugin = request.args.get('pluginDisabled', 0, type=str)
     pluginsmanager = PluginManager()
-    val = get_plugin_from_all(plugin)
     try:
-        pluginsmanager.enable_plugins(val)
+        pluginsmanager.enable_plugins([get_plugin_from_all(plugin)])
     except KeyError:
         pass
     return jsonify(success=True)
