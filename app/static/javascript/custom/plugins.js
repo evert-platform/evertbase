@@ -93,9 +93,9 @@ var controller = (function () {
         init: function () {
             UIController.init();
 
-            dataController.get('/_plantupload', function (data) {
-                var $plantselect = $(DOMStrings.plant);
-                UIController.updateSelect($plantselect, data.plants)
+            dataController.get('/_pluginupload', function (data) {
+                var $pluginselect = $(DOMStrings.pluginDisabled);
+                UIController.updateSelect($pluginselect, data.pluginDisabled)
             });
 
             pluginEventListeners();
@@ -108,7 +108,7 @@ var controller = (function () {
                         if (server.success) {
                             alertify.success(file.name + ' has been uploaded');
                             this.removeFile(file);
-                            $.getJSON('/_dataupload',{}, function (data) {
+                            $.getJSON('/_pluginupload',{}, function (data) {
                             var $plugindisabled = $(DOMStrings.pluginDisabled);
                             UIController.updateSelect($plugindisabled, data.pluginDisabled);
                     })

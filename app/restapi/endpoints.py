@@ -1,7 +1,10 @@
 from flask_plugins import PluginManager, get_plugin_from_all
 from flask import jsonify, request
 from . import restapi
+from zipfile import ZipFile
 import evertcore as evert
+import os
+
 
 _threshold = 500
 
@@ -48,11 +51,19 @@ def _disable_plugins():
         pass
     return jsonify(success=True)
 
-# @restapi.route('/_pluginupload', methods=['GET', 'POST'])
-# def _update_plugin():
-#     plugin = evert.data.get_plant_names()
-#
-#     return jsonify(success=True, plants=dict(plant))
+@restapi.route('/_pluginupload', methods=['GET', 'POST'])
+def _upload_plugin():
+    plugin = request.files['file']
+
+    # BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    # UPLOADED_PLUGIN_DEST = os.path.join(BASE_DIR, 'app/plugins')
+    USER_PLUGINS = os.path.join(os.path.expanduser('~/Documents'), 'Evert Plugins')
+
+    with ZipFile(plugin, 'r') as file:
+        #Extracting into the plugin files
+        file.extractall(path=USER_PLUGINS)
+
+    return jsonify(success=True)
 
 # open/upload data files
 @restapi.route('/_dataopen', methods=['GET', 'POST'])
