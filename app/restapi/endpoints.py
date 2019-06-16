@@ -55,8 +55,6 @@ def _disable_plugins():
 def _upload_plugin():
     plugin = request.files['file']
 
-    # BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    # UPLOADED_PLUGIN_DEST = os.path.join(BASE_DIR, 'app/plugins')
     USER_PLUGINS = os.path.join(os.path.expanduser('~/Documents'), 'Evert Plugins')
 
     with ZipFile(plugin, 'r') as file:
