@@ -16,11 +16,11 @@ def _global_min_(DF):
     return points
 
 
-def _global_max_(DF):
+def _global_max_(df):
     points = []
-    headers = list(DF)
-    max_vals = DF.max()
-    max_index = DF.idxmax(0)
+    headers = list(df)
+    max_vals = df.max()
+    max_index = df.idxmax(0)
 
     for i, h in enumerate(headers):
         points.append([h, max_index[h], max_vals[h], 'Global Maximum'])

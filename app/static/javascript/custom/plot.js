@@ -539,7 +539,7 @@ var controller = (function () {
                     $(DOMStrings.$plotAddOnsArea).hide();
                     Plotly.purge(DOMStrings.plotAddOnsArea);
                     $(DOMStrings.$plotAddOnsArea).contents(':not('+DOMStrings.loader+')').remove();
-                } else {
+                } else { //This is the emit for the plugins that are added uploaded to Evert
                     Plotly.purge(DOMStrings.plotAddOnsArea);
                     $(DOMStrings.$plotAddOnsArea).contents(':not('+DOMStrings.loader+')').remove();
                     var socket = plotController.getSocket();

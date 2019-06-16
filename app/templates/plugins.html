@@ -1,17 +1,28 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% block title %}Plugins{% endblock %}
 {% block head %}
+    <link href="{{ url_for('static', filename='css/dropzone.css') }}" rel="stylesheet" type="text/css">
+    <script src="{{ url_for('static', filename='javascript/libraries/dropzone.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/custom/plugins.js') }}?v=9"></script>
 {% endblock %}
+{% block title %}Plugins{% endblock %}
 {% block page_content %}
     <div id="alerts">
 
     </div>
 
     <div class="page-header">
-        <h1>Plugin Management</h1>
+        <h1>Plugin Setup</h1>
     </div>
+
+    <ul class="nav nav-tabs">
+        <li id="toggle" class="active">
+            <a href="#" ><i class="fa fa-cogs" aria-hidden="true"></i>Plugin Management</a>
+        </li>
+         <li id="upload">
+             <a href="#"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Plugin Upload</a>
+         </li>
+    </ul>
 
     <div class="container col-md-12 col-lg-12 col-sm-12" id="plugins_toggle">
         <div class="form-group col-md-7 col-sm-7 col-lg-7">
@@ -33,15 +44,25 @@
             </div>
 
         </div>
-        <div class="container form-group col-md-7 col-sm-7 col-lg-7">
 
-
-
-
-
-        </div>
         <br class="container col-md-12 col-lg-12 col-sm-12">
         <hr class="container col-md-12 col-lg-12 col-sm-12">
 
     </div>
+
+
+    <div id="plugins_upload" hidden="hidden">
+        <div  id="uploaddesc">
+            <p>
+                Upload plugin folder to Evert
+            </p>
+        </div>
+
+        <form action="/_dataopen" class="dropzone" id="pluginupload">
+          <div class="fallback">
+             <input name="file" type="file" multiple />
+          </div>
+        </form>
+    </div>
+
 {% endblock %}

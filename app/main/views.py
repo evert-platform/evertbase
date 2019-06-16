@@ -28,6 +28,8 @@ def plot():
         form.selectUnits.choices = evert.data.get_section_names(plant=plants[0][0])
         form.selectTags.choices = evert.data.get_tag_names(plant=plants[0][0])
 
+    form.select_enabled = funcs.checkplugins(enabled=True)
+
     return render_template('plot.html', form=form)
 
 
@@ -59,3 +61,9 @@ def dataview():
 def shutdown():
     funcs.shutdown_server()
     return render_template('shutdown.html')
+
+#
+# @main.route('/reload-server/')
+# def restart_server():
+#     main.kill(main.getpid(), signal.SIGHUP)
+#     plugins()
