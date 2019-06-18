@@ -1,7 +1,10 @@
 from flask_plugins import PluginManager, get_plugin_from_all
 from flask import jsonify, request
 from . import restapi
+from zipfile import ZipFile
 import evertcore as evert
+import os
+
 
 _threshold = 500
 
@@ -28,7 +31,7 @@ def _plotdata():
 # this functions enables the plugin selected in the enable plugin select element on the plugins page
 @restapi.route('/_enable_plugin', methods=['GET', 'POST'])
 def _enable_plugins():
-    plugin = request.args.get('enableplugins', 0, type=str)
+    plugin = request.args.get('pluginDisabled', 0, type=str)
     pluginsmanager = PluginManager()
     try:
         pluginsmanager.enable_plugins([get_plugin_from_all(plugin)])
@@ -40,12 +43,24 @@ def _enable_plugins():
 # this functions disables the plugin selected in the disable plugin select element on the plugins page
 @restapi.route('/_disable_plugin', methods=['GET', 'POST'])
 def _disable_plugins():
-    plugin = request.args.get('disableplugins', 0, type=str)
+    plugin = request.args.get('pluginEnabled', 0, type=str)
     pluginsmanager = PluginManager()
     try:
         pluginsmanager.disable_plugins([get_plugin_from_all(plugin)])
     except KeyError:
         pass
+    return jsonify(success=True)
+
+@restapi.route('/_pluginupload', methods=['GET', 'POST'])
+def _upload_plugin():
+    plugin = request.files['file']
+
+    USER_PLUGINS = os.path.join(os.path.expanduser('~/Documents'), 'Evert Plugins')
+
+    with ZipFile(plugin, 'r') as file:
+        #Extracting into the plugin files
+        file.extractall(path=USER_PLUGINS)
+
     return jsonify(success=True)
 
 # open/upload data files

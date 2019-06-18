@@ -12,7 +12,7 @@ _plugin_events = ['data_upload', 'zoom_event', 'add_on_event']
 _plugin_types = ['features', 'timeseries', 'add_on']
 plugin_manager = PluginManager()
 
-
+#TODO: Add functionality to the plugin events. Most of them return blanks.
 class EvertPluginException(Exception):
     pass
 
@@ -69,7 +69,7 @@ def emit_event(event_name, *args, **kwargs):
     listeners = _iter_listeners(event_name)
     plugin_processes = [Process(target=process, args=args, kwargs=kwargs).start() for process in listeners]
 
-    return
+    return #plugin_processes
 
 
 def register_plugin_settings(plugin_name, config_path):
